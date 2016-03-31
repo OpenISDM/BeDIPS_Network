@@ -5,6 +5,7 @@ Before using, you need to install **xbee** python library first on LBeacons. For
 pip install xbee
 ```
 
-- LBeacon_receiver.py : Installed on LBeacon to receive data from gateway
-- LBeacon_gateway.py : Installed on gateway LBeacon
-- LBeacon_commander.py : Installed on remote server
+- LBeacon_receiver.py : Run on LBeacon to receive msg 
+- LBeacon_filercv.py : Run on LBeacon to save file 
+- LBeacon_gateway.py : Run on gateway LBeacon
+- LBeacon_commander.py : Run on remote server, and set instruction
