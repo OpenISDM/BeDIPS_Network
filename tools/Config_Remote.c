@@ -13,7 +13,7 @@ void myCB(struct xbee *xbee, struct xbee_con *con, struct xbee_pkt **pkt, void *
 		printf("too short...\n");
 		return;
 	}
-	printf("rx: [%s]\n", (*pkt)->data);
+	printf("rx: [%s]\n", ((*pkt)->data));
 }
 
 int main(void) {
@@ -39,7 +39,6 @@ int main(void) {
 	memset(&address, 0, sizeof(address));
 	address.addr64_enabled = 1;
 	
-	switch()
 	sscanf("000000000000FFFF", "%2x%2x%2x%2x%2x%2x%2x%2x", &address.addr64[0], &address.addr64[1], &address.addr64[2], &address.addr64[3],
 														   &address.addr64[4], &address.addr64[5], &address.addr64[6], &address.addr64[7]   );
 	

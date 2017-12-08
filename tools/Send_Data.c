@@ -36,10 +36,10 @@ int main(void) {
 	 * it should be entered with the MSB first
 	 * if you need to brocast please set  64-bit address to "000000000000FFFF"
 	 */
-	 
+
 	memset(&address, 0, sizeof(address));
 	address.addr64_enabled = 1;
-	
+
 	sscanf( "000000000000FFFF" , "%2x%2x%2x%2x%2x%2x%2x%2x", &address.addr64[0], &address.addr64[1], &address.addr64[2], &address.addr64[3], 
 											   &address.addr64[4], &address.addr64[5], &address.addr64[6], &address.addr64[7]	);
 
@@ -72,7 +72,7 @@ int main(void) {
 	/* start the chain reaction! */
 	xbee_conTx(con, NULL, "Hello\r\n");
 
-	while(true) {
+	while(1) {
 		void *p;
 
 		if ((ret = xbee_conCallbackGet(con, (xbee_t_conCallback*)&p)) != XBEE_ENONE) {

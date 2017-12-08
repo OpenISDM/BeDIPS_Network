@@ -31,6 +31,12 @@ int main(void) {
 		return ret;
 	}
 
+	/* 
+	 * this is the 64-bit address of the remote XBee module
+	 * it should be entered with the MSB first
+	 * if you need to brocast please set  64-bit address to "000000000000FFFF"
+	 */
+	 
 	memset(&address, 0, sizeof(address));
 	address.addr64_enabled = 1;
 
@@ -66,7 +72,7 @@ int main(void) {
 	/* start the chain reaction! */
 	xbee_conTx(con, NULL, "Hello\r\n");
 
-	while(true) {
+	while(1) {
 		void *p;
 
 		if ((ret = xbee_conCallbackGet(con, (xbee_t_conCallback*)&p)) != XBEE_ENONE) {
