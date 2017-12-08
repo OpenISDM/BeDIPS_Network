@@ -23,10 +23,10 @@ Initially you should run the following command:
 	
 This will retrieve a default `config.mk` that is suitable for your Respberry Pi.<br />
 In our project you need to<br />
-un-comment <pre><code>OPTIONS+=       XBEE_LOG_LEVEL=100</code></pre>
-comment <pre><code>OPTIONS+=       XBEE_LOG_RX_DEFAULT_OFF</code></pre>
-comment <pre><code>OPTIONS+=       XBEE_LOG_TX_DEFAULT_OFF</code></pre>
-un-comment <pre><code>OPTIONS+=       XBEE_NO_RTSCTS</code></pre><br />
+un-comment `OPTIONS+=       XBEE_LOG_LEVEL=100`<br />
+comment `OPTIONS+=       XBEE_LOG_RX_DEFAULT_OFF`<br />
+comment `OPTIONS+=       XBEE_LOG_TX_DEFAULT_OFF`<br />
+un-comment `OPTIONS+=       XBEE_NO_RTSCTS`<br />
 
 You should review this file and then run the following command:
 <pre><code>$ make all</code></pre>
@@ -48,8 +48,8 @@ Compile your applications, including **xbee.h** in the relevant source files.<br
 Ensure you link with libxbee (e.g: using `gcc -lxbee`)
 
 If you are compiling the object file directly into your executable instead
-of making use of the library, you must include the following link flags.<br />
-<pre><code>-lpthread -lrt</code></pre>
+of making use of the library,<br />you must include the following link flags:
+`-lpthread -lrt`<br />
 
 ## Setup Zigbee
 Push later or maybe put on Gitbook for better Reading experience 
