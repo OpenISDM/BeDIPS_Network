@@ -33,7 +33,11 @@ You should review this file and then run the following command:
 
 After the build process has completed, you should find suitable files in **./lib**.<br />
 E.g: for a Unix-like OS you can expect to find **.so** and **.a** files<br />
+<<<<<<< HEAD
         for Windows you can expect to find a **.dll** file<br />
+=======
+        for Windows you can expect to find a **.dll** file<br />
+>>>>>>> 2c6dd0ec2418b1b4852bea36029253368944b631
 
 It is highly recommended that you don't modify any of the build system.
 
@@ -55,4 +59,8 @@ of making use of the library,<br />you must include the following link flags:
 Push later or maybe put on Gitbook for better Reading experience 
 
 ## Tools
+<<<<<<< HEAD
 Todo
+=======
+Todo
+>>>>>>> 2c6dd0ec2418b1b4852bea36029253368944b631
