@@ -1,7 +1,9 @@
-# PiZigbee
+# LBeacon-Zigbee
 ## Zigbee on Respberry Pi
 
-> The library we use is "libxbee3."
+## Library
+
+> The library we use is "libxbee3."<br />
 > The Original repository of "libxbee3" is https://github.com/attie/libxbee3
 
 > This repository is for the use of Zigbee module(xbee S2) on Respberry pi.<br />The following is the manual of Zigbee(xbee Series 2):
@@ -19,18 +21,19 @@ If you are building libxbee, then there are a number of options avaliable to you
 Initially you should run the following command:
 <pre><code>$ make configure</code></pre>
 	
-This will retrieve a default `config.mk` that is suitable for your Respberry Pi in our project you need to<br />
-<pre><code>un-comment `OPTIONS+=       XBEE_LOG_LEVEL=100`</code></pre><br />
-<pre><code>comment `OPTIONS+=       XBEE_LOG_RX_DEFAULT_OFF`</code></pre><br />
-<pre><code>comment `OPTIONS+=       XBEE_LOG_TX_DEFAULT_OFF`</code></pre><br />
-<pre><code>un-comment `OPTIONS+=       XBEE_NO_RTSCTS`</code></pre><br />
+This will retrieve a default `config.mk` that is suitable for your Respberry Pi.<br />
+In our project you need to<br />
+un-comment `OPTIONS+=       XBEE_LOG_LEVEL=100`<br />
+comment `OPTIONS+=       XBEE_LOG_RX_DEFAULT_OFF`<br />
+comment `OPTIONS+=       XBEE_LOG_TX_DEFAULT_OFF`<br />
+un-comment `OPTIONS+=       XBEE_NO_RTSCTS`<br />
 
 You should review this file and then run the following command:
 <pre><code>$ make all</code></pre>
 
 After the build process has completed, you should find suitable files in **./lib**.<br />
 E.g: for a Unix-like OS you can expect to find **.so** and **.a** files<br />
-        for Windows you can expect to find a **.dll** file<br /><br />
+        for Windows you can expect to find a **.dll** file<br />
 
 It is highly recommended that you don't modify any of the build system.
 
@@ -45,10 +48,11 @@ Compile your applications, including **xbee.h** in the relevant source files.<br
 Ensure you link with libxbee (e.g: using `gcc -lxbee`)
 
 If you are compiling the object file directly into your executable instead
-of making use of the library, you must include the following link flags.<br />These
-flags are also necessary for newer versions of Ubuntu, and possibly others.
-<pre><code>-lpthread -lrt</code></pre>
+of making use of the library,<br />you must include the following link flags:
+`-lpthread -lrt`<br />
 
+## Setup Zigbee
+Push later or maybe put on Gitbook for better Reading experience 
 
-### === Tools ===
+## Tools
 Todo
