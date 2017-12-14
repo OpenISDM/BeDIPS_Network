@@ -5,14 +5,27 @@
 #include <xbee.h>
 #include "setting.h"
 
+
 /* queue for sending data */
 struct pkt_info{
-	char *type; //"Data" or "AT"
-	char *address_type; //"Brocast", "Coornator" or "Specific"
-	unsigned char address[8]; //address for Specific
-	char *content; // "Data":Data,"AT":Command for dest device (the address you assigned) e.g for AT: NICoordinator
-	struct text_queue *next;
+	char *type; 				//"Data" or "AT"
+	unsigned char address[8]; 	//Brocast:000000000000FFFF;Coordinator:0000000000000000
+	char *content; 				// "Data":Data;"AT":Command for dest device (the address you assigned) e.g for AT: NICoordinator
+	struct pkt_info* next;
 };
+
+typedef struct pkt_info* spkt_info;
+
+struct pkt_pointer{
+	spkt_info Queue;
+	spkt_info tail;
+	int packet_len;
+};
+
+void AddressToChar(char *raw,unsigned char addr[8]);
+struct pkt_pointer newPacket(struct pkt_pointer pkt_ptr, char *raw_addr, char *type,char *content);
+struct pkt_pointer freeSendedPacket(struct pkt_pointer pkt_ptr);
+
 
 void AddressToChar(char *raw,unsigned char addr[8]){
 	sscanf(raw, "%2x%2x%2x%2x%2x%2x%2x%2x", &addr[0], &addr[1], &addr[2], &addr[3],
@@ -21,13 +34,50 @@ void AddressToChar(char *raw,unsigned char addr[8]){
 }
 
 /* A function for create new packet in queue */
-void newPacket(char *address_type,char *content,char *type,char *address_type,unsigned char address[8],char *content){
+struct pkt_pointer newPacket(struct pkt_pointer pkt_ptr, char *raw_addr, char *type,char *content){
+	//printf("Init\n%d\n",*packet_len);
+	spkt_info tmp = (spkt_info) malloc(sizeof(spkt_info));
+	tmp -> type = type;
+	AddressToChar(raw_addr,tmp->address);
+	tmp -> content = content;
 	
+	//printf("%s %2x %s\n",tmp->type,tmp->address[5],tmp->content);
 	
+	if(pkt_ptr.packet_len == 0){
+		printf("Success\n");
+		pkt_ptr.Queue = tmp;
+		//printf("%s %2x %s\n",pkt_ptr.Queue->type,pkt_ptr.Queue->address[5],pkt_ptr.Queue->content);
+		
+		pkt_ptr.tail = tmp;
+		//printf("%s %2x %s\n",pkt_ptr.tail->type,pkt_ptr.tail->address[5],pkt_ptr.tail->content);
+		
+	}else{
+		pkt_ptr.tail->next = tmp;
+		pkt_ptr.tail = pkt_ptr.tail->next;
+		//printf("%s %2x %s\n",pkt_ptr.tail->type,pkt_ptr.tail->address[5],pkt_ptr.tail->content);
+		//printf("haha\n");
+	}
+	printf("func end\n");
+	pkt_ptr.packet_len++;
+	return pkt_ptr;
 }
 
 /* A function for delete a sended Packet in queue */
-void delPacket(){
+struct pkt_pointer freeSendedPacket(struct pkt_pointer pkt_ptr){
+	if(pkt_ptr.packet_len == 0){
+		printf("Error\n");
+	}else{
+		if(pkt_ptr.packet_len == 1){
+			free(pkt_ptr.Queue);
+			pkt_ptr.Queue = NULL;
+			pkt_ptr.tail = NULL;
+		}else{
+			spkt_info tmp = pkt_ptr.Queue;
+			pkt_ptr.Queue = &pkt_ptr.Queue->next;
+			//free(tmp);
+		}
+		pkt_ptr.packet_len --;
+	} 
 }
 
 /* 
@@ -60,6 +110,12 @@ int main(void) {
 	xbee_err ret;
 	struct xbee_conSettings settings;
 	
+	/*Queue for Sending data */
+	struct pkt_pointer pkt_ptr;
+	pkt_ptr.Queue = NULL;
+	pkt_ptr.tail = NULL;
+	pkt_ptr.packet_len = 0;
+	pkt_ptr = newPacket(pkt_ptr,"0000000000000000", "Data", "AABBAAA");
 	/* 
 	 * xbee_setup(struct xbee **retXbee, const char *mode, char *device, int baudrate) 
 	 *
@@ -116,10 +172,16 @@ int main(void) {
 			return ret;
 		}
 		if (p == NULL) break;
+		usleep(500000);
 		
-		usleep(1000000);
+		if(pkt_ptr.packet_len > 0){
+			xbee_conTx(con, NULL, pkt_ptr.Queue->content);
+			pkt_ptr = freeSendedPacket(pkt_ptr);
+		}
+		
+		usleep(500000);
 	}
-
+	
 	/* Close connection */
 	if ((ret = xbee_conEnd(con)) != XBEE_ENONE) {
 		xbee_log(xbee, -1, "xbee_conEnd() returned: %d", ret);
