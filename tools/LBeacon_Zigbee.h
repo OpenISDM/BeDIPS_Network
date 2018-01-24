@@ -10,19 +10,29 @@ char *device = "/dev/ttyAMA0";
 
 int baudrate = 9600;
 
-int LogLevel =  0; 		//0:disable Log, 100:enable Log
+//0:disable Log, 100:enable Log
+int LogLevel =  0; 
 
-int get_address = 3; 		//A flag for check if all part of address are get. 3 send first address 2 send second address 0 success
+// A flag for check if all part of address are get. 
+// 3 send first address 
+// 2 send second address 
+// 0 success
+int get_address = 3; 		
 
 char* Local_Address = "";
 
 /* packet format in the Queue */
 struct pkt { 
-	char *type;             //"Data"
-	char *address;   	// Brocast:     000000000000FFFF; 
-				// Coordinator: 0000000000000000
-	char *content;          // "Data":      Data
-				// "Remote AT": Command for dest device (the address you assigned) e.g for AT: NICoordinator(ToDo if need it)
+	
+	//"Data"
+	char *type;
+	
+	// Brocast:     000000000000FFFF;
+	// Coordinator: 0000000000000000              
+	char *address;
+	
+	// Data
+	char *content;          
     	struct pkt *next; 
 }; 
 
