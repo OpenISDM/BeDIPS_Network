@@ -3,7 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <xbee.h>
-#include "setting.h"
+#include "LBeacon_Zigbee.h"
 
 int main(void) {
 	
@@ -136,7 +136,9 @@ int main(void) {
 
 	while(1) {
 		
-		/* Pointer point_to_CallBack will store the callback function. If pointer point_to_CallBack is NULL, break the Loop */
+		/* Pointer point_to_CallBack will store the callback function. If pointer point_to_CallBack is NULL, 
+		 * break the Loop 
+		 */
 		void *point_to_CallBack;
 		
 		if ((ret = xbee_conCallbackGet(con, (xbee_t_conCallback*)&point_to_CallBack)) != XBEE_ENONE) {
@@ -252,7 +254,12 @@ xbee_err xbee_connector(struct xbee **xbee, struct xbee_con **con, char *conMode
 	
 	if(front->next != NULL){
 		printf("//////Packet Information//////\n");
-		printf("Dest Address: %c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\n",front->next->address[0],front->next->address[1],front->next->address[2],front->next->address[3],front->next->address[4],front->next->address[5],front->next->address[6],front->next->address[7],front->next->address[8],front->next->address[9],front->next->address[10],front->next->address[11],front->next->address[12],front->next->address[13],front->next->address[14],front->next->address[15]);
+		printf("Dest Address: %c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\n",front->next->address[0]
+		       ,front->next->address[1],front->next->address[2],front->next->address[3]
+		       ,front->next->address[4],front->next->address[5],front->next->address[6]
+		       ,front->next->address[7],front->next->address[8],front->next->address[9]
+		       ,front->next->address[10],front->next->address[11],front->next->address[12]
+		       ,front->next->address[13],front->next->address[14],front->next->address[15]);
 		printf("Type        : %s\n",front->next->type);
 		printf("Content     : %s\n",front->next->content);
 	}
@@ -261,7 +268,8 @@ xbee_err xbee_connector(struct xbee **xbee, struct xbee_con **con, char *conMode
 }
 
 void Fill_Address(char *raw,unsigned char addr[8]){	
-	sscanf(raw, "%2x%2x%2x%2x%2x%2x%2x%2x", &addr[0], &addr[1], &addr[2], &addr[3], &addr[4], &addr[5], &addr[6], &addr[7]);
+	sscanf(raw, "%2x%2x%2x%2x%2x%2x%2x%2x", &addr[0], &addr[1], &addr[2], &addr[3], &addr[4]
+	       , &addr[5], &addr[6], &addr[7]);
 }
 
 void AddressCopy(char *raw,char *dest, int size){
@@ -294,7 +302,9 @@ void CallBack_for_get_address(struct xbee *xbee, struct xbee_con *con, struct xb
 			printf("Receiving SL\n");
 			AddressCopy(((*pkt)->data),&Local_Address[4],4);
 			
-			printf("Local_Address: %02x%02x%02x%02x%02x%02x%02x%02x\n", Local_Address[0], Local_Address[1], Local_Address[2], Local_Address[3], Local_Address[4], Local_Address[5], Local_Address[6], Local_Address[7]);
+			printf("Local_Address: %02x%02x%02x%02x%02x%02x%02x%02x\n", Local_Address[0]
+			       , Local_Address[1], Local_Address[2], Local_Address[3], Local_Address[4]
+			       , Local_Address[5], Local_Address[6], Local_Address[7]);
 			
 			get_address = 0;
 		}
