@@ -6,8 +6,9 @@
 > The library we use is "libxbee3."<br />
 > The Original repository of "libxbee3" is https://github.com/attie/libxbee3
 
-> This repository is for the use of Zigbee module(xbee S2) on Respberry pi.<br />The following is the manual of Zigbee(xbee Series 2):
-https://www.digi.com/resources/documentation/digidocs/PDFs/90000976.pdf
+> This repository is for the use of Zigbee module(xbee S2C) on Respberry pi.<br />
+The following is the manual of XBEE S2C: <br />
+https://www.digi.com/resources/documentation/digidocs/pdfs/90002002.pdf
 
 
 ### === Environment ===
@@ -52,7 +53,13 @@ of making use of the library,<br />you must include the following link flags:
 `-lpthread -lrt`<br />
 
 ## Setup Zigbee
-Push later or maybe put on Gitbook for better Reading experience 
+Config now can be upload by program, but still something need to set up before start using Zigbee. <br />
+It is essential for Connection and Configure through Serial Port. <br />
 
-## Tools
-Todo
+1. Open XCTU (Download Link: https://www.digi.com/products/xbee-rf-solutions/xctu-software/xctu)<br />
+2. Add the radio you decide to setup<br />
+3. click the radio you decide to setup<br />
+4. Change AP (API Output Mode) to `API enabled[1]`, change D6 (DIO6 Configuration) to `Disable[0]` <br />
+   and change D7 (DIO7 Configuration) to `Disable[0]`<br />
+   
+Manual For XCTU: https://www.digi.com/resources/documentation/digidocs/PDFs/90001458-13.pdf
