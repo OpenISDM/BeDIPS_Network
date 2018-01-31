@@ -29,10 +29,10 @@ int main(void) {
 	/*-----------------------------Configuration for xbee---------------------------------*/
 	/*------------------------------------------------------------------------------------*/
 
-	/* xbee_setup(struct xbee **retXbee, const char *mode, char *device, int baudrate) */
+	/* xbee_setup(struct xbee **retXbee, const char *xbee_mode, char *xbee_device, int xbee_baudrate) */
 	
 	printf("Start Connecting to xbee\n");
-	if ((ret = xbee_setup(&xbee, mode, device, baudrate)) != XBEE_ENONE) {
+	if ((ret = xbee_setup(&xbee, xbee_mode, xbee_device, xbee_baudrate)) != XBEE_ENONE) {
 		printf("Connection Failed\nret: %d (%s)\n", ret, xbee_errorToStr(ret));
 		return ret;
 	}
@@ -40,7 +40,7 @@ int main(void) {
 	
 	printf("Start Setting up Log Level\n");
 	/* Setup Log Level 0:disable Log, 100:enable Log */
-	if ((ret = xbee_logLevelSet(xbee,LogLevel)) != XBEE_ENONE) {
+	if ((ret = xbee_logLevelSet(xbee, LogLevel)) != XBEE_ENONE) {
 		printf("Setting Failed\nret: %d (%s)\n", ret, xbee_errorToStr(ret));
 		return ret;
 	}
@@ -52,7 +52,7 @@ int main(void) {
 	
 	printf("Start establising Connection to xbee\nMode : GetAddress\nStart Connecting...\n");
 	/* connector for Get Address */
-	xbee_connector(&xbee,&con,"GetAddress");
+	xbee_connector(&xbee, &con, "GetAddress");
 	printf("Connector Established\n");
 	
 	printf("Creating memery space for Local_Address\n");
@@ -76,7 +76,7 @@ int main(void) {
 	while(get_address == 3){
 		usleep(500000);
 		if(count == 10){
-			xbee_conTx(con,&txRet,"SH");
+			xbee_conTx(con, &txRet, "SH");
 			printf("SH Resended\n");
 			count = 0;
 		}
@@ -111,6 +111,47 @@ int main(void) {
 	}
 	printf("SL Received\n");
 
+    if(Gateway == 1){
+        printf("Setup as Gateway ...\n");
+    }
+    else{
+        printf("Setup as End Device ...\n");
+    }
+    
+    unsigned char *PAN_ID_Hex = malloc(sizeof(char)*8);
+
+    Fill_Address(PAN_ID,PAN_ID_Hex);
+    
+    xbee_conTx(con, &txRet, "ID%c%c%c%c%c%c%c%c", PAN_ID_Hex[0], PAN_ID_Hex[1], PAN_ID_Hex[2], PAN_ID_Hex[3], PAN_ID_Hex[4], PAN_ID_Hex[5], PAN_ID_Hex[6], PAN_ID_Hex[7]);
+    
+    xbee_conTx(con, &txRet, "DH%c", 0x00);
+
+    if(Gateway == 1){
+        xbee_conTx(con, &txRet, "CE%c", 0x01);
+
+        xbee_conTx(con, &txRet, "DL%c%c", 0xFF, 0xFF);
+
+        xbee_conTx(con, &txRet, "MY%c", 0x00);
+
+        xbee_conTx(con, &txRet, "NICoordinator");
+
+        xbee_conTx(con, &txRet, "JV%c", 0x00);
+    }
+    else{
+        xbee_conTx(con, &txRet, "CE%c", 0x00);
+
+        xbee_conTx(con, &txRet, "DL%c%c", 0xFF, 0xFF);
+
+        xbee_conTx(con, &txRet, "MY%c", 0x01);
+
+        xbee_conTx(con, &txRet, "NIEND_DEVICE");
+
+        xbee_conTx(con, &txRet, "JV%c", 0x01);
+
+    }
+
+    xbee_conTx(con, &txRet, "WR");
+
 	printf("Exiting Local AT Mode...\n");
 	/* shutdown the connection */
 	if ((ret = xbee_conEnd(con)) != XBEE_ENONE) {
@@ -123,8 +164,6 @@ int main(void) {
 	/*--------------------Configuration for connection in Data mode-----------------------*/
 	/* In this mode we aim to get Data.                                                   */
 	/*------------------------------------------------------------------------------------*/
-	
-	printf("Start Sending Local_Address to Gateway\n");
 		
 	printf("Establishing Connection...\n");
 	xbee_connector(&xbee,&con,"Data");
@@ -149,8 +188,6 @@ int main(void) {
 		if (point_to_CallBack == NULL){
 			printf("Stop Xbee...\n");
 			break;
-		
-		
 		}	
 		
 		/* If there are remain some packet need to send in the Queue, send the packet */
@@ -236,7 +273,7 @@ xbee_err xbee_connector(struct xbee **xbee, struct xbee_con **con, char *conMode
 	}
 
 	else{
-		printf("Error conMode Error\n");
+		printf("<<Error>> conMode Error\n");
 		return XBEE_EFAILED;
 	}
 	

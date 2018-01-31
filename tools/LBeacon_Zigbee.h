@@ -2,16 +2,20 @@
 #include <stdlib.h>
 #include <xbee.h>
 
-//For xbee_setup
+const char *xbee_mode = "xbeeZB";
 
-const char *mode = "xbeeZB";
+char *xbee_device = "/dev/ttyAMA0";
 
-char *device = "/dev/ttyAMA0";
+int xbee_baudrate = 9600;
 
-int baudrate = 9600;
+//If it is Gateway(Coordinator), set 1; else 0.
+int Gateway = 0;
+
+//A 64-bit extended PAN ID for join Network
+char *PAN_ID = "0000000000000000";
 
 //0:disable Log, 100:enable Log
-int LogLevel =  0; 
+int LogLevel = 100;
 
 // A flag for check if all part of address are get. 
 // 3 send first address 
@@ -44,7 +48,7 @@ pPkt *front, *rear;
  *
  * conMode:
  *    "Data"        : Send and Receive Data
- *    "GetAddress" `: Get Local Address
+ *    "GetAddress"  : Get Local Address
  */
 xbee_err xbee_connector(struct xbee **xbee,	struct xbee_con **con, char *conMode);
 
