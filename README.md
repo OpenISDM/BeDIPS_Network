@@ -55,6 +55,7 @@ of making use of the library,<br />you must include the following link flags:
 ## Setup Zigbee
 Config now can be upload by program, but still something need to set up before start using Zigbee. <br />
 It is essential for Connection and Configure through Serial Port. <br />
+In this project, we use `ZIGBEE TH Reg` as our main Function. The following config is for it.
 
 1. Open XCTU (Download Link: https://www.digi.com/products/xbee-rf-solutions/xctu-software/xctu)<br />
 2. Add the radio you decide to setup<br />
