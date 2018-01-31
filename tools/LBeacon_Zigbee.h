@@ -32,7 +32,7 @@ struct pkt {
 	char *type;
 	
 	// Brocast:     000000000000FFFF;
-	// Coordinator: 0000000000000000              
+	// Coordinator: 0000000000000000
 	char *address;
 	
 	// Data

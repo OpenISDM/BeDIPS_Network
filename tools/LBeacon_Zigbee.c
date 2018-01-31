@@ -127,25 +127,31 @@ int main(void) {
     xbee_conTx(con, &txRet, "DH%c", 0x00);
 
     if(Gateway == 1){
+		
+		/* Set Gateway as Coordinator */
         xbee_conTx(con, &txRet, "CE%c", 0x01);
 
-        xbee_conTx(con, &txRet, "DL%c%c", 0xFF, 0xFF);
-
-        xbee_conTx(con, &txRet, "MY%c", 0x00);
-
+        /* Set Destnation Address to Brocast */
+		xbee_conTx(con, &txRet, "DL%c%c", 0xFF, 0xFF);
+		
+		/* Set Node Identifier name for zigbee */
         xbee_conTx(con, &txRet, "NICoordinator");
-
+		
+		/* Deny Change Channel */
         xbee_conTx(con, &txRet, "JV%c", 0x00);
     }
     else{
+		
+		/* Disable Coordinator Mode */
         xbee_conTx(con, &txRet, "CE%c", 0x00);
-
+		
+		/* Set Destnation Address to Gateway(Coordinator) */
         xbee_conTx(con, &txRet, "DL%c%c", 0xFF, 0xFF);
 
-        xbee_conTx(con, &txRet, "MY%c", 0x01);
-
+		/* Set Node Identifier name for zigbee */
         xbee_conTx(con, &txRet, "NIEND_DEVICE");
-
+		
+		/* Accept Change Channel to Operating Channel */
         xbee_conTx(con, &txRet, "JV%c", 0x01);
 
     }
