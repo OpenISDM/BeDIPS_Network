@@ -122,7 +122,8 @@ int main(void) {
 
     Fill_Address(PAN_ID,PAN_ID_Hex);
     
-    xbee_conTx(con, &txRet, "ID%c%c%c%c%c%c%c%c", PAN_ID_Hex[0], PAN_ID_Hex[1], PAN_ID_Hex[2], PAN_ID_Hex[3], PAN_ID_Hex[4], PAN_ID_Hex[5], PAN_ID_Hex[6], PAN_ID_Hex[7]);
+    xbee_conTx(con, &txRet, "ID%c%c%c%c%c%c%c%c", PAN_ID_Hex[0], PAN_ID_Hex[1], PAN_ID_Hex[2], PAN_ID_Hex[3]
+	       , PAN_ID_Hex[4], PAN_ID_Hex[5], PAN_ID_Hex[6], PAN_ID_Hex[7]);
     
     xbee_conTx(con, &txRet, "DH%c", 0x00);
 
