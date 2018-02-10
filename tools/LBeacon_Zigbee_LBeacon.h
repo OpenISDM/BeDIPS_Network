@@ -8,20 +8,19 @@ char *xbee_device = "/dev/ttyAMA0";
 
 int xbee_baudrate = 9600;
 
-//If it is Gateway(Coordinator), set 1; else 0.
-int Gateway = 0;
-
 //A 64-bit extended PAN ID for join Network
 char *PAN_ID = "0000000000000000";
 
 //0:disable Log, 100:enable Log
 int LogLevel = 100;
 
-// A flag for check if all part of address are get. 
+// A flag to indicate if all part of address are get. 
 // 3 send first address 
 // 2 send second address 
 // 0 success
-int get_address = 3; 		
+
+enum{finish,wait_SL,wait_SH,start};
+int get_address = start;
 
 char* Local_Address = "";
 
@@ -32,7 +31,7 @@ struct pkt {
 	char *type;
 	
 	// Brocast:     000000000000FFFF;
-	// Coordinator: 0000000000000000
+	// Coordinator: 0000000000000000;
 	char *address;
 	
 	// Data
@@ -42,6 +41,8 @@ struct pkt {
 
 typedef struct pkt pPkt; 
 
+// front point to the first of thr Pkt Queue
+// rear  point to the end of the Pkt Queue
 pPkt *front, *rear;
 
 /* Connector for setup xbee connection 
@@ -50,7 +51,8 @@ pPkt *front, *rear;
  *    "Data"        : Send and Receive Data
  *    "GetAddress"  : Get Local Address
  */
-xbee_err xbee_connector(struct xbee **xbee,	struct xbee_con **con, char *conMode);
+xbee_err xbee_connector(struct xbee **xbee,	struct xbee_con **con
+, char *conMode);
 
 /* Create Packet Queue Header */
 void init_Packet_Queue();
@@ -68,7 +70,9 @@ void Fill_Address(char *raw,unsigned char addr[8]);
 void AddressCopy(char *raw,char *dest,int size);
 
 /* CallBack for Data Received */
-void CallBack(struct xbee *xbee, struct xbee_con *con, struct xbee_pkt **pkt, void **data);
+void CallBack(struct xbee *xbee, struct xbee_con *con, struct xbee_pkt **pkt
+, void **data);
 
 /* CallBack for Get Local Address */
-void CallBack_for_get_address(struct xbee *xbee, struct xbee_con *con, struct xbee_pkt **pkt, void **data);
+void CallBack_for_get_address(struct xbee *xbee, struct xbee_con *con
+, struct xbee_pkt **pkt, void **data);
