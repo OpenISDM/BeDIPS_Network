@@ -4,7 +4,7 @@
  * License:
  *
  *      GPL 3.0 : The content of this file is subject to the terms and
- *      cnditions defined in file 'COPYING.txt', which is part of this 
+ *      cnditions defined in file 'COPYING.txt', which is part of this
  *      source code package.
  *
  * Project Name:
@@ -14,8 +14,8 @@
  * File Description:
  *
  *   	This file contains the program to set up a star network by XBEE S2C
- *      module in order to deal with NSI(Network Setup and Initialization) 
- *      and Data transmission between Gateway and LBeacon. And This file is 
+ *      module in order to deal with NSI(Network Setup and Initialization)
+ *      and Data transmission between Gateway and LBeacon. And This file is
  *		the header for Gateway.
  *
  * File Name:
@@ -35,12 +35,6 @@
  *      area.
  *
  * Authors:
- *      Jake Lee		, jakelee@iis.sinica.edu.tw
- *      Johnson Su		, johnsonsu@iis.sinica.edu.tw
- *      Shirley Huang	, shirley.huang.93@gmail.com
- *      Han Hu			, hhu14@illinois.edu
- *      Jeffrey Lin		, lin.jeff03@gmail.com
- *      Howard Hsu		, haohsu0823@gmail.com
  *      Gary Xiao		, garyh0205@hotmail.com
  */
 #include <stdio.h>

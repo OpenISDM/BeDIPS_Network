@@ -4,7 +4,7 @@
  * License:
  *
  *      GPL 3.0 : The content of this file is subject to the terms and
- *      cnditions defined in file 'COPYING.txt', which is part of this 
+ *      cnditions defined in file 'COPYING.txt', which is part of this
  *      source code package.
  *
  * Project Name:
@@ -14,8 +14,8 @@
  * File Description:
  *
  *   	This file contains the program to set up a star network by XBEE S2C
- *      module in order to deal with NSI(Network Setup and Initialization) 
- *      and Data transmission between Gateway and LBeacon. And This file is 
+ *      module in order to deal with NSI(Network Setup and Initialization)
+ *      and Data transmission between Gateway and LBeacon. And This file is
  *		for LBeacon.
  *
  * File Name:
@@ -35,12 +35,6 @@
  *      area.
  *
  * Authors:
- *      Jake Lee		, jakelee@iis.sinica.edu.tw
- *      Johnson Su		, johnsonsu@iis.sinica.edu.tw
- *      Shirley Huang	, shirley.huang.93@gmail.com
- *      Han Hu			, hhu14@illinois.edu
- *      Jeffrey Lin		, lin.jeff03@gmail.com
- *      Howard Hsu		, haohsu0823@gmail.com
  *      Gary Xiao		, garyh0205@hotmail.com
  */
 #include <stdio.h>
@@ -101,7 +95,7 @@ int main(void) {
 	printf("Start establishing Connection to xbee\n");
 	printf("Mode: GetAddress\nStart Connecting...\n");
 	
-	/* connector for Get Address */
+	/* Connector for Get Address */
 	xbee_connector(&xbee, &con, "GetAddress");
 	printf("Connector Established\n");
 	
@@ -114,12 +108,12 @@ int main(void) {
 	/*-----------------------------Local Address-----------------------------*/
 	/*-SH(Serial Number High): 												 */
 	/*			Read the high 32 bits of the module's unique 64-bit address. */
-	/*--SL(Serial Number Low):                                               */
+	/*-SL(Serial Number Low):                                                */
 	/*			Read the low 32 bits of the module's unique 64-bit address.  */
 	/*-----------------------------------------------------------------------*/
 
 	printf("Start sending AT Command: SH\n");
-	/* send the AT command 'SH'                                              */
+	/* Send the AT command 'SH'                                              */
 	xbee_conTx(con, &txRet, "SH");
 	printf("SH sended\n");
 	
@@ -142,7 +136,7 @@ int main(void) {
 	get_address = 1;	
 	
 	printf("Start Sending AT Command: SL\n");
-	/* send the AT command 'SL' */
+	/* Send the AT command 'SL' */
 	xbee_conTx(con, &txRet, "SL");
 	printf("SL sended\n");
 	
@@ -191,7 +185,7 @@ int main(void) {
     xbee_conTx(con, &txRet, "WR");
 
 	printf("Exiting Local AT Mode...\n");
-	/* shutdown the connection                                               */
+	/* Shutdown the connection                                               */
 	if ((ret = xbee_conEnd(con)) != XBEE_ENONE) {
 		printf("Failed to exit Local AT Mode\n");
 		xbee_log(xbee, -1, "xbee_conEnd() returned: %d", ret);
@@ -207,7 +201,7 @@ int main(void) {
 	xbee_connector(&xbee,&con,"Data");
 	printf("Connection Successfully Established\n");
 	
-	/* start the chain reaction! */
+	/* Start the chain reaction! */
 	
 	addpkt("Gateway","Data","AAAAA");
 
@@ -321,7 +315,7 @@ xbee_err xbee_connector(struct xbee **xbee, struct xbee_con **con
 		return XBEE_EFAILED;
 	}
 	
-	/* if settings.catchAll = 1, then all packets will receive               */
+	/* If settings.catchAll = 1, then all packets will receive               */
 	if (xbee_conSettings(*con, NULL, &settings) != XBEE_ENONE) return ret;
 	
 	settings.catchAll = 1; 
@@ -369,7 +363,7 @@ void AddressCopy(char *raw,char *dest, int size){
 }
 
 /* ---------------------------callback Section------------------------------ */
-/* it will be executed once for each packet that is received on              */
+/* It will be executed once for each packet that is received on              */
 /* an associated connection                                                  */
 /* ------------------------------------------------------------------------- */
 
@@ -406,7 +400,7 @@ void CallBack(struct xbee *xbee, struct xbee_con *con, struct xbee_pkt **pkt
 			, void **data) {
 	printf("Enter CallBack Data\n");
 	if ((*pkt)->dataLen > 0) {
-		/* if data[0] == '@', callback will be end.                          */
+		/* If data[0] == '@', callback will be end.                          */
 		if ((*pkt)->data[0] == '@') {
 			xbee_conCallbackSet(con, NULL, NULL);
 			printf("*** DISABLED CALLBACK... ***\n");
