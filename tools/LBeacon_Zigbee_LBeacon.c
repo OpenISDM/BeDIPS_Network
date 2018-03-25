@@ -37,11 +37,6 @@
  * Authors:
  *      Gary Xiao		, garyh0205@hotmail.com
  */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <xbee.h>
 #include "LBeacon_Zigbee_LBeacon.h"
 
 int main(void) {

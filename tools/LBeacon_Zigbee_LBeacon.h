@@ -39,6 +39,8 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 #include <xbee.h>
 
 const char *xbee_mode = "xbeeZB";
