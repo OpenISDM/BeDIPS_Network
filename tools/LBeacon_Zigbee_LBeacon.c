@@ -37,25 +37,10 @@
  * Authors:
  *      Gary Xiao		, garyh0205@hotmail.com
  */
+
 #include "LBeacon_Zigbee_LBeacon.h"
 
 int main(void) {
-	
-	struct xbee *xbee;
-	
-	struct xbee_con *con;
-	
-	/* The address stored the destination MAC of xbee                        */
-	struct xbee_conAddress address;
-	
-	/* The setting for xbee                                                  */
-	struct xbee_conSettings settings;
-	
-	/* A variable to get error code                                          */
-	xbee_err ret;
-	
-	/* A variable txRet get Tx return value                                  */
-	unsigned char txRet;
 	
 	/* Initialize Queue for packets                                          */
 	init_Packet_Queue();

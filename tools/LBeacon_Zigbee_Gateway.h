@@ -37,11 +37,28 @@
  * Authors:
  *      Gary Xiao		, garyh0205@hotmail.com
  */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <xbee.h>
+
+struct xbee *xbee;
+
+struct xbee_con *con;
+
+/* The address stored the destination MAC of xbee */
+struct xbee_conAddress address;
+
+/* The setting for xbee */
+struct xbee_conSettings settings;
+
+/* A variable to get error code */
+xbee_err ret;
+
+/* A variable txRet get Tx return value */
+unsigned char txRet;
 
 const char *xbee_mode = "xbeeZB";
 
