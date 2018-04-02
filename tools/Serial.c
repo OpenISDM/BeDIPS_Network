@@ -1,23 +1,34 @@
 #include "Serial.h"
 
-int main()
-{
-    xbee_datastream = -1;
-    xbee_device = "/dev/ttyUSB0";
-    xbee_Serial_buffer = 50;
+int main(){
+    int xbee_datastream = -1;
+    char* xbee_device = "/dev/ttyUSB0";
+    int xbee_Serial_buffer = 50;
     
     xbee_Serial_init(&xbee_datastream, xbee_device);
-    xbee_Serial_Tx(&xbee_datastream, xbee_Serial_buffer);
-    xbee_Serial_Rx(&xbee_datastream, xbee_Serial_buffer);
-
+    printf("+++\n");
+    //usleep(100000);
+    xbee_Send_Command(&xbee_datastream, xbee_Serial_buffer, "+++");
+    getchar();
+    printf("ATID\n");
+    //usleep(100000);
+    xbee_Send_Command(&xbee_datastream, xbee_Serial_buffer, "ATID 55\r");
+    getchar();
+    printf("ATID\n");
+    //usleep(100000);
+    xbee_Send_Command(&xbee_datastream, xbee_Serial_buffer, "ATID\r");
+    getchar();
+    printf("ATWR\n");
+    //usleep(100000);
+    xbee_Send_Command(&xbee_datastream, xbee_Serial_buffer, "ATWR\r");
+    getchar();
     //----- CLOSE THE SERIAL -----
     close(xbee_datastream);
 
     return 0;
 }
 
-int xbee_Serial_init(int *xbee_datastream, char *xbee_device )
-{
+int xbee_Serial_init(int *xbee_datastream, char *xbee_device ){
     //  Open the Serial
     //  The flags (defined in fcntl.h):
     //  Access modes (use 1 of these):
@@ -32,14 +43,15 @@ int xbee_Serial_init(int *xbee_datastream, char *xbee_device )
     //      If the output can't be written immediately.
     //
     //  O_NOCTTY - When set and path identifies a terminal device, 
-    //  	   open() shall not cause the terminal device to become 
+    //             open() shall not cause the terminal device to become 
     //             the controlling terminal for the process.
     
-    //Open in non blocking read/write mode
-    if ((*xbee_datastream = open(xbee_device, O_RDWR | O_NOCTTY | O_NDELAY)) == -1)      
+    //Open in non blocking read/write mode  // | O_NOCTTY | O_NDELAY
+    if ((*xbee_datastream = open(xbee_device, O_RDWR )) == -1)      
     {
         //ERROR  CAN'T OPEN SERIAL PORT
         printf("Error - Unable to open Serial.  Ensure it is not in use by another application\n");
+        return -1;    
     }
                     
     //CONFIGURE THE SERIAL
@@ -59,86 +71,111 @@ int xbee_Serial_init(int *xbee_datastream, char *xbee_device )
     //  PARENB : Parity enable
     //  PARODD : Odd parity (else even)
     
-    struct termios options;
+    // set new parameters to the serial device
+    struct termios newtio;
 
-    tcgetattr(*xbee_datastream, &options);
+    fcntl(*xbee_datastream, F_SETFL, 0);
+    // set everything to 0
+    bzero(&newtio, sizeof(newtio));
 
-    options.c_cflag = B9600 | CS8 | CLOCAL | CREAD;
-    options.c_iflag = IGNPAR;
-    options.c_oflag = 0;
-    options.c_lflag = 0;
+    // again set everything to 0
+    bzero(&newtio, sizeof(newtio));
 
-    tcflush(*xbee_datastream, TCIFLUSH);
-    tcsetattr(*xbee_datastream, TCSANOW, &options);
+    newtio.c_cflag |= B9600; // Set Baudrate first time
+    newtio.c_cflag |= CLOCAL; // Local line - do not change "owner" of port
+    newtio.c_cflag |= CREAD; // Enable receiver
+
+    newtio.c_cflag &= ~ECHO; // Disable echoing of input characters
+    newtio.c_cflag &= ~ECHOE;
+
+    // set to 8N1
+    newtio.c_cflag &= ~PARENB; // no parentybyte
+    newtio.c_cflag &= ~CSTOPB; // 1 stop bit
+    newtio.c_cflag &= ~CSIZE; // Mask the character size bits
+    newtio.c_cflag |= CS8; // 8 data bits
+
+    // output mode to
+    newtio.c_oflag = 0;
+    //newtio.c_oflag |= OPOST;
+
+    // Set teh baudrate for sure
+    cfsetispeed(&newtio, B9600);
+    cfsetospeed(&newtio, B9600);
+
+    //newtio.c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP | INLCR | IGNCR | ICRNL | IXON);
+    //newtio.c_iflag &= ~(ICRNL);     
+
+    newtio.c_cc[VTIME] = 10; /* inter-character timer  */
+    newtio.c_cc[VMIN] = 0; /* blocking read until  */
+
+    tcflush(*xbee_datastream, TCIFLUSH); // flush pending data
+
+    // set the new defined settings
+    if (tcsetattr(*xbee_datastream, TCSANOW, &newtio)) {
+        perror("could not set the serial settings!");
+        return -99;
+    }
+
     
     return 0;
 }
 
-int xbee_Serial_Tx(int* xbee_datastream, int xbee_Serial_buffer)
-{
+int xbee_Serial_Tx(int* xbee_datastream, int xbee_Serial_buffer, char* Data){
+
     //----- TX BYTES -----
     unsigned char tx_buffer[xbee_Serial_buffer];
     unsigned char *p_tx_buffer;
                 
     p_tx_buffer = &tx_buffer[0];
-    *p_tx_buffer++ = '+';
-    *p_tx_buffer++ = '+';
-    *p_tx_buffer++ = '+';
 
-    if (*xbee_datastream != -1)
-    {
-	printf("Start Write\n");
+    for(int i = 0; i < strlen(Data) ; i++)
+    	*p_tx_buffer++ = Data[i];
+
+    if (*xbee_datastream != -1){
+        printf("Start Write\n");
         int count = write(*xbee_datastream, &tx_buffer[0], (p_tx_buffer - &tx_buffer[0]));      
-	//Datastream, bytes to write, number of bytes to write
+        //Datastream, bytes to write, number of bytes to write
         if (count < 0)
-        {
             printf("Serial TX error\n");
-        }
-	printf("Count : %d\n",count);
+        printf("Count : %d\n",count);
     }
 
     return 0;
 }
 
-int xbee_Serial_Rx(int *xbee_datastream, int xbee_Serial_buffer)
-{
+int xbee_Serial_Rx(int *xbee_datastream, int xbee_Serial_buffer, char* Data){
     //----- CHECK FOR ANY RX BYTES -----
     if (*xbee_datastream != -1)
     {
         // Read up to 255 characters from the port if they are there
         unsigned char rx_buffer[xbee_Serial_buffer];
-	printf("Start Read\n");
+        printf("Start Read\n");
         int rx_length = 0;      //Datastream, buffer to store in, number of bytes to read (max)
-	
-        do
-	{	
-
-        	rx_length = read(*xbee_datastream, (void*)rx_buffer, xbee_Serial_buffer);
-        	printf("I am enter :%d\n",rx_length);
-		if (rx_length < 0)
-        	{
-            		//An error occured (will occur if there are no bytes)
-			printf("Read Error\n");
-        	}
-       		else if (rx_length == 0)
-        	{
-            		//No data waiting
-			printf("No Data\n");
-        	}
-        	else
-        	{
-            		//Bytes received
-            		rx_buffer[rx_length] = '\0';
-            		printf("%i bytes read : %s\n", rx_length, rx_buffer);
-			if(rx_buffer[0] == 'O' && rx_buffer[1] == 'K'){
-				printf("All most done\n");
-
-			}
-			else
-				printf("Fail\n");
-        	}
-    	}while(rx_length <= 0);
+    
+        do{ 
+            rx_length = read(*xbee_datastream, (void*)rx_buffer, xbee_Serial_buffer);
+            printf("I am enter :%d\n",rx_length);
+            //Bytes received
+            rx_buffer[rx_length] = '\0';
+	    if(rx_length == 0){}
+	    else{
+                printf("%d bytes read : %s\n", rx_length, rx_buffer);
+                
+                //if(rx_length == (strlen(Data) + 1)){
+                //    printf("All most done\n");
+                //}
+                printf("Data Length: %d\nRx_Length: %d\n",strlen(Data),rx_length);
+	    }
+        }while(rx_length <= 0);
     }
 
+    return 0;
+}
+
+int xbee_Send_Command(int *xbee_datastream, int xbee_Serial_buffer, char *Command){
+    char* Command_Result = "OK";
+    xbee_Serial_Tx(xbee_datastream, xbee_Serial_buffer,Command);
+    usleep(100000);
+    xbee_Serial_Rx(xbee_datastream, xbee_Serial_buffer,Command_Result);
     return 0;
 }
