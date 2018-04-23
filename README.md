@@ -60,7 +60,22 @@ In this project, we use `ZIGBEE TH Reg` as our main Function. The following conf
 1. Open XCTU (Download Link: https://www.digi.com/products/xbee-rf-solutions/xctu-software/xctu)<br />
 2. Add the radio you decide to setup<br />
 3. click the radio you decide to setup<br />
-4. Change AP (API Output Mode) to `API enabled[1]`, change D6 (DIO6 Configuration) to `Disable[0]` <br />
-   and change D7 (DIO7 Configuration) to `Disable[0]`<br />
+4. Depends on different identity/role of the zigbee(Coornidator/Endpoint), there are different parameters setting. For Coornidator (Gateway), 
+	* JV (Channel Verification) = `Disable[0]`
+	* CE (Coordinator Enable) = `Enable[1]`
+	* DH (Destination Address High) = `0`
+	* DL (Destination Address Low) = `0xFFFF`
+	* AP (API Output Mode) = `API enabled[1]`
+	* D6 (DIO7 Configuration) = `Disable[0]` 
+	* D7 (DIO7 Configuration) = `Disable[0]`
+5. For EndPoint (LBeacon),
+	* JV (Channel Verification) = `Enable[1]`
+	* CE (Coordinator Enable) = `Disable[0]`
+	* DH (Destination Address High) = `0`
+	* DL (Destination Address Low) = `0`
+	* AP (API Output Mode) = `API enabled[1]`
+	* D6 (DIO7 Configuration) = `Disable[0]` 
+	* D7 (DIO7 Configuration) = `Disable[0]`
    
-Manual For XCTU: https://www.digi.com/resources/documentation/digidocs/PDFs/90001458-13.pdf
+Manual For XCTU: https://www.digi.com/resources/documentation/digidocs/PDFs/90001458-13.pdf </br>
+For the serial setting for Raspberry pi, follow the instructions in the blog of: http://www.raspberry-projects.com/pi/pi-operating-systems/raspbian/io-pins-raspbian/uart-pins
