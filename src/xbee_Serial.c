@@ -107,7 +107,6 @@ int xbee_Serial_init(int *xbee_datastream, char *xbee_device ){
 
     // output mode to
     newtio.c_oflag = 0;
-    //newtio.c_oflag |= OPOST;
 
     // Set teh baudrate for sure
     cfsetispeed(&newtio, B9600);

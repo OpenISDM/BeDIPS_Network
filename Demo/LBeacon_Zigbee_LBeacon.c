@@ -109,12 +109,6 @@ int main(void) {
         /* send the packet                                                   */
         if(pkt_Queue->front->next != NULL){
 
-            /* Shutdown the connection                                       */
-            //if ((ret = xbee_conEnd(con)) != XBEE_ENONE) {
-                //xbee_log(xbee, -1, "xbee_conEnd() returned: %d", ret);
-                //return ret;
-            //}
-
             xbee_conTx(con, NULL, pkt_Queue->front->next->content);
 
             delpkt(pkt_Queue);

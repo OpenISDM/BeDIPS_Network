@@ -74,8 +74,6 @@ xbee_err xbee_initial(struct xbee** xbee, pkt_ptr pkt_Queue){
 
     init_Packet_Queue(pkt_Queue);
 
-    //addpkt(pkt_Queue, Local_AT, Gateway, "Local AT");
-
     return ret;
 }
 
@@ -173,7 +171,7 @@ void CallBack(struct xbee *xbee, struct xbee_con *con, struct xbee_pkt **pkt
                                                             , void **data) {
     printf("Enter CallBack Data\n");
     if ((*pkt)->dataLen > 0) {
-        
+
         /* If data[0] == '@', callback will be end.                          */
         if ((*pkt)->data[0] == '@') {
             xbee_conCallbackSet(con, NULL, NULL);

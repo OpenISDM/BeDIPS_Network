@@ -56,7 +56,7 @@ void Free_Packet_Queue(pkt_ptr pkt_queue){
         status = pkt_queue->locker;
         pkt_queue->locker = Lock_Queue;
     }while(status != unLock_Queue);
-    //free(pkt_queue->front->next);
+
     free(pkt_queue->front);
     free(pkt_queue);
 }
