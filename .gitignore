@@ -1,3 +1,6 @@
+# Backup File
+bak/*
+
 # Backup
 *.bak
 
