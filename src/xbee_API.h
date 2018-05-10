@@ -3,22 +3,33 @@
 #include <string.h>
 #include <unistd.h>
 #include <xbee.h>
-#include "./serial/Serial.h"
-#include "./pkt/pkt_Queue.h"
+#include "pkt_Queue.h"
 
-#define xbee_mode "xbeeZB"
+#ifdef xbee_Serial_H
 
-#define xbee_device "/dev/ttyAMA0"
+extern char* xbee_device;
+extern int xbee_baudrate;
 
-#define xbee_baudrate 9600
+#else
+
+char* xbee_device;
+int xbee_baudrate;
+
+#endif
+
+
+#ifndef xbee_API_H
+#define xbee_API_H
+
+char* xbee_mode;
+
+
+extern char* xbee_device;
+
+extern int xbee_baudrate;
 
 //0:disable Log, 100:enable Log
-#define LogLevel 100
-
-//A 64-bit extended PAN ID for join Network(16 number)
-#define PAN_ID "0000000000000000"
-
-#define xbee_Serial_buffer 50
+int LogLevel;
 
 unsigned char Local_Address[8];
 
@@ -41,3 +52,5 @@ xbee_err xbee_connector(struct xbee** xbee, struct xbee_con** con, pkt_ptr pkt_Q
 /* CallBack for Data Received */
 void CallBack(struct xbee *xbee, struct xbee_con *con, struct xbee_pkt **pkt
 , void **data);
+
+#endif
