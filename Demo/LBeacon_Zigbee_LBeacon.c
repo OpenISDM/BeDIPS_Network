@@ -1,8 +1,22 @@
-#include "LBeacon_Zigbee.h"
+#include "../src/xbee_API.h"
 
 int main(void) {
 
-    unsigned char txRet;
+    extern char* xbee_mode;
+
+    extern char* xbee_device;
+
+    extern int xbee_baudrate;
+
+    extern int LogLevel;
+
+    xbee_mode = "xbeeZB";
+
+    xbee_device = "/dev/ttyAMA0";
+
+    xbee_baudrate = 9600;
+
+    LogLevel = 100;
 
     struct xbee *xbee;
 
@@ -12,10 +26,6 @@ int main(void) {
 
     xbee_initial(&xbee, pkt_Queue);
 
-    /*-----------------Configuration connection in AT mode-------------------*/
-    /* In this mode we aim to get the address of xbee.                       */
-    /*-----------------------------------------------------------------------*/
-
     printf("Start establishing Connection to xbee\n");
 
 
@@ -24,9 +34,9 @@ int main(void) {
     /*-----------------------------------------------------------------------*/
 
     printf("Establishing Connection...\n");
-    
+
     xbee_connector(&xbee, &con, pkt_Queue);
-    
+
     printf("Connection Successfully Established\n");
 
     /* Start the chain reaction!                                             */
@@ -35,7 +45,7 @@ int main(void) {
         xbee_log(xbee, 1, "con unvalidate ret : %d", ret);
         return ret;
     }
-    
+
     while(1) {
         /* Pointer point_to_CallBack will store the callback function.       */
         /* If pointer point_to_CallBack is NULL, break the Loop              */
@@ -46,7 +56,7 @@ int main(void) {
             xbee_log(xbee, -1, "xbee_conCallbackGet() returned: %d", ret);
             return ret;
         }
-        
+
 	if (point_to_CallBack == NULL){
             printf("Stop Xbee...\n");
             break;
@@ -54,7 +64,7 @@ int main(void) {
 
 
     	addpkt(pkt_Queue, Data, Gateway, "AAAAA");
-        
+
 	/* If there are remain some packet need to send in the Queue,        */
         /* send the packet                                                   */
         if(pkt_Queue->front->next != NULL){
@@ -78,7 +88,7 @@ int main(void) {
     printf("Jump out while\n");
 
     Free_Packet_Queue(pkt_Queue);
-    
+
     /* Close connection                                                      */
     if ((ret = xbee_conEnd(con)) != XBEE_ENONE) {
         xbee_log(xbee, 10, "xbee_conEnd() returned: %d", ret);
@@ -86,7 +96,7 @@ int main(void) {
     }
 
     printf("Stop connection Succeeded\n");
-    
+
     /* Close xbee                                                            */
     xbee_shutdown(xbee);
     printf("Shutdown Xbee Succeeded\n");
