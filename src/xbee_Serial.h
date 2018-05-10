@@ -18,7 +18,7 @@
  *
  * File Name:
  *
- *      Serial.h
+ *      xbee_Serial.h
  *
  * Abstract:
  *
@@ -42,6 +42,9 @@
  #include <fcntl.h>          //Used for Serial
  #include <termios.h>        //Used for Serial
  #include <string.h>
+
+#ifndef xbee_Serial_H
+#define xbee_Serial_H
 
  /*
   * A flag to record does the command returned value.
@@ -79,3 +82,5 @@
 
  //Send AT command to xbee
  char* xbee_Send_Command_result(int *xbee_datastream, int xbee_Serial_buffer, char* Command);
+
+#endif

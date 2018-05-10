@@ -15,13 +15,13 @@
  *
  *   	This file contains the program to set up a star network by XBEE S2C
  *      module in order to deal with NSI(Network Setup and Initialization)
- *      and Data transmission between Gateway and LBeacon. And This file is
- *		demonstrate how to use Serial.c and Serial.h to setup xbee S2C in AT
+ *      and Data transmission between Gateway and LBeacon. And This file
+ *	demonstrates how to use Serial.c and Serial.h to setup xbee S2C in AT
  *      mode .
  *
  * File Name:
  *
- *      Serial.c
+ *      xbee_Serial.c
  *
  * Abstract:
  *
@@ -39,7 +39,7 @@
  *      Gary Xiao		, garyh0205@hotmail.com
  */
 
- #include "Serial.h"
+ #include "xbee_Serial.h"
 
  int xbee_Serial_init(int *xbee_datastream, char *xbee_device ){
      //  Open the Serial
@@ -182,11 +182,12 @@
   		      }
  	        else{
              printf("%d bytes read : %s\n", rx_length - 1, rx_buffer);
-             if((strlen(Data) - Received) < (rx_length - 1)){
+             if((strlen(Data) - Received) > (rx_length - 1)){
                printf("OverFlow\n");
                return -1;
              }
              for(int i = 0 ; i < rx_length -1; i++){
+	       printf("%c and %c is the same?\n", rx_buffer[i], Data[i + Received]);
                if(rx_buffer[i] != Data[i + Received]){
                  printf("Data Receive Not Matched\n");
                  return -1;
