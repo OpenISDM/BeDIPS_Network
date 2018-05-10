@@ -14,7 +14,7 @@
  * File Description:
  *
  *   	This file contains the header of  function declarations and variable
- *      used in Serial.c.
+ *      used in Serial.c
  *
  * File Name:
  *
@@ -56,14 +56,6 @@
  //-------------------------
  //----- SETUP Serial -----
  //-------------------------
-
- int xbee_datastream;
-
- char *xbee_device;
-
- int xbee_baudrate;
-
- int xbee_Serial_buffer;
 
  //Initialize xbee Serial connection and get the pointer of the xbee
  int xbee_Serial_init(int *xbee_datastream, char *xbee_device );

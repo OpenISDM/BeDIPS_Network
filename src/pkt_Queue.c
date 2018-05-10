@@ -1,3 +1,40 @@
+/*
+ * Copyright (c) 2016 Academia Sinica, Institute of Information Science
+ *
+ * License:
+ *
+ *      GPL 3.0 : The content of this file is subject to the terms and
+ *      cnditions defined in file 'COPYING.txt', which is part of this
+ *      source code package.
+ *
+ * Project Name:
+ *
+ *      BeDIPS
+ *
+ * File Description:
+ *
+ *   	This file contains the program for the waiting queue.
+ *
+ * File Name:
+ *
+ *      pkt_Queue.c
+ *
+ * Abstract:
+ *
+ *      BeDIPS uses LBeacons to deliver 3D coordinates and textual
+ *      descriptions of their locations to users' devices. Basically, a
+ *      LBeacon is an inexpensive, Bluetooth Smart Ready device. The 3D
+ *      coordinates and location description of every LBeacon are retrieved
+ *      from BeDIS (Building/environment Data and Information System) and
+ *      stored locally during deployment and maintenance times. Once
+ *      initialized, each LBeacon broadcasts its coordinates and location
+ *      description to Bluetooth enabled user devices within its coverage
+ *      area.
+ *
+ * Authors:
+ *      Gary Xiao		, garyh0205@hotmail.com
+ */
+
 #include "pkt_Queue.h"
 
 /* Initialize Queue                                                          */
@@ -104,36 +141,37 @@ void delallpkt(pkt_ptr pkt_queue) {
 }
 
 char* print_address(unsigned char* address){
-  char* char_addr = malloc(sizeof(char)*17);
-  memset(char_addr, 0, sizeof(char)*17);
-  sprintf(char_addr, "%02x%02x%02x%02x%02x%02x%02x%02x", address[0], address[1]
-  , address[2], address[3], address[4], address[5], address[6], address[7]);
-  return char_addr;
+    char* char_addr = malloc(sizeof(char)*17);
+    memset(char_addr, 0, sizeof(char)*17);
+    sprintf(char_addr, "%02x%02x%02x%02x%02x%02x%02x%02x", address[0]
+    , address[1], address[2], address[3], address[4], address[5], address[6]
+    , address[7]);
+    return char_addr;
 }
 
 char* type_to_str(int type){
-  switch(type){
-    case Data:
-      return "Data";
-      break;
-    case Local_AT:
-      return "Local AT";
-      break;
-    default:
-      return "UNKNOWN";
+    switch(type){
+        case Data:
+            return "Data";
+            break;
+        case Local_AT:
+            return "Local AT";
+            break;
+        default:
+            return "UNKNOWN";
     }
-  }
+}
 
 /* Fill the address from raw(char) to addr(Hex)                              */
 void Fill_Address(char *raw,unsigned char* addr){
-  for(int i = 0;i < 8;i++){
-    char tmp[2];
-    tmp[0] = raw[i*2];
-    tmp[1] = raw[i*2+1];
-    addr[i] = strtol(tmp,(void*) NULL, 16);
-    printf("%2x",addr[i]);
-  }
-  printf("\n");
+    for(int i = 0;i < 8;i++){
+        char tmp[2];
+        tmp[0] = raw[i*2];
+        tmp[1] = raw[i*2+1];
+        addr[i] = strtol(tmp,(void*) NULL, 16);
+        printf("%2x",addr[i]);
+    }
+    printf("\n");
 }
 
 void display_pkt(char* content, pPkt pkt){

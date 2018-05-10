@@ -45,8 +45,6 @@ int main(){
 
     int xbee_Serial_buffer = 50;
 
-    int xbee_baudrate;
-
     xbee_Serial_init(&xbee_datastream, xbee_device);
 
     printf("ATID 55\n");
