@@ -42,21 +42,13 @@
 
 int main(void) {
 
-    extern char* xbee_mode;
+    char* xbee_mode = "xbeeZB";
 
-    extern char* xbee_device;
+    char* xbee_device = "/dev/ttyAMA0";
 
-    extern int xbee_baudrate;
+    int xbee_baudrate = 9600;
 
-    extern int LogLevel;
-
-    xbee_mode = "xbeeZB";
-
-    xbee_device = "/dev/ttyAMA0";
-
-    xbee_baudrate = 9600;
-
-    LogLevel = 100;
+    int LogLevel = 100;
 
     struct xbee *xbee;
 
@@ -64,7 +56,8 @@ int main(void) {
 
     pkt_ptr pkt_Queue = malloc(sizeof(spkt_ptr));
 
-    xbee_initial(&xbee, pkt_Queue);
+    xbee_initial(xbee_mode, xbee_device, xbee_baudrate
+                            , LogLevel, &xbee, pkt_Queue);
 
     printf("Start establishing Connection to xbee\n");
 

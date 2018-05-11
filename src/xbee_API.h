@@ -43,29 +43,8 @@
 #include <xbee.h>
 #include "pkt_Queue.h"
 
-#ifdef xbee_Serial_H
-
-extern int xbee_baudrate;
-
-#else
-
-int xbee_baudrate;
-
-#endif
-
-
 #ifndef xbee_API_H
 #define xbee_API_H
-
-char* xbee_mode;
-
-char* xbee_device;
-
-//0:disable Log, 100:enable Log
-int LogLevel;
-
-//Record current xbee address
-unsigned char Local_Address[8];
 
 /* A variable to get error code */
 xbee_err ret;
@@ -73,7 +52,8 @@ xbee_err ret;
 /* A variable txRet get Tx return value */
 //unsigned char txRet;
 
-xbee_err xbee_initial(struct xbee** xbee, pkt_ptr pkt_Queue);
+xbee_err xbee_initial(char* xbee_mode, char* xbee_device, int xbee_baudrate
+                        , int LogLevel, struct xbee** xbee, pkt_ptr pkt_Queue);
 
 // A function for setting up xbee connection
 xbee_err xbee_connector(struct xbee** xbee, struct xbee_con** con

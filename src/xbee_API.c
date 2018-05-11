@@ -43,8 +43,8 @@
 /*-----------------------------------------------------------------------*/
 /* xbee_setup(struct xbee **retXbee, const char *xbee_mode               */
 /* , char *xbee_device, int xbee_baudrate)                               */
-xbee_err xbee_initial(struct xbee** xbee, pkt_ptr pkt_Queue){
-
+xbee_err xbee_initial(char* xbee_mode, char* xbee_device, int xbee_baudrate
+                        , int LogLevel, struct xbee** xbee, pkt_ptr pkt_Queue){
     printf("Start Connecting to xbee\n");
     printf("xbee Setup\n");
     printf("xbee Mode : %s\n",xbee_mode);
