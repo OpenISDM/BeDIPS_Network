@@ -76,6 +76,11 @@ In this project, we use `ZIGBEE TH Reg` as our main Function. The following conf
 	* AP (API Output Mode) = `API enabled[1]`
 	* D6 (DIO7 Configuration) = `Disable[0]` 
 	* D7 (DIO7 Configuration) = `Disable[0]`
+
+* Edit /boot/cmdline.txt , delete any parameter involve erial port "ttyAMA0" or "serial0". <br />
+* Disabale the on-board Bluetooth for Raspberry Pi Zero W
+* Edit /boot/config.txt    , add enable_uart=1 and dtoverlay=pi3-disable-bt
+
    
 Manual For XCTU: https://www.digi.com/resources/documentation/digidocs/PDFs/90001458-13.pdf </br>
 For the serial setting for Raspberry pi, follow the instructions in the blog of: http://www.raspberry-projects.com/pi/pi-operating-systems/raspbian/io-pins-raspbian/uart-pins
