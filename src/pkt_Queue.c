@@ -89,10 +89,10 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
 
     Fill_Address(raw_addr, newpkt->address);
 
-    int cont_size = sizeof(content);
-    newpkt->content = malloc(cont_size);
+    int cont_len = strlen(content);
+    newpkt->content = malloc(cont_len * sizeof(char));
 
-    strncpy(newpkt -> content, content, cont_size);
+    strncpy(newpkt -> content, content, cont_len);
     printf("Set next NULL\n");
     newpkt->next = NULL;
     printf("Add to Queue\n");
