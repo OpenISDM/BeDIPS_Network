@@ -90,7 +90,7 @@ int main(void) {
             return ret;
         }
 
-	if (point_to_CallBack == NULL){
+        if (point_to_CallBack == NULL){
             printf("Stop Xbee...\n");
             break;
         }
@@ -98,7 +98,7 @@ int main(void) {
 
     	addpkt(pkt_Queue, Data, Gateway, "AAAAA");
 
-	/* If there are remain some packet need to send in the Queue,            */
+        /* If there are remain some packet need to send in the Queue,        */
         /* send the packet                                                   */
         if(pkt_Queue->front->next != NULL){
 

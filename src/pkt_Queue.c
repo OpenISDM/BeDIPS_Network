@@ -42,6 +42,7 @@ void init_Packet_Queue(pkt_ptr pkt_queue) {
     pkt_queue->locker = Lock_Queue;
     pkt_queue->len    = 0;
     pkt_queue->front = malloc(sizeof(sPkt));
+    memset(pkt_queue->front, 0, sizeof(sPkt));
     pkt_queue->rear  = pkt_queue->front;
     pkt_queue->front->next = NULL;
     pkt_queue->locker = unLock_Queue;
@@ -72,7 +73,7 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
 
     printf("addpkt start\n");
     pPkt newpkt = malloc(sizeof(sPkt));
-
+    memset(newpkt, 0, sizeof(sPkt));
     printf("------Content------\n");
     printf("type    : %s\n", type_to_str(type));
     printf("address : %s\n", raw_addr);
@@ -91,7 +92,7 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
 
     int cont_len = strlen(content);
     newpkt->content = malloc((cont_len+1) * sizeof(char));
-
+    memset(newpkt->content, 0, sizeof((cont_len + 1)*sizeof(char)));
     strncpy(newpkt -> content, content, cont_len);
     newpkt->content[cont_len] = '\0';
     printf("Set next NULL\n");
