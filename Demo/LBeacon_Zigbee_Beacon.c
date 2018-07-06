@@ -95,7 +95,6 @@ int main(void) {
             break;
         }
 
-
     	addpkt(pkt_Queue, Data, Gateway, "AAAAA");
 
         /* If there are remain some packet need to send in the Queue,        */
@@ -111,8 +110,6 @@ int main(void) {
         }
         usleep(2000000);
     }
-
-    printf("Jump out while\n");
 
     Free_Packet_Queue(pkt_Queue);
 
