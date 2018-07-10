@@ -70,7 +70,7 @@ void Free_Packet_Queue(pkt_ptr pkt_queue){
 
     delallpkt(pkt_queue);
 
-    Locker status;
+    bool status;
     do{
         status = pkt_queue->locker;
         pkt_queue->locker = true;
@@ -92,7 +92,7 @@ void Free_Packet_Queue(pkt_ptr pkt_queue){
  *     None
  */
 void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
-    Locker status;
+    bool status;
     do{
         status = pkt_queue->locker;
         pkt_queue->locker = true;
@@ -144,7 +144,7 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
  *     None
  */
  void delpkt(pkt_ptr pkt_queue) {
-    Locker status;
+    bool status;
     do{
         status = pkt_queue->locker;
         pkt_queue->locker = true;
