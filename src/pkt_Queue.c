@@ -47,13 +47,13 @@
  *     None
  */
 void init_Packet_Queue(pkt_ptr pkt_queue) {
-    pkt_queue->locker = Lock_Queue;
+    pkt_queue->locker = true;
     pkt_queue->len    = 0;
     pkt_queue->front = malloc(sizeof(sPkt));
     memset(pkt_queue->front, 0, sizeof(sPkt));
     pkt_queue->rear  = pkt_queue->front;
     pkt_queue->front->next = NULL;
-    pkt_queue->locker = unLock_Queue;
+    pkt_queue->locker = false;
 }
 
 /*
@@ -73,8 +73,8 @@ void Free_Packet_Queue(pkt_ptr pkt_queue){
     Locker status;
     do{
         status = pkt_queue->locker;
-        pkt_queue->locker = Lock_Queue;
-    }while(status != unLock_Queue);
+        pkt_queue->locker = true;
+    }while(status != false);
 
     free(pkt_queue->front);
     free(pkt_queue);
@@ -95,8 +95,8 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
     Locker status;
     do{
         status = pkt_queue->locker;
-        pkt_queue->locker = Lock_Queue;
-    }while(status != unLock_Queue);
+        pkt_queue->locker = true;
+    }while(status != false);
 
     printf("addpkt start\n");
     pPkt newpkt = malloc(sizeof(sPkt));
@@ -131,7 +131,7 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
 
     display_pkt("Addedpkt", pkt_queue->rear);
     pkt_queue->len+= 1;
-    pkt_queue->locker = unLock_Queue;
+    pkt_queue->locker = false;
     return;
 }
 
@@ -147,12 +147,12 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
     Locker status;
     do{
         status = pkt_queue->locker;
-        pkt_queue->locker = Lock_Queue;
-    }while(status != unLock_Queue);
+        pkt_queue->locker = true;
+    }while(status != false);
 
     if(pkt_queue->len == 0) {
         printf("Packet Queue is empty!\n");
-        pkt_queue->locker = unLock_Queue;
+        pkt_queue->locker = false;
         return;
     }
 
@@ -163,7 +163,7 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
     free(tmpnode->content);
     free(tmpnode);
     pkt_queue->len-= 1;
-    pkt_queue->locker = unLock_Queue;
+    pkt_queue->locker = false;
     return;
 }
 

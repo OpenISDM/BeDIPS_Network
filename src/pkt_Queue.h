@@ -38,6 +38,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -65,15 +66,13 @@ struct pkt {
 typedef struct pkt sPkt;
 typedef sPkt* pPkt;
 
-typedef enum {Lock_Queue,unLock_Queue} Locker;
-
 struct pkt_header {
 
     // front point to the first of thr Pkt Queue
     // rear  point to the end of the Pkt Queue
     pPkt front;
     pPkt rear;
-    Locker locker;
+    bool locker;
     int len;
 };
 
