@@ -135,20 +135,20 @@ int xbee_Serial_init(int *xbee_datastream, char *xbee_device ){
 
 
     return 0;
- }
+}
 
- /*
-  * xbee_Serial_Tx
-  *     Send data to Serial.
-  * Parameter:
-  *     xbee_datastream: A pointer to catch zigbee datastream.
-  *     xbee_Serial_buffer: Data length.
-  *     Data: data we want to send.
-  * Return Value:
-  *     int: If return 0, everything work successfully.
-  *               If not 0, somthing wrong.
-  */
- int xbee_Serial_Tx(int* xbee_datastream, int xbee_Serial_buffer, char* Data){
+/*
+ * xbee_Serial_Tx
+ *     Send data to Serial.
+ * Parameter:
+ *     xbee_datastream: A pointer to catch zigbee datastream.
+ *     xbee_Serial_buffer: Data length.
+ *     Data: data we want to send.
+ * Return Value:
+ *     int: If return 0, everything work successfully.
+ *               If not 0, somthing wrong.
+ */
+int xbee_Serial_Tx(int* xbee_datastream, int xbee_Serial_buffer, char* Data){
 
     //----- TX BYTES -----
     unsigned char tx_buffer[xbee_Serial_buffer];
@@ -227,15 +227,15 @@ int xbee_Serial_Rx(int *xbee_datastream, int xbee_Serial_buffer, char* Data){
                 if(strlen(Data) == Received)
                     Waiting = Ended;
             }
-         }while(Waiting != Ended);
-     }
-     else{
-         printf("xbee_datastream Error.\n");
-         return -1;
-     }
+        }while(Waiting != Ended);
+    }
+    else{
+        printf("xbee_datastream Error.\n");
+        return -1;
+    }
 
-     return 0;
- }
+    return 0;
+}
 
 /*
  * xbee_Serial_Return
@@ -250,22 +250,21 @@ char* xbee_Serial_Return(int *xbee_datastream, int xbee_Serial_buffer){
 
     unsigned char rx_buffer[xbee_Serial_buffer];
     int rx_length;
-   //----- CHECK FOR ANY RX BYTES -----
-   if (*xbee_datastream != -1)
-   {
-       // Read up to xbee_Serial_buffer characters from the port if they are there
-       printf("Start Read\n");
-       rx_length = 0;
-       //Datastream, buffer to store in, number of bytes to read (max)
-       rx_length = read(*xbee_datastream, (void*)rx_buffer, xbee_Serial_buffer);
-       //Bytes received
-       rx_buffer[rx_length] = '\0';
-       if(rx_length == 0){
-           printf("No Data Received\n");
-       }
-       else{
-           printf("%d bytes read : %s\n", rx_length - 1, rx_buffer);
-       }
+    //----- CHECK FOR ANY RX BYTES -----
+    if (*xbee_datastream != -1){
+        // Read up to xbee_Serial_buffer characters from the port if they are there
+        printf("Start Read\n");
+        rx_length = 0;
+        //Datastream, buffer to store in, number of bytes to read (max)
+        rx_length = read(*xbee_datastream, (void*)rx_buffer, xbee_Serial_buffer);
+        //Bytes received
+        rx_buffer[rx_length] = '\0';
+        if(rx_length == 0){
+            printf("No Data Received\n");
+        }
+        else{
+            printf("%d bytes read : %s\n", rx_length - 1, rx_buffer);
+        }
     }
     else{
         printf("xbee_datastream Error.\n");

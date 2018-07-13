@@ -36,44 +36,44 @@
  *      Gary Xiao		, garyh0205@hotmail.com
  */
 
- #include <stdio.h>
- #include <stdlib.h>
- #include <stdbool.h>
- #include <unistd.h>         //Used for Serial
- #include <fcntl.h>          //Used for Serial
- #include <termios.h>        //Used for Serial
- #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <unistd.h>         //Used for Serial
+#include <fcntl.h>          //Used for Serial
+#include <termios.h>        //Used for Serial
+#include <string.h>
 
 #ifndef xbee_Serial_H
 #define xbee_Serial_H
 
- /*
-  * A flag to record does the command returned value.
-  * Remain : the command we send haven't return value.
-  * Ended  : the command we send had return value.
-  */
- enum{ Remain , Ended };
+/*
+ * A flag to record does the command returned value.
+ * Remain : the command we send haven't return value.
+ * Ended  : the command we send had return value.
+ */
+enum{ Remain , Ended };
 
- //-------------------------
- //----- SETUP Serial -----
- //-------------------------
+//-------------------------
+//----- SETUP Serial -----
+//-------------------------
 
- //Initialize xbee Serial connection and get the pointer of the xbee
- int xbee_Serial_init(int *xbee_datastream, char *xbee_device );
+//Initialize xbee Serial connection and get the pointer of the xbee
+int xbee_Serial_init(int *xbee_datastream, char *xbee_device );
 
- //Send Serial command to xbee
- int xbee_Serial_Tx(int *xbee_datastream, int xbee_Serial_buffer, char* Data);
+//Send Serial command to xbee
+int xbee_Serial_Tx(int *xbee_datastream, int xbee_Serial_buffer, char* Data);
 
- //Receive Serial command from xbee
- int xbee_Serial_Rx(int *xbee_datastream, int xbee_Serial_buffer, char* Data);
+//Receive Serial command from xbee
+int xbee_Serial_Rx(int *xbee_datastream, int xbee_Serial_buffer, char* Data);
 
- //Receive Serial command from xbee and return it.
- char* xbee_Serial_Return(int *xbee_datastream, int xbee_Serial_buffer);
+//Receive Serial command from xbee and return it.
+char* xbee_Serial_Return(int *xbee_datastream, int xbee_Serial_buffer);
 
- //Send AT command to xbee
- int xbee_Send_Command(int *xbee_datastream, int xbee_Serial_buffer, char* Command, char* Command_Result);
+//Send AT command to xbee
+int xbee_Send_Command(int *xbee_datastream, int xbee_Serial_buffer, char* Command, char* Command_Result);
 
- //Send AT command to xbee
- char* xbee_Send_Command_result(int *xbee_datastream, int xbee_Serial_buffer, char* Command);
+//Send AT command to xbee
+char* xbee_Send_Command_result(int *xbee_datastream, int xbee_Serial_buffer, char* Command);
 
 #endif
