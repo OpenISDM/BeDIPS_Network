@@ -42,81 +42,122 @@ int main(){
     spkt_ptr pkt_queue ;
 
     /* Initialize Queue for packets                                          */
-    //init_Packet_Queue(pkt_queue);
-    pkt_queue.locker = false;
-    pkt_queue.len = 0;
-
-    bool status;
-    do{
-        status = pkt_queue.locker;
-        pkt_queue.locker = true;
-    }while(status == false);
-
-    pkt_queue.front.next = pkt_queue.rear.next = NULL;
-
-    pkt_queue.locker = false;
-
+    init_Packet_Queue(&pkt_queue);
+    
     if(is_null(&pkt_queue)){
         printf("Queue is null\n");
     }
+
+    printf("pkt_Queue length : %d\n", queue_len(&pkt_queue));
+
     printf("add and delete recursively\n");
+
     addpkt(&pkt_queue, Data, "0123456789ABCDEF", "1");
+    printf("pkt_Queue length : %d\n", queue_len(&pkt_queue));
     display_pkt("Test-front", pkt_queue.front.next);
     display_pkt("Test-rear", pkt_queue.rear.next);
+
     delpkt(&pkt_queue);
+    printf("pkt_Queue length : %d\n", queue_len(&pkt_queue));
+
     addpkt(&pkt_queue, Data, "0123456789ABCDEF", "2");
+    printf("pkt_Queue length : %d\n", queue_len(&pkt_queue));
     display_pkt("Test-front", pkt_queue.front.next);
     display_pkt("Test-rear", pkt_queue.rear.next);
+
     delpkt(&pkt_queue);
+    printf("pkt_Queue length : %d\n", queue_len(&pkt_queue));
+
     addpkt(&pkt_queue, Data, "0123456789ABCDEF", "3");
+    printf("pkt_Queue length : %d\n", queue_len(&pkt_queue));
     display_pkt("Test-front", pkt_queue.front.next);
     display_pkt("Test-rear", pkt_queue.rear.next);
+
     delpkt(&pkt_queue);
+    printf("pkt_Queue length : %d\n", queue_len(&pkt_queue));
+
     addpkt(&pkt_queue, Data, "0123456789ABCDEF", "4");
+    printf("pkt_Queue length : %d\n", queue_len(&pkt_queue));
     display_pkt("Test-front", pkt_queue.front.next);
     display_pkt("Test-rear", pkt_queue.rear.next);
+
     delpkt(&pkt_queue);
+    printf("pkt_Queue length : %d\n", queue_len(&pkt_queue));
+
     addpkt(&pkt_queue, Data, "0123456789ABCDEF", "5");
+    printf("pkt_Queue length : %d\n", queue_len(&pkt_queue));
     display_pkt("Test-front", pkt_queue.front.next);
     display_pkt("Test-rear", pkt_queue.rear.next);
+
     delpkt(&pkt_queue);
+    printf("pkt_Queue length : %d\n", queue_len(&pkt_queue));
+
     addpkt(&pkt_queue, Data, "0123456789ABCDEF", "6");
+    printf("pkt_Queue length : %d\n", queue_len(&pkt_queue));
     display_pkt("Test-front", pkt_queue.front.next);
     display_pkt("Test-rear", pkt_queue.rear.next);
+
     delpkt(&pkt_queue);
+    printf("pkt_Queue length : %d\n", queue_len(&pkt_queue));
+
     addpkt(&pkt_queue, Data, "0123456789ABCDEF", "7");
+    printf("pkt_Queue length : %d\n", queue_len(&pkt_queue));
     display_pkt("Test-front", pkt_queue.front.next);
     display_pkt("Test-rear", pkt_queue.rear.next);
+
     delpkt(&pkt_queue);
+    printf("pkt_Queue length : %d\n", queue_len(&pkt_queue));
     printf("Add * 3\n");
+
     addpkt(&pkt_queue, Data, "0123456789ABCDEF", "8");
+    printf("pkt_Queue length : %d\n", queue_len(&pkt_queue));
     display_pkt("Test-front", pkt_queue.front.next);
     display_pkt("Test-rear", pkt_queue.rear.next);
+
     addpkt(&pkt_queue, Data, "0123456789ABCDEF", "9");
+    printf("pkt_Queue length : %d\n", queue_len(&pkt_queue));
     display_pkt("Test-front", pkt_queue.front.next);
     display_pkt("Test-rear", pkt_queue.rear.next);
-    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "10");
-    display_pkt("Test-front", pkt_queue.front.next);
-    display_pkt("Test-rear", pkt_queue.rear.next);
+
     delpkt(&pkt_queue);
+    printf("pkt_Queue length : %d\n", queue_len(&pkt_queue));
     display_pkt("Test-front", pkt_queue.front.next);
     display_pkt("Test-rear", pkt_queue.rear.next);
+
     delpkt(&pkt_queue);
-    display_pkt("Test-front", pkt_queue.front.next);
-    display_pkt("Test-rear", pkt_queue.rear.next);
-    delpkt(&pkt_queue);
+    printf("pkt_Queue length : %d\n", queue_len(&pkt_queue));
     display_pkt("Test-front", pkt_queue.front.next);
     display_pkt("Test-rear", pkt_queue.rear.next);
     printf("Add * 2\n");
-    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "11");
+
+    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "10");
+    printf("pkt_Queue length : %d\n", queue_len(&pkt_queue));
     display_pkt("Test-front", pkt_queue.front.next);
     display_pkt("Test-rear", pkt_queue.rear.next);
-    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "12");
+
+    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "11");
+    printf("pkt_Queue length : %d\n", queue_len(&pkt_queue));
     display_pkt("Test-front", pkt_queue.front.next);
     display_pkt("Test-rear", pkt_queue.rear.next);
     printf("Add total 12\n");
     
+    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "12");
+    printf("pkt_Queue length : %d\n", queue_len(&pkt_queue));
+    display_pkt("Test-front", pkt_queue.front.next);
+    display_pkt("Test-rear", pkt_queue.rear.next);
+
+    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "13");
+    printf("pkt_Queue length : %d\n", queue_len(&pkt_queue));
+    display_pkt("Test-front", pkt_queue.front.next);
+    display_pkt("Test-rear", pkt_queue.rear.next);
+
+    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "14");
+    printf("pkt_Queue length : %d\n", queue_len(&pkt_queue));
+    display_pkt("Test-front", pkt_queue.front.next);
+    display_pkt("Test-rear", pkt_queue.rear.next);
+
     delallpkt(&pkt_queue);
+    printf("pkt_Queue length : %d\n", queue_len(&pkt_queue));
 
     Free_Packet_Queue(&pkt_queue);
 

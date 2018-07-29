@@ -41,6 +41,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <unistd.h>
+#include <pthread.h>
 
 #define Gateway   "0000000000000000"
 #define Broadcast "000000000000FFFF"
@@ -60,7 +61,7 @@ struct pkt {
 	// Data
 	char *content;
 
-  struct pkt *next;
+    struct pkt *next;
 };
 
 typedef struct pkt sPkt;
@@ -73,7 +74,6 @@ struct pkt_header {
     sPkt front;
     sPkt rear;
     bool locker;
-    int  len;
 };
 
 typedef struct pkt_header spkt_ptr;
@@ -102,3 +102,5 @@ void display_pkt(char* content, pPkt pkt);
 void Fill_Address(char *raw, unsigned char* addr);
 
 bool is_null(pkt_ptr pkt_Queue);
+
+int queue_len(pkt_ptr pkt_queue);
