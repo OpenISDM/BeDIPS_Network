@@ -71,6 +71,9 @@ typedef struct pkt_header {
     // rear  point to the end of the Pkt Queue
     sPkt front;
     sPkt rear;
+
+    unsigned char address[8];
+
     bool locker;
 
 } spkt_ptr;
@@ -96,6 +99,10 @@ void display_pkt(char* content, pPkt pkt);
 
 /* Fill the address from raw(char) to addr(Hex) */
 void Fill_Address(char *raw, unsigned char* addr);
+
+bool address_compare(unsigned char* addr1,unsigned char* addr2);
+
+void address_copy(unsigned char* src_addr, unsigned char* dest_addr);
 
 bool is_null(pkt_ptr pkt_Queue);
 

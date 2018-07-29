@@ -227,6 +227,17 @@ void Fill_Address(char *raw,unsigned char* addr){
     printf("\n");
 }
 
+bool address_compare(unsigned char* addr1,unsigned char* addr2){
+    if (memcmp(addr1, addr2, 8) == 0){
+        return true;
+    }
+    return false;
+}
+
+void address_copy(unsigned char* src_addr, unsigned char* dest_addr){
+    memcpy(dest_addr, src_addr, 8);
+}
+
 /* display_pkt
  *     display the packet we decide to see.
  * Parameter:

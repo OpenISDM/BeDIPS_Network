@@ -56,7 +56,10 @@ int main(){
     printf("pkt_Queue length : %d\n", queue_len(&pkt_queue));
     display_pkt("Test-front", pkt_queue.front.next);
     display_pkt("Test-rear", pkt_queue.rear.next);
-
+    address_copy(pkt_queue.front.next->address, pkt_queue.address);
+    if(address_compare(pkt_queue.front.next->address, pkt_queue.address)){
+        printf("The Same\n");
+    }
     delpkt(&pkt_queue);
     printf("pkt_Queue length : %d\n", queue_len(&pkt_queue));
 
