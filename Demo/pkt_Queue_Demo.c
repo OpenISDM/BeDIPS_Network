@@ -43,7 +43,7 @@ int main(){
 
     /* Initialize Queue for packets                                          */
     init_Packet_Queue(&pkt_queue);
-    
+
     if(is_null(&pkt_queue)){
         printf("Queue is null\n");
     }
@@ -140,7 +140,7 @@ int main(){
     display_pkt("Test-front", pkt_queue.front.next);
     display_pkt("Test-rear", pkt_queue.rear.next);
     printf("Add total 12\n");
-    
+
     addpkt(&pkt_queue, Data, "0123456789ABCDEF", "12");
     printf("pkt_Queue length : %d\n", queue_len(&pkt_queue));
     display_pkt("Test-front", pkt_queue.front.next);
@@ -156,7 +156,7 @@ int main(){
     display_pkt("Test-front", pkt_queue.front.next);
     display_pkt("Test-rear", pkt_queue.rear.next);
 
-    delallpkt(&pkt_queue);
+    Free_Packet_Queue(&pkt_queue);
     printf("pkt_Queue length : %d\n", queue_len(&pkt_queue));
 
     Free_Packet_Queue(&pkt_queue);

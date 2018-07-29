@@ -72,16 +72,10 @@ void init_Packet_Queue(pkt_ptr pkt_queue){
  *     None
  */
 void Free_Packet_Queue(pkt_ptr pkt_queue){
-
-    delallpkt(pkt_queue);
-
-    bool status;
-
-    do{
-        status = pkt_queue->locker;
-        pkt_queue->locker = true;
-    }while(status == true);
-
+    while (!(is_null(pkt_queue))){
+        delpkt(pkt_queue);
+    }
+    printf("pkt_queue released\n");
 }
 
 /*
@@ -173,22 +167,6 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
     pkt_queue->locker = false;
     
     return;
-}
-
-/*
- * delallpkt
- *     delete all packet in the packet queue we assigned.
- * Parameter:
- *     pkt_queue : A struct stored the first and the last of the packet queue.
- * Return Value:
- *     None
- */
-void delallpkt(pkt_ptr pkt_queue) {
-    while (!(is_null(pkt_queue))){
-        delpkt(pkt_queue);
-        printf("delall\n");
-    }
-    printf("End delall\n");
 }
 
 /*

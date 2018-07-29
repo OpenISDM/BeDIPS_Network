@@ -49,7 +49,7 @@
 enum {Data, Local_AT};
 
 /* packet format in the Queue */
-struct pkt {
+typedef struct pkt {
 
     //"Data"
 	int type;
@@ -62,21 +62,19 @@ struct pkt {
 	char *content;
 
     struct pkt *next;
-};
+} sPkt;
 
-typedef struct pkt sPkt;
 typedef sPkt* pPkt;
 
-struct pkt_header {
+typedef struct pkt_header {
 
     // front point to the first of thr Pkt Queue
     // rear  point to the end of the Pkt Queue
     sPkt front;
     sPkt rear;
     bool locker;
-};
+} spkt_ptr;
 
-typedef struct pkt_header spkt_ptr;
 typedef spkt_ptr * pkt_ptr;
 
 /* Create Packet Queue Header */
@@ -89,8 +87,6 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content);
 
 /* Delete the end of Queue */
 void delpkt(pkt_ptr pkt_queue);
-
-void delallpkt(pkt_ptr pkt_queue);
 
 char* type_to_str(int type);
 
