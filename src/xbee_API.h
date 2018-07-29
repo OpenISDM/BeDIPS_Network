@@ -61,7 +61,9 @@ xbee_err xbee_connector(struct xbee** xbee, struct xbee_con** con
                                                 , pkt_ptr pkt_Queue);
 
 // A function for sending pkt to dest address.
-xbee_err xbee_send_pkt(xbee_con** con, pkt_ptr pkt_Queue);
+xbee_err xbee_send_pkt(struct xbee_con* con, pkt_ptr pkt_Queue);
+
+bool xbee_check_CallBack(struct xbee_con* con, pkt_ptr pkt_Queue, bool exclude_pkt_Queue);
 
 /* CallBack for Data Received */
 void CallBack(struct xbee *xbee, struct xbee_con *con, struct xbee_pkt **pkt

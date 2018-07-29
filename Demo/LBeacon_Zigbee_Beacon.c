@@ -58,7 +58,6 @@ int main(void) {
 
     xbee_initial(xbee_mode, xbee_device, xbee_baudrate
                             , LogLevel, &xbee, &pkt_Queue);
-
     printf("Start establishing Connection to xbee\n");
 
 
@@ -69,7 +68,7 @@ int main(void) {
     printf("Establishing Connection...\n");
 
     xbee_connector(&xbee, &con, &pkt_Queue);
-
+    
     printf("Connection Successfully Established\n");
 
     /* Start the chain reaction!                                             */
@@ -79,29 +78,71 @@ int main(void) {
         return ret;
     }
 
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&pkt_Queue, Data, Broadcast, "AAAAA");
+        addpkt(&pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
+        addpkt(&pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
+        addpkt(&pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
+        addpkt(&pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&pkt_Queue, Data, Broadcast, "AAAAA");
+        addpkt(&pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&pkt_Queue, Data, Broadcast, "AAAAA");
+        addpkt(&pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&pkt_Queue, Data, Broadcast, "AAAAA");
+        addpkt(&pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&pkt_Queue, Data, Broadcast, "AAAAA");
+        addpkt(&pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&pkt_Queue, Data, Broadcast, "AAAAA");
+        addpkt(&pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&pkt_Queue, Data, Broadcast, "AAAAA");
+        addpkt(&pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&pkt_Queue, Data, Broadcast, "AAAAA");
+        addpkt(&pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&pkt_Queue, Data, Broadcast, "AAAAA");
+        addpkt(&pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+    
     while(1) {
-        /* Pointer point_to_CallBack will store the callback function.       */
-        /* If pointer point_to_CallBack is NULL, break the Loop              */
-        void *point_to_CallBack;
-        
-        if ((ret = xbee_conCallbackGet(con, (xbee_t_conCallback*)
-            &point_to_CallBack))!= XBEE_ENONE) {
-            xbee_log(xbee, -1, "xbee_conCallbackGet() returned: %d", ret);
-            return ret;
-        }
 
-        if (point_to_CallBack == NULL){
-            printf("Stop Xbee...\n");
-            break;
-        }
-
-    	addpkt(pkt_Queue, Data, Gateway, "AAAAA");
+        if(xbee_check_CallBack(con, &pkt_Queue, false)) break;
 
         /* If there are remain some packet need to send in the Queue,        */
         /* send the packet                                                   */
         xbee_send_pkt(con, &pkt_Queue);
 
         usleep(2000000);
+        
+        xbee_connector(&xbee, &con, &pkt_Queue);
     }
 
     Free_Packet_Queue(&pkt_Queue);
@@ -112,6 +153,8 @@ int main(void) {
         return ret;
     }
 
+    Free_Packet_Queue(&pkt_Queue);
+    
     printf("Stop connection Succeeded\n");
 
     /* Close xbee                                                            */
