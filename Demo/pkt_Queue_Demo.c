@@ -17,7 +17,7 @@
  *
  * File Name:
  *
- *      xbee_Serial_Demo.c
+ *      pkt_Queue_Demo.c
  *
  * Abstract:
  *
@@ -39,41 +39,86 @@
 
 int main(){
 
-  pkt_ptr pkt_queue = malloc(sizeof(spkt_ptr));
+    spkt_ptr pkt_queue ;
 
-  /* Initialize Queue for packets                                          */
-  init_Packet_Queue(pkt_queue);
+    /* Initialize Queue for packets                                          */
+    //init_Packet_Queue(pkt_queue);
+    pkt_queue.locker = false;
+    pkt_queue.len = 0;
 
-  if(pkt_queue->front->next == NULL && pkt_queue->rear->next == NULL){
-      printf("Queue is null\n");
-  }
+    bool status;
+    do{
+        status = pkt_queue.locker;
+        pkt_queue.locker = true;
+    }while(status == false);
 
-    addpkt(pkt_queue, Data, "0123456789ABCDEF", "1");
-    delpkt(pkt_queue);
-    addpkt(pkt_queue, Data, "0123456789ABCDEF", "2");
-    delpkt(pkt_queue);
-    addpkt(pkt_queue, Data, "0123456789ABCDEF", "3");
-    delpkt(pkt_queue);
-    addpkt(pkt_queue, Data, "0123456789ABCDEF", "4");
-    delpkt(pkt_queue);
-    addpkt(pkt_queue, Data, "0123456789ABCDEF", "5");
-    delpkt(pkt_queue);
-    addpkt(pkt_queue, Data, "0123456789ABCDEF", "6");
-    delpkt(pkt_queue);
-    addpkt(pkt_queue, Data, "0123456789ABCDEF", "7");
-    delpkt(pkt_queue);
-    addpkt(pkt_queue, Data, "0123456789ABCDEF", "8");
-    addpkt(pkt_queue, Data, "0123456789ABCDEF", "9");
-    delpkt(pkt_queue);
+    pkt_queue.front.next = pkt_queue.rear.next = NULL;
 
-    delpkt(pkt_queue);
+    pkt_queue.locker = false;
 
-    addpkt(pkt_queue, Data, "0123456789ABCDEF", "10");
-    addpkt(pkt_queue, Data, "0123456789ABCDEF", "11");
+    if(is_null(&pkt_queue)){
+        printf("Queue is null\n");
+    }
+    printf("add and delete recursively\n");
+    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "1");
+    display_pkt("Test-front", pkt_queue.front.next);
+    display_pkt("Test-rear", pkt_queue.rear.next);
+    delpkt(&pkt_queue);
+    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "2");
+    display_pkt("Test-front", pkt_queue.front.next);
+    display_pkt("Test-rear", pkt_queue.rear.next);
+    delpkt(&pkt_queue);
+    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "3");
+    display_pkt("Test-front", pkt_queue.front.next);
+    display_pkt("Test-rear", pkt_queue.rear.next);
+    delpkt(&pkt_queue);
+    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "4");
+    display_pkt("Test-front", pkt_queue.front.next);
+    display_pkt("Test-rear", pkt_queue.rear.next);
+    delpkt(&pkt_queue);
+    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "5");
+    display_pkt("Test-front", pkt_queue.front.next);
+    display_pkt("Test-rear", pkt_queue.rear.next);
+    delpkt(&pkt_queue);
+    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "6");
+    display_pkt("Test-front", pkt_queue.front.next);
+    display_pkt("Test-rear", pkt_queue.rear.next);
+    delpkt(&pkt_queue);
+    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "7");
+    display_pkt("Test-front", pkt_queue.front.next);
+    display_pkt("Test-rear", pkt_queue.rear.next);
+    delpkt(&pkt_queue);
+    printf("Add * 3\n");
+    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "8");
+    display_pkt("Test-front", pkt_queue.front.next);
+    display_pkt("Test-rear", pkt_queue.rear.next);
+    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "9");
+    display_pkt("Test-front", pkt_queue.front.next);
+    display_pkt("Test-rear", pkt_queue.rear.next);
+    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "10");
+    display_pkt("Test-front", pkt_queue.front.next);
+    display_pkt("Test-rear", pkt_queue.rear.next);
+    delpkt(&pkt_queue);
+    display_pkt("Test-front", pkt_queue.front.next);
+    display_pkt("Test-rear", pkt_queue.rear.next);
+    delpkt(&pkt_queue);
+    display_pkt("Test-front", pkt_queue.front.next);
+    display_pkt("Test-rear", pkt_queue.rear.next);
+    delpkt(&pkt_queue);
+    display_pkt("Test-front", pkt_queue.front.next);
+    display_pkt("Test-rear", pkt_queue.rear.next);
+    printf("Add * 2\n");
+    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "11");
+    display_pkt("Test-front", pkt_queue.front.next);
+    display_pkt("Test-rear", pkt_queue.rear.next);
+    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "12");
+    display_pkt("Test-front", pkt_queue.front.next);
+    display_pkt("Test-rear", pkt_queue.rear.next);
+    printf("Add total 12\n");
+    
+    delallpkt(&pkt_queue);
 
-    delallpkt(pkt_queue);
-
-    Free_Packet_Queue(pkt_queue);
+    Free_Packet_Queue(&pkt_queue);
 
     return 0;
 }

@@ -70,14 +70,14 @@ struct pkt_header {
 
     // front point to the first of thr Pkt Queue
     // rear  point to the end of the Pkt Queue
-    pPkt front;
-    pPkt rear;
+    sPkt front;
+    sPkt rear;
     bool locker;
-    int len;
+    int  len;
 };
 
 typedef struct pkt_header spkt_ptr;
-typedef spkt_ptr* pkt_ptr;
+typedef spkt_ptr * pkt_ptr;
 
 /* Create Packet Queue Header */
 void init_Packet_Queue(pkt_ptr pkt_queue);
@@ -100,3 +100,5 @@ void display_pkt(char* content, pPkt pkt);
 
 /* Fill the address from raw(char) to addr(Hex) */
 void Fill_Address(char *raw, unsigned char* addr);
+
+bool is_null(pkt_ptr pkt_Queue);

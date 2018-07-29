@@ -38,25 +38,6 @@
 #include "pkt_Queue.h"
 
 /*
- * init_Packet_Queue
- *     Initialize packet queue that is for the packet waiting to send to the
- *     Gateway or to the Beacon.
- * Parameter:
- *     pkt_queue : A struct stored the first and the last of the packet queue.
- * Return Value:
- *     None
- */
-void init_Packet_Queue(pkt_ptr pkt_queue) {
-    pkt_queue->locker = true;
-    pkt_queue->len    = 0;
-    pkt_queue->front = malloc(sizeof(sPkt));
-    memset(pkt_queue->front, 0, sizeof(sPkt));
-    pkt_queue->rear  = pkt_queue->front;
-    pkt_queue->front->next = NULL;
-    pkt_queue->locker = false;
-}
-
-/*
  * Free_Packet_Queue
  *     Release all the packets in the packet queue, the header and
  *     the tail of the packet queue and release the struct stored the pointer of
@@ -74,10 +55,8 @@ void Free_Packet_Queue(pkt_ptr pkt_queue){
     do{
         status = pkt_queue->locker;
         pkt_queue->locker = true;
-    }while(status != false);
+    }while(status == true);
 
-    free(pkt_queue->front);
-    free(pkt_queue);
 }
 
 /*
@@ -96,42 +75,41 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
     do{
         status = pkt_queue->locker;
         pkt_queue->locker = true;
-    }while(status != false);
+    }while(status == true);
 
     printf("addpkt start\n");
+
     pPkt newpkt = malloc(sizeof(sPkt));
-    memset(newpkt, 0, sizeof(sPkt));
+    printf("newpkt -> %x\n", newpkt);
     printf("------Content------\n");
     printf("type    : %s\n", type_to_str(type));
     printf("address : %s\n", raw_addr);
     printf("content : %s\n", content);
     printf("-------------------\n");
 
-    printf("determine queue is null or not\n");
-    if(pkt_queue->len == 0) {
+    if(is_null(pkt_queue)) {
         printf("queue is null\n");
-        (pkt_queue->front)->next = newpkt;
+        pkt_queue->front.next = newpkt;
+        pkt_queue->rear.next = newpkt;
     }
-
-    newpkt -> type = type;
-
+    newpkt->type = type;
     Fill_Address(raw_addr, newpkt->address);
-
     int cont_len = strlen(content);
     newpkt->content = malloc((cont_len+1) * sizeof(char));
     memset(newpkt->content, 0, sizeof((cont_len + 1)*sizeof(char)));
-    strncpy(newpkt -> content, content, cont_len);
+    strncpy(newpkt->content, content, cont_len);
     newpkt->content[cont_len] = '\0';
-    printf("Set next NULL\n");
     newpkt->next = NULL;
-    printf("Add to Queue\n");
-    (pkt_queue->rear)->next = newpkt;
-    printf("Add to Queue\n");
-    pkt_queue->rear = newpkt;
+    if(pkt_queue->rear.next != NULL)
+        pkt_queue->rear.next->next = newpkt;
+    pkt_queue->rear.next = newpkt;
 
-    display_pkt("Addedpkt", pkt_queue->rear);
+    display_pkt("Addedpkt-front", pkt_queue->front.next);
+    display_pkt("Addedpkt-rear", pkt_queue->rear.next);
+    printf("N\n");
     pkt_queue->len+= 1;
     pkt_queue->locker = false;
+    printf("N\n");
     return;
 }
 
@@ -148,21 +126,29 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
     do{
         status = pkt_queue->locker;
         pkt_queue->locker = true;
-    }while(status != false);
+    }while(status == true);
 
-    if(pkt_queue->len == 0) {
+    if(is_null(pkt_queue)) {
         printf("Packet Queue is empty!\n");
         pkt_queue->locker = false;
         return;
     }
-
-    sPkt* tmpnode;
-    tmpnode = (pkt_queue->front)->next;
-    (pkt_queue->front)->next = tmpnode->next;
-    display_pkt("deledpkt",tmpnode);
-    free(tmpnode->content);
-    free(tmpnode);
+    printf("Locked\n");
+    sPkt tmpnode;
+    printf("front        -> %x\n", pkt_queue->front.next);
+    tmpnode.next = pkt_queue->front.next;
+    printf("tmpnode.next -> %x\n", tmpnode.next);
+    pkt_queue->front.next = pkt_queue->front.next->next;
+    if(pkt_queue->front.next == NULL)
+        printf("Front is NULL\n");
+    display_pkt("deledpkt", tmpnode.next);
+    free(tmpnode.next->content);
+    tmpnode.next->next = NULL;
+    free(tmpnode.next);
     pkt_queue->len-= 1;
+    if(pkt_queue->len == 0){
+        pkt_queue->rear.next = NULL;
+    }
     pkt_queue->locker = false;
     return;
 }
@@ -250,6 +236,9 @@ void Fill_Address(char *raw,unsigned char* addr){
  *     None
  */
 void display_pkt(char* content, pPkt pkt){
+    if(pkt == NULL)
+        return;
+    printf("is not null\n");
     char* char_addr = print_address(pkt->address);
     printf("------ %12s ------\n",content);
     printf("type    : %s\n", type_to_str(pkt->type));
@@ -257,4 +246,12 @@ void display_pkt(char* content, pPkt pkt){
     printf("content : %s\n", pkt->content);
     printf("--------------------------\n");
     free(char_addr);
+    return;
+}
+
+bool is_null(pkt_ptr pkt_queue){
+    if (pkt_queue->len == 0 && pkt_queue->front.next == NULL && pkt_queue->rear.next == NULL){
+        return true;
+    }
+    return false;
 }
