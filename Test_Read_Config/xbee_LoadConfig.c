@@ -1,28 +1,31 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main()
-{
-    char ch, file_name[25];
-    FILE *fp;
+// API FRAME
+// AP ARG
 
-    fp = fopen("Config", "r"); // read mode
+int main(){
+    char ch, AT_Command[30];
+    FILE *cfg;
 
-    if (fp == NULL)
-    {
+    cfg = fopen(" xbee_Beacon.conf", "r"); // read mode
+
+    if (cfg == NULL){
         perror("Error while opening the file.\n");
         exit(EXIT_FAILURE);
     }
 
-    printf("The contents of %s file are:\n", file_name);
+    //printf("The contents of %s file are:\n", file_name);
 
-    while((ch = fgetc(fp)) != EOF){
+    while((ch = fgetc(cfg)) != EOF){
         if(ch == '\n'){
-            printf("N\n");
+            printf("\\r\n");
         }
-        else
+        else{
             printf("%c", ch);
+        }
     }
-   fclose(fp);
-   return 0;
+
+    fclose(cfg);
+    return 0;
 }
