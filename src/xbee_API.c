@@ -171,16 +171,39 @@ xbee_err xbee_connector(struct xbee** xbee, struct xbee_con** con
     if ((ret = xbee_conSettings(*con, &settings, NULL)) != XBEE_ENONE)
                                                             return ret;
 
+    /*
     if ((ret = xbee_conDataSet(*con, *xbee, NULL)) != XBEE_ENONE) {
         xbee_log(*xbee, -1, "xbee_conDataSet() returned: %d", ret);
         return ret;
     }
-
-    if(pkt_Queue->front->next != NULL){
+    */
+    
+    if(!(is_null(pkt_queue))){
         display_pkt("Packet Information", pkt_Queue->front->next);
     }
 
     printf("Connector Established\n");
+
+    return XBEE_ENONE;
+}
+
+/*
+ * xbee_send_pkt
+ *      For sending pkt to dest address.
+ * Parameter:
+ *      con : a pointer for xbee connector.
+ *      pkt_Queue : A pointer point to the packet queue we use.
+ * Return Value:
+ *      xbee error code
+ *      if 0, work successfully.
+ */
+xbee_err xbee_send_pkt(xbee_con** con, pkt_ptr pkt_Queue){
+    if(!(is_null(&pkt_queue))){
+        xbee_conTx(con, NULL, pkt_Queue->front->next->content);
+        delpkt(pkt_Queue);
+    }else{
+        printf("pkt_queue is NULL");
+    }
 
     return XBEE_ENONE;
 }

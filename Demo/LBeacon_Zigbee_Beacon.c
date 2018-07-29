@@ -54,10 +54,10 @@ int main(void) {
 
     struct xbee_con *con;
 
-    pkt_ptr pkt_Queue = malloc(sizeof(spkt_ptr));
+    spkt_ptr pkt_Queue;
 
     xbee_initial(xbee_mode, xbee_device, xbee_baudrate
-                            , LogLevel, &xbee, pkt_Queue);
+                            , LogLevel, &xbee, &pkt_Queue);
 
     printf("Start establishing Connection to xbee\n");
 
@@ -68,7 +68,7 @@ int main(void) {
 
     printf("Establishing Connection...\n");
 
-    xbee_connector(&xbee, &con, pkt_Queue);
+    xbee_connector(&xbee, &con, &pkt_Queue);
 
     printf("Connection Successfully Established\n");
 
@@ -83,7 +83,7 @@ int main(void) {
         /* Pointer point_to_CallBack will store the callback function.       */
         /* If pointer point_to_CallBack is NULL, break the Loop              */
         void *point_to_CallBack;
-
+        
         if ((ret = xbee_conCallbackGet(con, (xbee_t_conCallback*)
             &point_to_CallBack))!= XBEE_ENONE) {
             xbee_log(xbee, -1, "xbee_conCallbackGet() returned: %d", ret);
@@ -99,19 +99,12 @@ int main(void) {
 
         /* If there are remain some packet need to send in the Queue,        */
         /* send the packet                                                   */
-        if(pkt_Queue->front->next != NULL){
+        xbee_send_pkt(con, &pkt_Queue);
 
-            xbee_conTx(con, NULL, pkt_Queue->front->next->content);
-
-            delpkt(pkt_Queue);
-        }
-        else{
-            xbee_log(xbee, -1, "xbee packet Queue is NULL.");
-        }
         usleep(2000000);
     }
 
-    Free_Packet_Queue(pkt_Queue);
+    Free_Packet_Queue(&pkt_Queue);
 
     /* Close connection                                                      */
     if ((ret = xbee_conEnd(con)) != XBEE_ENONE) {
