@@ -46,7 +46,7 @@
      *  None
      */
 void init_Packet_Queue(pkt_ptr pkt_queue){
-    
+
     pkt_queue->locker = false;
 
     bool status;
@@ -56,7 +56,7 @@ void init_Packet_Queue(pkt_ptr pkt_queue){
     }while(status == false);
 
     pkt_queue -> front.next = pkt_queue -> rear.next = NULL;
-    
+
     pkt_queue -> locker = false;
 
 }
@@ -99,7 +99,7 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
     printf("addpkt start\n");
 
     pPkt newpkt = malloc(sizeof(sPkt));
-    
+
     printf("------Content------\n");
     printf("type    : %s\n", type_to_str(type));
     printf("address : %s\n", raw_addr);
@@ -125,7 +125,7 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
 
     display_pkt("Addedpkt", newpkt);
     pkt_queue->locker = false;
-    
+
     return;
 }
 
@@ -149,7 +149,7 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
         pkt_queue->locker = false;
         return;
     }
-    
+
     sPkt tmpnode;
     tmpnode.next = pkt_queue->front.next;
     if(pkt_queue->front.next == pkt_queue->rear.next){
@@ -159,13 +159,13 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
     else{
         pkt_queue->front.next = pkt_queue->front.next->next;
     }
-    
+
     display_pkt("deledpkt", tmpnode.next);
     free(tmpnode.next->content);
     tmpnode.next->next = NULL;
     free(tmpnode.next);
     pkt_queue->locker = false;
-    
+
     return;
 }
 

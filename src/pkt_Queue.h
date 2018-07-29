@@ -41,7 +41,6 @@
 #include <stdbool.h>
 #include <string.h>
 #include <unistd.h>
-#include <pthread.h>
 
 #define Gateway   "0000000000000000"
 #define Broadcast "000000000000FFFF"
@@ -52,14 +51,14 @@ enum {Data, Local_AT};
 typedef struct pkt {
 
     //"Data"
-	int type;
+    int type;
 
-	// Brocast:     000000000000FFFF;
-	// Coordinator: 0000000000000000
-	unsigned char address[8];
+    // Brocast:     000000000000FFFF;
+    // Coordinator: 0000000000000000
+    unsigned char address[8];
 
-	// Data
-	char *content;
+    // Data
+    char *content;
 
     struct pkt *next;
 } sPkt;
@@ -73,6 +72,7 @@ typedef struct pkt_header {
     sPkt front;
     sPkt rear;
     bool locker;
+
 } spkt_ptr;
 
 typedef spkt_ptr * pkt_ptr;
