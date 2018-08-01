@@ -254,7 +254,6 @@ bool xbee_check_CallBack(struct xbee_con* con, pkt_ptr pkt_Queue, bool exclude_p
     }
 
     if (point_to_CallBack == NULL && (exclude_pkt_Queue || is_null(pkt_Queue))){
-        printf("Stop Xbee...\n");
         return true;
     }
     return false;

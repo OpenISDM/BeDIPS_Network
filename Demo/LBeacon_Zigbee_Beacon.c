@@ -135,16 +135,21 @@ int main(void) {
     while(1) {
 
         if(xbee_check_CallBack(con, &pkt_Queue, false)) break;
+        
+        if(!xbee_check_CallBack(con, &pkt_Queue, true))
+            addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
 
         /* If there are remain some packet need to send in the Queue,        */
         /* send the packet                                                   */
         xbee_send_pkt(con, &pkt_Queue);
 
-        usleep(2000000);
+ 	//usleep(2000000);
         
         xbee_connector(&xbee, &con, &pkt_Queue);
     }
-
+    
+    printf("Stop xbee ...\n");
+    
     Free_Packet_Queue(&pkt_Queue);
 
     /* Close connection                                                      */
