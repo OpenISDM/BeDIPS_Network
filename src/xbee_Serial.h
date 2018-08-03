@@ -58,22 +58,80 @@ enum{ Remain , Ended };
 //----- SETUP Serial -----
 //-------------------------
 
-//Initialize xbee Serial connection and get the pointer of the xbee
-int xbee_Serial_init(int *xbee_datastream, char *xbee_device );
+/*
+ * xbee_Serial_init
+ *     Initialize Serial transmission.
+ * Parameter:
+ *     xbee_datastream: A pointer to catch zigbee datastream.
+ *     xbee_device: Defin it's device path.
+ * Return Value:
+ *     int: If return 0, everything work successfully.
+ *               If not 0, somthing wrong.
+ */
+ int xbee_Serial_init(int *xbee_datastream, char *xbee_device );
 
-//Send Serial command to xbee
+/*
+ * xbee_Serial_Tx
+ *     Send data to Serial.
+ * Parameter:
+ *     xbee_datastream: A pointer to catch zigbee datastream.
+ *     xbee_Serial_buffer: Data length.
+ *     Data: data we want to send.
+ * Return Value:
+ *     int: If return 0, everything work successfully.
+ *               If not 0, somthing wrong.
+ */
 int xbee_Serial_Tx(int *xbee_datastream, int xbee_Serial_buffer, char* Data);
 
-//Receive Serial command from xbee
-int xbee_Serial_Rx(int *xbee_datastream, int xbee_Serial_buffer, char* Data);
+/*
+ * xbee_Serial_Rx
+ *     Reading data from Serial.
+ * Parameter:
+ *     xbee_datastream: A pointer to catch zigbee datastream.
+ *     xbee_Serial_buffer: Data length we will read.
+ *     Data: for storec data we received.
+ * Return Value:
+ *     int: If return 0, everything work successfully.
+ *               If not 0, somthing wrong.
+ */
+ int xbee_Serial_Rx(int *xbee_datastream, int xbee_Serial_buffer, char* Data);
 
-//Receive Serial command from xbee and return it.
+/*
+ * xbee_Serial_Return
+ *     Reading data from Serial and return what it is read.
+ * Parameter:
+ *     xbee_datastream: A pointer to catch zigbee datastream.
+ *     xbee_Serial_buffer: Data length we will read.
+ * Return Value:
+ *     char: return the data read from Serial.
+ */
 char* xbee_Serial_Return(int *xbee_datastream, int xbee_Serial_buffer);
 
-//Send AT command to xbee
+/*
+ * xbee_Send_Command
+ *     Send command to zigbee and check it's result.
+ * Parameter:
+ *     xbee_datastream: A pointer to catch zigbee datastream.
+ *     xbee_Serial_buffer: Data length we will send.
+ *     Command: The command we want to send.
+ *     Command_Result: The expected result we will receive.
+ * Return Value:
+ *     int: If return 0, everything work successfully.
+ *          If not 0, somthing wrong.
+ */
 int xbee_Send_Command(int *xbee_datastream, int xbee_Serial_buffer, char* Command, char* Command_Result);
 
-//Send AT command to xbee
-char* xbee_Send_Command_result(int *xbee_datastream, int xbee_Serial_buffer, char* Command);
+/*
+ * xbee_Send_Command
+ *     Send command to zigbee and return it's result.
+ * Parameter:
+ *     xbee_datastream: A pointer to catch zigbee datastream.
+ *     xbee_Serial_buffer: Data length we will send.
+ *     Command: The command we want to send.
+ * Return Value:
+ *     char: If return result, everything work successfully.
+ *           If return NULL, somthing wrong.
+ */
+ char* xbee_Send_Command_result(int *xbee_datastream, int xbee_Serial_buffer, char* Command);
 
 #endif
