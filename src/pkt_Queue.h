@@ -165,10 +165,43 @@ void display_pkt(char* content, pPkt pkt);
  */
 void Fill_Address(char *raw, unsigned char* addr);
 
+/*
+ * address_compare
+ *      Compare the address whether is the same.
+ * Parameter:
+ *      addr1: the address we want to compare.
+ *      addr2: the address we want to compare.
+ * Return Value:
+ *      bool: if true, the same.
+ */
 bool address_compare(unsigned char* addr1,unsigned char* addr2);
 
+/*
+ * address_compare
+ *      Compare the address whether is the same.
+ * Parameter:
+ *      addr1: the src address we copy from.
+ *      addr2: the dest address we copy to.
+ * Return Value:
+ *      None
+ */
 void address_copy(unsigned char* src_addr, unsigned char* dest_addr);
 
+/*
+ * is_null
+ *      check if pkt_Queue is null.
+ * Parameter:
+ *      pkt_Queue: the pkt we stored in the Queue.
+ * Return Value:
+ *      None
+ */
 bool is_null(pkt_ptr pkt_Queue);
 
+/*
+ * queue-len
+ *      Count the length of the queue.
+ * Parameter:
+ *      pkt_Queue: The queue we want to count.
+ * Return Value:
+ *      int: the length of the Queue.
 int queue_len(pkt_ptr pkt_queue);
