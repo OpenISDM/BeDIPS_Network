@@ -280,6 +280,16 @@ void display_pkt(char* content, pkt_ptr pkt_queue, int pkt_num){
     return;
 }
 
+pPkt get_pkt(pkt_ptr pkt_queue){
+
+    if(is_null(pkt_queue)){
+        return NULL;
+    }
+    return &(pkt_queue -> Queue[pkt_queue -> front]);
+
+
+}
+
 bool is_null(pkt_ptr pkt_queue){
 
     if (pkt_queue->front == -1 && pkt_queue->rear == -1){

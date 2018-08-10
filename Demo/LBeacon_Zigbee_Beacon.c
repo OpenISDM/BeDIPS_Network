@@ -148,6 +148,25 @@ int main(void) {
         printf("Queue Length is %d\n", queue_len(&pkt_Queue));
 
         xbee_connector(&xbee, &con, &pkt_Queue, &Received_Queue);
+
+        pPkt tmppkt = get_pkt(&Received_Queue);
+        if (tmppkt != NULL){
+
+            printf("Get Address\n");
+            printf("Type : %s\n", type_to_str(tmppkt -> type));
+            printf("Address: %s\n", print_address(tmppkt -> address));
+            printf("Content: %s\n", tmppkt -> content);
+
+            /* If data[0] == '@', callback will be end.                       */
+            if(tmppkt -> content[0] == '@'){
+
+                xbee_conCallbackSet(con, NULL, NULL);
+                printf("*** DISABLED CALLBACK... ***\n");
+
+            }
+
+            delpkt(&Received_Queue);
+        }
     }
 
     printf("Stop xbee ...\n");

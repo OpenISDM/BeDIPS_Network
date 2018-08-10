@@ -163,6 +163,8 @@ char* print_address(unsigned char* address);
  */
 void display_pkt(char* content, pkt_ptr pkt_queue, int pkt_num);
 
+pPkt get_pkt(pkt_ptr pkt_queue);
+
 /*
  * Fill_address
  *     Convert the address from raw(char) to addr(Hex).

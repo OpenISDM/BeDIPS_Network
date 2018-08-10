@@ -240,14 +240,7 @@ void CallBack(struct xbee *xbee, struct xbee_con *con, struct xbee_pkt **pkt
 
         display_pkt("Receied Data", Received_Queue, Received_Queue->front);
 
-        /* If data[0] == '@', callback will be end.                          */
-        if ((*pkt)->data[0] == '@') {
-            xbee_conCallbackSet(con, NULL, NULL);
-            printf("*** DISABLED CALLBACK... ***\n");
-        }
         xbee_log(xbee, -1, "rx: [%s]\n", (*pkt)->data);
 
-        /* If data is received, how to deal with the data.                   */
-        printf("Received Data: %s\n",((*pkt)->data));
     }
 }
