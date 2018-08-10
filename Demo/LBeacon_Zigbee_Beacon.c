@@ -68,7 +68,7 @@ int main(void) {
     printf("Establishing Connection...\n");
 
     xbee_connector(&xbee, &con, &pkt_Queue);
-    
+
     printf("Connection Successfully Established\n");
 
     /* Start the chain reaction!                                             */
@@ -131,11 +131,11 @@ int main(void) {
         addpkt(&pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
         addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
         addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-    
+
     while(1) {
 
         if(xbee_check_CallBack(con, &pkt_Queue, false)) break;
-        
+
         if(!xbee_check_CallBack(con, &pkt_Queue, true))
             addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
 
@@ -143,13 +143,13 @@ int main(void) {
         /* send the packet                                                   */
         xbee_send_pkt(con, &pkt_Queue);
 
- 	//usleep(2000000);
-        
+        //usleep(2000000);
+
         xbee_connector(&xbee, &con, &pkt_Queue);
     }
-    
+
     printf("Stop xbee ...\n");
-    
+
     Free_Packet_Queue(&pkt_Queue);
 
     /* Close connection                                                      */
@@ -159,7 +159,7 @@ int main(void) {
     }
 
     Free_Packet_Queue(&pkt_Queue);
-    
+
     printf("Stop connection Succeeded\n");
 
     /* Close xbee                                                            */

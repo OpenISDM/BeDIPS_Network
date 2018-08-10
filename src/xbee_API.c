@@ -66,6 +66,7 @@ xbee_err xbee_initial(char* xbee_mode, char* xbee_device, int xbee_baudrate
         printf("Setting Failed\nret: %d (%s)\n", ret, xbee_errorToStr(ret));
         return ret;
     }
+    
     printf("Setting Log Level Success\nLog Level : %d\n",LogLevel);
 
     init_Packet_Queue(pkt_Queue);
@@ -76,13 +77,12 @@ xbee_err xbee_initial(char* xbee_mode, char* xbee_device, int xbee_baudrate
 xbee_err xbee_connector(struct xbee** xbee, struct xbee_con** con
                                                 , pkt_ptr pkt_Queue){
 
-
     bool Require_CallBack = true;
 
     if((ret = xbee_conValidate(*con)) == XBEE_ENONE){
     	if(is_null(pkt_Queue))
             return XBEE_ENONE;
-        else if(address_compare(pkt_Queue->front.next->address, pkt_Queue->address)){
+        else if(address_compare(pkt_Queue -> Queue[pkt_Queue -> front].address, pkt_Queue -> address)){
             printf("Same Address\n");
             return XBEE_ENONE;
         }
@@ -105,20 +105,24 @@ xbee_err xbee_connector(struct xbee** xbee, struct xbee_con** con
     /* If the packet Queue still remain packets, continue to fill address    */
 
     memset(&address, 0, sizeof(address));
-    memset(pkt_Queue->address, 0, sizeof(unsigned char) * 8);
+    memset(pkt_Queue -> address, 0, sizeof(unsigned char) * 8);
 
     address.addr64_enabled = 1;
 
     printf("Fill Address to the Connector\n");
     if(!is_null(pkt_Queue)){
-        for(int i=0 ; i < 8 ; i++){
-            address.addr64[i] = pkt_Queue->front.next->address[i];
-            pkt_Queue->address[i] = pkt_Queue->front.next->address[i];
-        }
-        Mode = pkt_Queue->front.next->type;
+
+        address_copy(pkt_Queue -> Queue[pkt_Queue -> front].address, address.addr64);
+        address_copy(pkt_Queue -> Queue[pkt_Queue -> front].address, pkt_Queue -> address);
+
+        Mode = pkt_Queue -> Queue[pkt_Queue -> front].type;
+
     }
+
     else{
+
         Mode = Data;
+
     }
 
     printf("Fill Address Success\n");
@@ -192,11 +196,11 @@ xbee_err xbee_connector(struct xbee** xbee, struct xbee_con** con
  */
 xbee_err xbee_send_pkt(struct xbee_con* con, pkt_ptr pkt_Queue){
     if(!(is_null(pkt_Queue))){
-        if(!(address_compare(pkt_Queue->front.next->address, pkt_Queue->address))){
+        if(!(address_compare(pkt_Queue -> Queue[pkt_Queue -> front].address, pkt_Queue -> address))){
             printf("Not the same, Error\n");
             return XBEE_ENONE;
         }
-        xbee_conTx(con, NULL, pkt_Queue->front.next->content);
+        xbee_conTx(con, NULL, pkt_Queue -> Queue[pkt_Queue -> front].content);
         delpkt(pkt_Queue);
     }else{
         printf("pkt_queue is NULL");
@@ -208,6 +212,7 @@ xbee_err xbee_send_pkt(struct xbee_con* con, pkt_ptr pkt_Queue){
 bool xbee_check_CallBack(struct xbee_con* con, pkt_ptr pkt_Queue, bool exclude_pkt_Queue){
     /* Pointer point_to_CallBack will store the callback function.       */
     /* If pointer point_to_CallBack is NULL, break the Loop              */
+
     void *point_to_CallBack;
 
     if ((ret = xbee_conCallbackGet(con, (xbee_t_conCallback*)
@@ -218,7 +223,9 @@ bool xbee_check_CallBack(struct xbee_con* con, pkt_ptr pkt_Queue, bool exclude_p
     if (point_to_CallBack == NULL && (exclude_pkt_Queue || is_null(pkt_Queue))){
         return true;
     }
+
     return false;
+
 }
 
 /*  Data Transmission                                                        */
