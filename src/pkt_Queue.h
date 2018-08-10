@@ -45,6 +45,8 @@
 #define Gateway   "0000000000000000"
 #define Broadcast "000000000000FFFF"
 
+#define MAX_PKT_LENGTH 1024
+
 enum {Data, Local_AT};
 
 /* packet format in the Queue */
@@ -60,17 +62,19 @@ typedef struct pkt {
     // Data
     char *content;
 
-    struct pkt *next;
 } sPkt;
 
 typedef sPkt* pPkt;
 
 typedef struct pkt_header {
 
-    // front point to the first of thr Pkt Queue
-    // rear  point to the end of the Pkt Queue
-    sPkt front;
-    sPkt rear;
+    // front store the location of the first of thr Pkt Queue
+    // rear  store the location of the end of the Pkt Queue
+    int front;
+
+    int rear;
+
+    sPkt Queue[MAX_PKT_LENGTH];
 
     unsigned char address[8];
 
@@ -152,7 +156,7 @@ char* print_address(unsigned char* address);
  * Return Value:
  *     None
  */
-void display_pkt(char* content, pPkt pkt);
+void display_pkt(char* content, pkt_ptr pkt_queue, int pkt_num);
 
 /*
  * Fill_address
@@ -177,7 +181,7 @@ void Fill_Address(char *raw, unsigned char* addr);
 bool address_compare(unsigned char* addr1,unsigned char* addr2);
 
 /*
- * address_compare
+ * address_copy
  *      Compare the address whether is the same.
  * Parameter:
  *      addr1: the src address we copy from.
@@ -193,9 +197,19 @@ void address_copy(unsigned char* src_addr, unsigned char* dest_addr);
  * Parameter:
  *      pkt_Queue: the pkt we stored in the Queue.
  * Return Value:
- *      None
+ *      bool: true if null.
  */
 bool is_null(pkt_ptr pkt_Queue);
+
+/*
+ * is_null
+ *      check if pkt_Queue is full.
+ * Parameter:
+ *      pkt_Queue: the pkt we stored in the Queue.
+ * Return Value:
+ *      bool: true if full.
+ */
+bool is_full(pkt_ptr pkt_Queue);
 
 /*
  * queue-len
@@ -204,4 +218,5 @@ bool is_null(pkt_ptr pkt_Queue);
  *      pkt_Queue: The queue we want to count.
  * Return Value:
  *      int: the length of the Queue.
+ */
 int queue_len(pkt_ptr pkt_queue);

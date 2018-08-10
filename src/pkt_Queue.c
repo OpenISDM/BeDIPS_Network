@@ -39,37 +39,51 @@
 
 void init_Packet_Queue(pkt_ptr pkt_queue){
 
-    pkt_queue->locker = false;
+    pkt_queue -> locker = false;
 
     bool status;
-    do{
-        status = pkt_queue -> locker;
-        pkt_queue -> locker = true;
-    }while(status == false);
 
-    pkt_queue -> front.next = pkt_queue -> rear.next = NULL;
+    do{
+
+        status = pkt_queue -> locker;
+
+        pkt_queue -> locker = true;
+
+    } while(status == false);
+
+    pkt_queue -> front = -1;
+
+    pkt_queue -> rear  = -1;
 
     pkt_queue -> locker = false;
 
 }
 
 void Free_Packet_Queue(pkt_ptr pkt_queue){
+
     while (!(is_null(pkt_queue))){
+
         delpkt(pkt_queue);
+
     }
+
     printf("pkt_queue released\n");
+
 }
 
 void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
+
     bool status;
+
     do{
-        status = pkt_queue->locker;
-        pkt_queue->locker = true;
-    }while(status == true);
+
+        status = pkt_queue -> locker;
+
+        pkt_queue -> locker = true;
+
+    } while(status == true);
 
     printf("addpkt start\n");
-
-    pPkt newpkt = malloc(sizeof(sPkt));
 
     printf("------Content------\n");
     printf("type    : %s\n", type_to_str(type));
@@ -77,56 +91,118 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
     printf("content : %s\n", content);
     printf("-------------------\n");
 
-    if(is_null(pkt_queue)) {
-        printf("queue is null\n");
-        pkt_queue->front.next = newpkt;
-        pkt_queue->rear.next = newpkt;
-    }
-    newpkt->type = type;
-    Fill_Address(raw_addr, newpkt->address);
-    int cont_len = strlen(content);
-    newpkt->content = malloc((cont_len+1) * sizeof(char));
-    memset(newpkt->content, 0, sizeof((cont_len + 1)*sizeof(char)));
-    strncpy(newpkt->content, content, cont_len);
-    newpkt->content[cont_len] = '\0';
-    newpkt->next = NULL;
-    if(pkt_queue->rear.next != NULL)
-        pkt_queue->rear.next->next = newpkt;
-    pkt_queue->rear.next = newpkt;
+    if(is_null(pkt_queue)){
 
-    display_pkt("Addedpkt", newpkt);
+        printf("queue is null\n");
+
+        pkt_queue -> front = 0;
+
+        pkt_queue -> rear  = 0;
+
+    }
+
+    else{
+
+        if(is_full(pkt_queue)){
+
+            printf("Queue is Full\n");
+
+            pkt_queue->locker = false;
+
+            return;
+
+        }
+
+        else{
+
+            if( pkt_queue -> rear == MAX_PKT_LENGTH - 1){
+
+                pkt_queue -> rear = 0;
+
+            }
+
+            else{
+
+                pkt_queue -> rear ++ ;
+
+            }
+        }
+    }
+
+    pkt_queue -> Queue[pkt_queue -> rear].type = type;
+
+    Fill_Address(raw_addr, pkt_queue -> Queue[pkt_queue -> rear].address);
+
+    int cont_len = strlen(content);
+
+    pkt_queue -> Queue[pkt_queue -> rear].content = malloc((cont_len + 1) * sizeof(char));
+
+    memset(pkt_queue -> Queue[pkt_queue -> rear].content, 0, sizeof((cont_len + 1)*sizeof(char)));
+
+    strncpy(pkt_queue -> Queue[pkt_queue -> rear].content, content, cont_len);
+
+    pkt_queue -> Queue[pkt_queue -> rear].content[cont_len] = '\0';
+
+    display_pkt("Addedpkt", pkt_queue, pkt_queue -> rear);
+
     pkt_queue->locker = false;
 
     return;
 }
 
  void delpkt(pkt_ptr pkt_queue) {
+
     bool status;
+
     do{
-        status = pkt_queue->locker;
-        pkt_queue->locker = true;
-    }while(status == true);
+
+        status = pkt_queue -> locker;
+
+        pkt_queue -> locker = true;
+
+    } while(status == true);
 
     if(is_null(pkt_queue)) {
+
         printf("Packet Queue is empty!\n");
-        pkt_queue->locker = false;
+
+        pkt_queue -> locker = false;
+
         return;
+
     }
 
-    sPkt tmpnode;
-    tmpnode.next = pkt_queue->front.next;
-    if(pkt_queue->front.next == pkt_queue->rear.next){
-        pkt_queue->front.next = NULL;
-        pkt_queue->rear.next = NULL;
+    display_pkt("deledpkt", pkt_queue, pkt_queue -> front);
+
+    printf("QQ\n");
+    free(pkt_queue -> Queue[pkt_queue -> front].content);
+    printf("QQ\n");
+    if(pkt_queue -> front == pkt_queue -> rear){
+
+        printf("front == rear\n");
+
+        pkt_queue -> front = -1;
+
+        pkt_queue -> rear  = -1;
+
     }
     else{
-        pkt_queue->front.next = pkt_queue->front.next->next;
+
+        if(pkt_queue -> front == MAX_PKT_LENGTH - 1){
+
+            pkt_queue -> front = 0;
+
+        }
+
+        else{
+
+            pkt_queue -> front += 1;
+
+            printf("pkt_queue -> front = %d\n", pkt_queue -> front);
+        }
+
     }
 
-    display_pkt("deledpkt", tmpnode.next);
-    free(tmpnode.next->content);
-    tmpnode.next->next = NULL;
-    free(tmpnode.next);
     pkt_queue->locker = false;
 
     return;
@@ -176,38 +252,72 @@ void address_copy(unsigned char* src_addr, unsigned char* dest_addr){
     memcpy(dest_addr, src_addr, 8);
 }
 
-void display_pkt(char* content, pPkt pkt){
-    if(pkt == NULL)
+void display_pkt(char* content, pkt_ptr pkt_queue, int pkt_num){
+
+    if(pkt_num == -1)
+
         return;
-    char* char_addr = print_address(pkt->address);
+
+    char* char_addr = print_address(pkt_queue -> Queue[pkt_num].address);
+
     printf("------ %12s ------\n",content);
-    printf("type    : %s\n", type_to_str(pkt->type));
+    printf("type    : %s\n", type_to_str(pkt_queue -> Queue[pkt_num].type));
     printf("address : %s\n", char_addr);
-    printf("content : %s\n", pkt->content);
+    printf("content : %s\n", pkt_queue -> Queue[pkt_num].content);
     printf("--------------------------\n");
+
     free(char_addr);
+
     return;
 }
 
 bool is_null(pkt_ptr pkt_queue){
-    if (pkt_queue->front.next == NULL && pkt_queue->rear.next == NULL){
+
+    if (pkt_queue->front == -1 && pkt_queue->rear == -1){
+
         return true;
+
     }
     return false;
 }
 
+bool is_full(pkt_ptr pkt_Queue){
+
+    if(pkt_Queue -> front == pkt_Queue -> rear + 1){
+
+        printf("Queue is Full.\n");
+
+        return true;
+
+    }else if(pkt_Queue -> front == 0 && pkt_Queue -> rear == MAX_PKT_LENGTH - 1){
+
+        printf("Queue is Full.\nfront == 0\n");
+
+        return true;
+
+    }else{
+
+        return false;
+
+    }
+}
+
 int queue_len(pkt_ptr pkt_queue){
-    int count = 0 ;
-    if (is_null(pkt_queue)){
-        printf("Queue is NULL\n");
+    if (pkt_queue -> front == 0 && pkt_queue -> rear == 0){
+
+        return 1;
+
+    }
+
+    else if(pkt_queue -> front == -1 && pkt_queue -> rear == -1){
+
         return 0;
+
     }
-    pPkt tmpnode;
-    tmpnode = pkt_queue->front.next;
-    while(tmpnode != pkt_queue->rear.next){
-        tmpnode = tmpnode->next;
-        count ++;
+
+    else{
+
+        return pkt_queue->rear - pkt_queue->front + 1;
+
     }
-    count ++;
-    return count;
 }
