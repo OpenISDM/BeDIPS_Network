@@ -39,7 +39,7 @@
 #include "xbee_API.h"
 
 xbee_err xbee_initial(char* xbee_mode, char* xbee_device, int xbee_baudrate
-                        , int LogLevel, struct xbee** xbee, pkt_ptr pkt_Queue){
+                        , int LogLevel, struct xbee** xbee, pkt_ptr pkt_Queue, pkt_ptr Received_Queue){
     printf("Start Connecting to xbee\n");
     printf("xbee Setup\n");
     printf("xbee Mode : %s\n",xbee_mode);
@@ -66,16 +66,18 @@ xbee_err xbee_initial(char* xbee_mode, char* xbee_device, int xbee_baudrate
         printf("Setting Failed\nret: %d (%s)\n", ret, xbee_errorToStr(ret));
         return ret;
     }
-    
+
     printf("Setting Log Level Success\nLog Level : %d\n",LogLevel);
 
     init_Packet_Queue(pkt_Queue);
+
+    init_Packet_Queue(Received_Queue);
 
     return ret;
 }
 
 xbee_err xbee_connector(struct xbee** xbee, struct xbee_con** con
-                                                , pkt_ptr pkt_Queue){
+                                                , pkt_ptr pkt_Queue, pkt_ptr Received_Queue){
 
     bool Require_CallBack = true;
 
@@ -172,12 +174,10 @@ xbee_err xbee_connector(struct xbee** xbee, struct xbee_con** con
     if ((ret = xbee_conSettings(*con, &settings, NULL)) != XBEE_ENONE)
                                                             return ret;
 
-    /*
-    if ((ret = xbee_conDataSet(*con, *xbee, NULL)) != XBEE_ENONE) {
+    if ((ret = xbee_conDataSet(*con, Received_Queue, NULL)) != XBEE_ENONE) {
         xbee_log(*xbee, -1, "xbee_conDataSet() returned: %d", ret);
         return ret;
     }
-    */
 
     printf("Connector Established\n");
 
@@ -231,8 +231,14 @@ bool xbee_check_CallBack(struct xbee_con* con, pkt_ptr pkt_Queue, bool exclude_p
 /*  Data Transmission                                                        */
 void CallBack(struct xbee *xbee, struct xbee_con *con, struct xbee_pkt **pkt
                                                             , void **data) {
+    pkt_ptr Received_Queue = (pkt_ptr)*data;
+
     printf("Enter CallBack Data\n");
-    if ((*pkt)->dataLen > 0) {
+    if (((*pkt) -> dataLen > 0 ) && (str_to_type((*pkt) -> conType) == Data)) {
+
+        addpkt(Received_Queue, str_to_type((*pkt) -> conType), print_address((*pkt) -> address.addr64), (*pkt)->data);
+
+        display_pkt("Receied Data", Received_Queue, Received_Queue->front);
 
         /* If data[0] == '@', callback will be end.                          */
         if ((*pkt)->data[0] == '@') {

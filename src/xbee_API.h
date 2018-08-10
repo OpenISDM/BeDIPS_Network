@@ -67,7 +67,7 @@ xbee_err ret;
  *               If not 0, somthing wrong.
  */
 xbee_err xbee_initial(char* xbee_mode, char* xbee_device, int xbee_baudrate
-                        , int LogLevel, struct xbee** xbee, pkt_ptr pkt_Queue);
+                        , int LogLevel, struct xbee** xbee, pkt_ptr pkt_Queue, pkt_ptr Received_Queue);
 
 
 /*
@@ -82,7 +82,7 @@ xbee_err xbee_initial(char* xbee_mode, char* xbee_device, int xbee_baudrate
  *               If not 0, somthing wrong.
  */
 xbee_err xbee_connector(struct xbee** xbee, struct xbee_con** con
-                                                , pkt_ptr pkt_Queue);
+                                                , pkt_ptr pkt_Queue, pkt_ptr Received_Queue);
 
 // A function for sending pkt to dest address.
 xbee_err xbee_send_pkt(struct xbee_con* con, pkt_ptr pkt_Queue);

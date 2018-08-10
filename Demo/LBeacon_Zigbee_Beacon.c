@@ -54,10 +54,10 @@ int main(void) {
 
     struct xbee_con *con;
 
-    spkt_ptr pkt_Queue;
+    spkt_ptr pkt_Queue, Received_Queue;
 
     xbee_initial(xbee_mode, xbee_device, xbee_baudrate
-                            , LogLevel, &xbee, &pkt_Queue);
+                            , LogLevel, &xbee, &pkt_Queue, &Received_Queue);
     printf("Start establishing Connection to xbee\n");
 
 
@@ -67,7 +67,7 @@ int main(void) {
 
     printf("Establishing Connection...\n");
 
-    xbee_connector(&xbee, &con, &pkt_Queue);
+    xbee_connector(&xbee, &con, &pkt_Queue, &Received_Queue);
 
     printf("Connection Successfully Established\n");
 
@@ -145,12 +145,16 @@ int main(void) {
 
         //usleep(2000000);
 
-        xbee_connector(&xbee, &con, &pkt_Queue);
+        printf("Queue Length is %d\n", queue_len(&pkt_Queue));
+
+        xbee_connector(&xbee, &con, &pkt_Queue, &Received_Queue);
     }
 
     printf("Stop xbee ...\n");
 
     Free_Packet_Queue(&pkt_Queue);
+    Free_Packet_Queue(&Received_Queue);
+
 
     /* Close connection                                                      */
     if ((ret = xbee_conEnd(con)) != XBEE_ENONE) {
@@ -159,6 +163,7 @@ int main(void) {
     }
 
     Free_Packet_Queue(&pkt_Queue);
+    Free_Packet_Queue(&Received_Queue);
 
     printf("Stop connection Succeeded\n");
 

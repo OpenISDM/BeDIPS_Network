@@ -230,6 +230,15 @@ char* type_to_str(int type){
     }
 }
 
+int str_to_type(const char* conType){
+    if(memcmp(conType, "Transmit Status", sizeof("Transmit Status")* sizeof(char))){
+        return Data;
+    }
+    else{
+        return -1;
+    }
+}
+
 void Fill_Address(char *raw,unsigned char* addr){
     for(int i = 0;i < 8;i++){
         char tmp[2];

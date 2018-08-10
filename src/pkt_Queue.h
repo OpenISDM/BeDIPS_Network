@@ -141,6 +141,8 @@ void delpkt(pkt_ptr pkt_queue);
  */
 char* type_to_str(int type);
 
+int str_to_type(const char* conType);
+
 /*
  * print_address
  *     Convert hex type address to char type address.
