@@ -42,6 +42,9 @@
 #include <string.h>
 #include <unistd.h>
 
+#ifndef pkt_Queue_H
+#define pkt_Queue_H
+
 #define Gateway   "0000000000000000"
 #define Broadcast "000000000000FFFF"
 
@@ -220,3 +223,5 @@ bool is_full(pkt_ptr pkt_Queue);
  *      int: the length of the Queue.
  */
 int queue_len(pkt_ptr pkt_queue);
+
+#endif
