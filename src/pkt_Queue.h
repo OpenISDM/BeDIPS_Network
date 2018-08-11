@@ -55,7 +55,7 @@ enum {Data, Local_AT};
 /* packet format in the Queue */
 typedef struct pkt {
 
-    //"Data"
+    //"Data" type
     int type;
 
     // Brocast:     000000000000FFFF;
@@ -88,11 +88,11 @@ typedef struct pkt_header {
 typedef spkt_ptr * pkt_ptr;
 
 /* init_Packet_Queue
- *  Initialize Queue for packets
+ *      Initialize Queue for packets
  * Parameter:
- *  pkt_queue : A struct stored pointers of the first and the last of packet.
+ *      pkt_queue : A struct stored pointers of the first and the last of packet.
  * Return Value:
- *  None
+ *      None
  */
 void init_Packet_Queue(pkt_ptr pkt_queue);
 
@@ -100,7 +100,7 @@ void init_Packet_Queue(pkt_ptr pkt_queue);
  * Free_Packet_Queue
  *     Release all the packets in the packet queue, the header and
  *     the tail of the packet queue and release the struct stored the pointer of
- *      the packet queue.
+ *     the packet queue.
  * Parameter:
  *     pkt_queue : A struct stored the first and the last of the packet queue.
  * Return Value:
@@ -112,7 +112,7 @@ void Free_Packet_Queue(pkt_ptr pkt_queue);
  * addpkt
  *     Add new packet into the packet queue we assigned.
  * Parameter:
- *     pkt_queue : A struct stored the first and the last of the packet queue.
+ *     pkt_Queue: The Queue we store pkt.
  *     type      : Record the type of packets working environment.
  *     raw_addr  : The destnation address of the packet.
  *     content   : The content we decided to send.
@@ -125,7 +125,7 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content);
  * delpkt
  *     delete the first of the packet queue we assigned.
  * Parameter:
- *     pkt_queue : A struct stored the first and the last of the packet queue.
+ *     pkt_Queue: The Queue we store pkt.
  * Return Value:
  *     None
  */
@@ -141,6 +141,14 @@ void delpkt(pkt_ptr pkt_queue);
  */
 char* type_to_str(int type);
 
+/*
+ * str_to_type
+ *     TO convert type name to type num.
+ * Parameter:
+ *     conType: A string to tell the connection type.
+ * Return Value:
+ *     Return a int which is it's type num.
+ */
 int str_to_type(const char* conType);
 
 /*
@@ -163,6 +171,13 @@ char* print_address(unsigned char* address);
  */
 void display_pkt(char* content, pkt_ptr pkt_queue, int pkt_num);
 
+/* get_pkt
+ *     get the first of the pkt_queue.
+ * Parameter:
+ *     pkt_Queue: The Queue we store pkt.
+ * Return Value:
+ *     pPkt: the pkt address.
+ */
 pPkt get_pkt(pkt_ptr pkt_queue);
 
 /*

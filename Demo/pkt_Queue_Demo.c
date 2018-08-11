@@ -59,7 +59,8 @@ int main(){
     display_pkt("Test-front", &pkt_queue, pkt_queue.front);
     display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
     address_copy(pkt_queue.Queue[pkt_queue.front].address, pkt_queue.address);
-    if(address_compare(pkt_queue.Queue[pkt_queue.front].address, pkt_queue.address)){
+    if(address_compare(pkt_queue.Queue[pkt_queue.front].address
+                     , pkt_queue.address)){
         printf("The Same\n");
     }
 

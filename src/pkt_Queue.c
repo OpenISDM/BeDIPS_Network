@@ -135,9 +135,11 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
 
     int cont_len = strlen(content);
 
-    pkt_queue -> Queue[pkt_queue -> rear].content = malloc((cont_len + 1) * sizeof(char));
+    pkt_queue -> Queue[pkt_queue -> rear].content =
+                                          malloc((cont_len + 1) * sizeof(char));
 
-    memset(pkt_queue -> Queue[pkt_queue -> rear].content, 0, sizeof((cont_len + 1)*sizeof(char)));
+    memset(pkt_queue -> Queue[pkt_queue -> rear].content, 0
+         , sizeof((cont_len + 1)*sizeof(char)));
 
     strncpy(pkt_queue -> Queue[pkt_queue -> rear].content, content, cont_len);
 
@@ -174,9 +176,8 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
 
     display_pkt("deledpkt", pkt_queue, pkt_queue -> front);
 
-    printf("QQ\n");
     free(pkt_queue -> Queue[pkt_queue -> front].content);
-    printf("QQ\n");
+
     if(pkt_queue -> front == pkt_queue -> rear){
 
         printf("front == rear\n");
@@ -209,56 +210,88 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
 }
 
 char* print_address(unsigned char* address){
+
     char* char_addr = malloc(sizeof(char)*17);
+
     memset(char_addr, 0, sizeof(char)*17);
+
     sprintf(char_addr, "%02x%02x%02x%02x%02x%02x%02x%02x", address[0]
     , address[1], address[2], address[3], address[4], address[5], address[6]
     , address[7]);
+
     return char_addr;
 }
 
 char* type_to_str(int type){
+
     switch(type){
+
         case Data:
+
             return "Data";
+
             break;
+
         case Local_AT:
+
             return "Local AT";
+
             break;
+
         default:
+
             return "UNKNOWN";
     }
 }
 
 int str_to_type(const char* conType){
-    if(memcmp(conType, "Transmit Status", sizeof("Transmit Status")* sizeof(char))){
+
+    if(memcmp(conType, "Transmit Status"
+            , sizeof("Transmit Status")* sizeof(char)) == 0){
+
         return Data;
+
     }
+
     else{
+
         return -1;
+
     }
+
 }
 
 void Fill_Address(char *raw,unsigned char* addr){
+
     for(int i = 0;i < 8;i++){
+
         char tmp[2];
+
         tmp[0] = raw[i*2];
+
         tmp[1] = raw[i*2+1];
+
         addr[i] = strtol(tmp,(void*) NULL, 16);
-        printf("%2x",addr[i]);
+
     }
-    printf("\n");
+
 }
 
 bool address_compare(unsigned char* addr1,unsigned char* addr2){
-    if (memcmp(addr1, addr2, 8) == 0){
-        return true;
-    }
-    return false;
-}
 
+    if (memcmp(addr1, addr2, 8) == 0){
+
+        return true;
+
+    }
+
+    return false;
+
+}
 void address_copy(unsigned char* src_addr, unsigned char* dest_addr){
+
     memcpy(dest_addr, src_addr, 8);
+
 }
 
 void display_pkt(char* content, pkt_ptr pkt_queue, int pkt_num){
@@ -283,8 +316,11 @@ void display_pkt(char* content, pkt_ptr pkt_queue, int pkt_num){
 pPkt get_pkt(pkt_ptr pkt_queue){
 
     if(is_null(pkt_queue)){
+
         return NULL;
+
     }
+
     return &(pkt_queue -> Queue[pkt_queue -> front]);
 
 
@@ -297,7 +333,9 @@ bool is_null(pkt_ptr pkt_queue){
         return true;
 
     }
+
     return false;
+
 }
 
 bool is_full(pkt_ptr pkt_Queue){
@@ -308,13 +346,17 @@ bool is_full(pkt_ptr pkt_Queue){
 
         return true;
 
-    }else if(pkt_Queue -> front == 0 && pkt_Queue -> rear == MAX_PKT_LENGTH - 1){
+    }
+
+    else if(pkt_Queue -> front == 0 && pkt_Queue -> rear == MAX_PKT_LENGTH - 1){
 
         printf("Queue is Full.\nfront == 0\n");
 
         return true;
 
-    }else{
+    }
+
+    else{
 
         return false;
 
@@ -322,6 +364,7 @@ bool is_full(pkt_ptr pkt_Queue){
 }
 
 int queue_len(pkt_ptr pkt_queue){
+
     if (pkt_queue -> front == 0 && pkt_queue -> rear == 0){
 
         return 1;

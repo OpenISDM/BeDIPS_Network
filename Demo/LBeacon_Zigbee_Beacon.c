@@ -137,6 +137,7 @@ int main(void) {
         if(xbee_check_CallBack(con, &pkt_Queue, false)) break;
 
         if(!xbee_check_CallBack(con, &pkt_Queue, true))
+
             addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
 
         /* If there are remain some packet need to send in the Queue,        */
