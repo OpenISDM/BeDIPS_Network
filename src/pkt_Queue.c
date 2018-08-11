@@ -49,7 +49,7 @@ void init_Packet_Queue(pkt_ptr pkt_queue){
 
         pkt_queue -> locker = true;
 
-    } while(status == false);
+    } while(status == true);
 
     pkt_queue -> front = -1;
 
@@ -322,7 +322,6 @@ pPkt get_pkt(pkt_ptr pkt_queue){
     }
 
     return &(pkt_queue -> Queue[pkt_queue -> front]);
-
 
 }
 
