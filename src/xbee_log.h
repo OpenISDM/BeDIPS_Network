@@ -57,21 +57,25 @@ typedef struct xbee_log_header{
 
     char* log_location;
 
+    char* log_filename;
+
     bool locker;
 
 } sxbee_log;
 
 typedef sxbee_log* pxbee_log;
 
-int init_log_file(pxbee_log xbee_log, char* log_location);
+int init_log_file(pxbee_log xbee_log, char* log_location, char* log_filename);
 
 int add_log(pxbee_log xbee_log, const char* filename, const int line
           , const char* funcname, char* content, bool in_lock);
 
 int del_older_log(pxbee_log xbee_log);
 
-int open_log_file(pxbee_log xbee_log, char* filename, char* type, bool in_lock);
+int open_log_file(pxbee_log xbee_log, char* type, bool in_lock);
 
 int close_log_file(pxbee_log xbee_log);
+
+int release_log_struct(pxbee_log xbee_log);
 
 #endif

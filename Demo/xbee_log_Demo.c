@@ -41,13 +41,13 @@ int main(){
 
     sxbee_log xbee_log;
 
-    init_log_file(&xbee_log, ".");
+    init_log_file(&xbee_log, ".", "xbee_log.txt");
 
-    open_log_file(&xbee_log, "xbee_log.txt", "a", false);
+    open_log_file(&xbee_log, "a", false);
 
     add_log(&xbee_log, collect_info, "Test_Log", false);
 
-    close_log_file(&xbee_log);
+    release_log_struct(&xbee_log);
 
     return 0;
 }
