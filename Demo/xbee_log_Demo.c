@@ -43,8 +43,6 @@ int main(){
 
     init_log_file(&xbee_log, ".", "xbee_log.txt");
 
-    open_log_file(&xbee_log, "a", false);
-
     add_log(&xbee_log, collect_info, "Test_Log", false);
 
     release_log_struct(&xbee_log);

@@ -89,7 +89,7 @@ int add_log(pxbee_log xbee_log, const char* filename, const int line, const char
         xbee_log -> locker = true;
 
     } while(status == true && !in_lock);
-
+    printf("QQ\n");
     bool opend = false;
 
     time_t timep;
@@ -98,7 +98,7 @@ int add_log(pxbee_log xbee_log, const char* filename, const int line, const char
 
     if(xbee_log -> log_ptr == NULL){
 
-        open_log_file(xbee_log, "a", in_lock);
+        open_log_file(xbee_log, "a", true);
 
     }
 
