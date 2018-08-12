@@ -376,6 +376,8 @@ pPkt get_pkt(pkt_ptr pkt_queue){
         return NULL;
 
     }
+    
+    display_pkt("Get_pkt", pkt_queue, pkt_queue -> front);
 
     return &(pkt_queue -> Queue[pkt_queue -> front]);
 

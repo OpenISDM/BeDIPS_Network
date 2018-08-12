@@ -39,7 +39,7 @@
 #include "xbee_API.h"
 
 xbee_err xbee_initial(char* xbee_mode, char* xbee_device, int xbee_baudrate
-                    , int LogLevel, struct xbee** xbee, pkt_ptr pkt_Queue
+                    , struct xbee** xbee, pkt_ptr pkt_Queue
                     , pkt_ptr Received_Queue){
 
     printf("Start Connecting to xbee\n");
@@ -69,19 +69,6 @@ xbee_err xbee_initial(char* xbee_mode, char* xbee_device, int xbee_baudrate
         return ret;
 
     }
-
-    printf("Start Setting up Log Level\n");
-
-    /* Setup Log Level 0:disable Log, 100:enable Log                         */
-    if ((ret = xbee_logLevelSet(*xbee, LogLevel)) != XBEE_ENONE) {
-
-        printf("Setting Failed\nret: %d (%s)\n", ret, xbee_errorToStr(ret));
-
-        return ret;
-
-    }
-
-    printf("Setting Log Level Success\nLog Level : %d\n",LogLevel);
 
     init_Packet_Queue(pkt_Queue);
 
@@ -306,6 +293,42 @@ bool xbee_check_CallBack(struct xbee_con* con, pkt_ptr pkt_Queue
     return false;
 
 }
+
+xbee_err xbee_release(struct xbee* xbee, struct xbee_con* con
+                      , pkt_ptr pkt_Queue, pkt_ptr Received_Queue){
+
+    add_log(&pkt_Queue -> xbee_log, collect_info, "Stop xbee ...", false);
+
+    /* Close connection                                                      */
+    if(xbee_conValidate(con) != XBEE_ENONE){
+
+        if ((ret = xbee_conEnd(con)) != XBEE_ENONE) {
+
+            char ret_value[100];
+
+            memset(ret_value, 0, 100);
+
+            sprintf(ret_value, "xbee_conEnd() returned: %d.", ret);
+
+            add_log(&pkt_Queue -> xbee_log, collect_info, ret_value, false);
+
+        }
+    }
+
+    Free_Packet_Queue(pkt_Queue);
+
+    Free_Packet_Queue(Received_Queue);
+
+    add_log(&pkt_Queue -> xbee_log, collect_info, "Stop connection Succeeded.", false);
+
+    /* Close xbee                                                            */
+    xbee_shutdown(xbee);
+
+    add_log(&pkt_Queue -> xbee_log, collect_info, "Shutdown Xbee Succeeded.", false);
+
+    release_log_struct(&pkt_Queue -> xbee_log);
+
+    }
 
 /*  Data Transmission                                                        */
 void CallBack(struct xbee *xbee, struct xbee_con *con, struct xbee_pkt **pkt

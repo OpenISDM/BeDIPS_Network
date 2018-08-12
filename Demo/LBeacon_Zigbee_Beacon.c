@@ -48,8 +48,6 @@ int main(void) {
 
     int xbee_baudrate = 9600;
 
-    int LogLevel = 100;
-
     struct xbee *xbee;
 
     struct xbee_con *con;
@@ -57,25 +55,36 @@ int main(void) {
     spkt_ptr pkt_Queue, Received_Queue;
 
     xbee_initial(xbee_mode, xbee_device, xbee_baudrate
-                            , LogLevel, &xbee, &pkt_Queue, &Received_Queue);
-    printf("Start establishing Connection to xbee\n");
+               , &xbee, &pkt_Queue, &Received_Queue);
 
+    add_log(&pkt_Queue.xbee_log, collect_info, "Start establishing Connection to xbee."
+          , false);
 
     /*--------------Configuration for connection in Data mode----------------*/
     /* In this mode we aim to get Data.                                      */
     /*-----------------------------------------------------------------------*/
 
-    printf("Establishing Connection...\n");
+    add_log(&pkt_Queue.xbee_log, collect_info, "Establishing Connection..."
+          , false);
 
     xbee_connector(&xbee, &con, &pkt_Queue, &Received_Queue);
 
-    printf("Connection Successfully Established\n");
-
-    /* Start the chain reaction!                                             */
+    add_log(&pkt_Queue.xbee_log, collect_info, "Connection Successfully Established."
+          , false);
 
     if((ret = xbee_conValidate(con)) != XBEE_ENONE){
-        xbee_log(xbee, 1, "con unvalidate ret : %d", ret);
-        return ret;
+        char ret_value[50];
+
+        memset(ret_value, 0, 50);
+
+        sprintf(ret_value, "con unvalidate ret : %d", ret);
+
+        add_log(&pkt_Queue.xbee_log, collect_info, ret_value, false);
+
+        xbee_release(xbee, con, &pkt_Queue, &Received_Queue);
+
+        return -1;
+        
     }
 
         addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
@@ -131,6 +140,8 @@ int main(void) {
         addpkt(&pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
         addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
         addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+
+    /* Start the chain reaction!                                             */
 
     while(1) {
 
@@ -146,22 +157,17 @@ int main(void) {
 
         //usleep(2000000);
 
-        printf("Queue Length is %d\n", queue_len(&pkt_Queue));
-
         xbee_connector(&xbee, &con, &pkt_Queue, &Received_Queue);
 
         pPkt tmppkt = get_pkt(&Received_Queue);
-        if (tmppkt != NULL){
 
-            printf("Get Address\n");
-            printf("Type : %s\n", type_to_str(tmppkt -> type));
-            printf("Address: %s\n", print_address(tmppkt -> address));
-            printf("Content: %s\n", tmppkt -> content);
+        if (tmppkt != NULL){
 
             /* If data[0] == '@', callback will be end.                       */
             if(tmppkt -> content[0] == '@'){
 
                 xbee_conCallbackSet(con, NULL, NULL);
+
                 printf("*** DISABLED CALLBACK... ***\n");
 
             }
@@ -170,26 +176,7 @@ int main(void) {
         }
     }
 
-    printf("Stop xbee ...\n");
-
-    Free_Packet_Queue(&pkt_Queue);
-    Free_Packet_Queue(&Received_Queue);
-
-
-    /* Close connection                                                      */
-    if ((ret = xbee_conEnd(con)) != XBEE_ENONE) {
-        xbee_log(xbee, 10, "xbee_conEnd() returned: %d", ret);
-        return ret;
-    }
-
-    Free_Packet_Queue(&pkt_Queue);
-    Free_Packet_Queue(&Received_Queue);
-
-    printf("Stop connection Succeeded\n");
-
-    /* Close xbee                                                            */
-    xbee_shutdown(xbee);
-    printf("Shutdown Xbee Succeeded\n");
+    xbee_release(xbee, con, &pkt_Queue, &Received_Queue);
 
     return 0;
 }
