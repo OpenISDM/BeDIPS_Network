@@ -71,6 +71,15 @@ int init_log_file(pxbee_log xbee_log, char* log_location, char* log_filename){
 
     add_log(xbee_log, collect_info, "init_log_file Success", true);
 
+    char concat_location[1000];
+
+    sprintf(concat_location,"%s/%s\0", xbee_log -> log_location
+          , xbee_log -> log_filename);
+
+    add_log(xbee_log, collect_info, "::Log_Location::", true);
+
+    add_log(xbee_log, collect_info, concat_location, true);
+
     xbee_log -> locker = false;
 
     return 0;
@@ -89,7 +98,7 @@ int add_log(pxbee_log xbee_log, const char* filename, const int line, const char
         xbee_log -> locker = true;
 
     } while(status == true && !in_lock);
-    printf("QQ\n");
+
     bool opend = false;
 
     time_t timep;
@@ -160,9 +169,6 @@ int open_log_file(pxbee_log xbee_log, char* type, bool in_lock){
 
     xbee_log -> log_ptr = fopen(concat_location, type);
 
-    add_log(xbee_log, collect_info, "::Log_Location::", true);
-    add_log(xbee_log, collect_info, concat_location, true);
-
     xbee_log -> locker = false;
 
     return 0;
@@ -189,8 +195,6 @@ int close_log_file(pxbee_log xbee_log){
 
     }
 
-    add_log(xbee_log, collect_info, "close_log_file Success", true);
-
     fclose(xbee_log -> log_ptr);
 
     xbee_log -> log_ptr = NULL;
@@ -213,14 +217,13 @@ int release_log_struct(pxbee_log xbee_log){
 
     } while(status == true);
 
-    add_log(xbee_log, collect_info, "release_log_struct ...", true);
+    add_log(xbee_log, collect_info, "release_log_struct ... END", true);
 
     free(xbee_log -> log_filename );
 
     free(xbee_log -> log_location);
 
     xbee_log -> locker = false;
-
 
     return 0;
 }

@@ -41,6 +41,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <unistd.h>
+#include "xbee_log.h"
 
 #ifndef pkt_Queue_H
 #define pkt_Queue_H
@@ -78,6 +79,8 @@ typedef struct pkt_header {
     int rear;
 
     sPkt Queue[MAX_PKT_LENGTH];
+
+    sxbee_log xbee_log;
 
     unsigned char address[8];
 
