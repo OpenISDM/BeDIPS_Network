@@ -57,29 +57,21 @@ int main(void) {
     xbee_initial(xbee_mode, xbee_device, xbee_baudrate
                , &xbee, &pkt_Queue, &Received_Queue);
 
-    add_log(&pkt_Queue.xbee_log, collect_info, "Start establishing Connection to xbee."
-          , false);
+    printf("Start establishing Connection to xbee.");
 
     /*--------------Configuration for connection in Data mode----------------*/
     /* In this mode we aim to get Data.                                      */
     /*-----------------------------------------------------------------------*/
 
-    add_log(&pkt_Queue.xbee_log, collect_info, "Establishing Connection..."
-          , false);
+    printf("Establishing Connection...\n");
 
     xbee_connector(&xbee, &con, &pkt_Queue, &Received_Queue);
 
-    add_log(&pkt_Queue.xbee_log, collect_info, "Connection Successfully Established."
-          , false);
+    printf("Connection Successfully Established.\n");
 
     if((ret = xbee_conValidate(con)) != XBEE_ENONE){
-        char ret_value[50];
 
-        memset(ret_value, 0, 50);
-
-        sprintf(ret_value, "con unvalidate ret : %d", ret);
-
-        add_log(&pkt_Queue.xbee_log, collect_info, ret_value, false);
+        printf("con unvalidate ret : %d\n", ret);
 
         xbee_release(xbee, con, &pkt_Queue, &Received_Queue);
 
@@ -175,7 +167,7 @@ int main(void) {
             delpkt(&Received_Queue);
 
         }
-        
+
     }
 
     xbee_release(xbee, con, &pkt_Queue, &Received_Queue);

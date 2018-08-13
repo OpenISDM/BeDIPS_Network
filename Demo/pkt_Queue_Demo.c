@@ -45,12 +45,12 @@ int main(){
     init_Packet_Queue(&pkt_queue);
 
     if(is_null(&pkt_queue)){
-        add_log(&pkt_queue.xbee_log, collect_info, "Queue is NULL.", false);
+        printf("Queue is NULL.\n");
     }
 
     char len[10];
 
-    add_log(&pkt_queue.xbee_log, collect_info, "add and delete recursively", false);
+    printf("add and delete recursively.\n");
 
     addpkt(&pkt_queue, Data, "0123456789ABCDEF", "1");
 
@@ -60,7 +60,7 @@ int main(){
     address_copy(pkt_queue.Queue[pkt_queue.front].address, pkt_queue.address);
     if(address_compare(pkt_queue.Queue[pkt_queue.front].address
                      , pkt_queue.address)){
-        add_log(&pkt_queue.xbee_log, collect_info, "Address The Same.", false);
+        printf("Address The Same.\n");
     }
 
     display_pkt("Test-front", &pkt_queue, pkt_queue.front);
@@ -68,7 +68,7 @@ int main(){
 
     delpkt(&pkt_queue);
 
-    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "2");
+    addpkt(&pkt_queue, Data,"0123456789ABCDEF", "2");
 
     display_pkt("Test-front", &pkt_queue, pkt_queue.front);
     display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
@@ -125,7 +125,7 @@ int main(){
 
     delpkt(&pkt_queue);
 
-    add_log(&pkt_queue.xbee_log, collect_info, "Add * 3.", false);
+    printf("Add * 3.\n");
 
     display_pkt("Test-front", &pkt_queue, pkt_queue.front);
     display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
@@ -150,7 +150,7 @@ int main(){
     display_pkt("Test-front", &pkt_queue, pkt_queue.front);
     display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
 
-    add_log(&pkt_queue.xbee_log, collect_info, "Add * 2.", false);
+    printf("Add * 2.\n");
 
     display_pkt("Test-front", &pkt_queue, pkt_queue.front);
     display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
@@ -186,8 +186,6 @@ int main(){
     display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
 
     Free_Packet_Queue(&pkt_queue);
-
-    release_log_struct(&pkt_queue.xbee_log);
 
     return 0;
 }

@@ -42,14 +42,6 @@ xbee_err xbee_initial(char* xbee_mode, char* xbee_device, int xbee_baudrate
                     , struct xbee** xbee, pkt_ptr pkt_Queue
                     , pkt_ptr Received_Queue){
 
-    printf("Start Connecting to xbee\n");
-
-    printf("xbee Setup\n");
-
-    printf("xbee Mode : %s\n",xbee_mode);
-    printf("xbee_device : %s\n", xbee_device);
-    printf("xbee_baudrate : %d\n", xbee_baudrate);
-
     if ((ret = xbee_setup(xbee, xbee_mode, xbee_device, xbee_baudrate))
                        != XBEE_ENONE) {
 
@@ -154,7 +146,7 @@ xbee_err xbee_connector(struct xbee** xbee, struct xbee_con** con
 
         if((ret = xbee_conNew(*xbee, con, strMode, NULL)) != XBEE_ENONE) {
 
-            xbee_log(*xbee, 1, "xbee_conNew() returned: %d (%s)", ret
+            xbee_log(*xbee, 10, "xbee_conNew() returned: %d (%s)", ret
                                               , xbee_errorToStr(ret));
 
             return ret;
@@ -169,7 +161,7 @@ xbee_err xbee_connector(struct xbee** xbee, struct xbee_con** con
 
         if((ret = xbee_conNew(*xbee, con, strMode, &address)) != XBEE_ENONE) {
 
-            xbee_log(*xbee, 1, "xbee_conNew() returned: %d (%s)", ret
+            xbee_log(*xbee, 10, "xbee_conNew() returned: %d (%s)", ret
                                               , xbee_errorToStr(ret));
 
             return ret;
@@ -193,7 +185,7 @@ xbee_err xbee_connector(struct xbee** xbee, struct xbee_con** con
         /* Set CallBack Function to call CallBack if packet received          */
         if((ret = xbee_conCallbackSet(*con, CallBack, NULL)) != XBEE_ENONE) {
 
-            xbee_log(*xbee, 1, "xbee_conCallbackSet() returned: %d", ret);
+            xbee_log(*xbee, 10, "xbee_conCallbackSet() returned: %d", ret);
 
             return ret;
 
@@ -203,7 +195,7 @@ xbee_err xbee_connector(struct xbee** xbee, struct xbee_con** con
 
     if((ret = xbee_conValidate(*con)) != XBEE_ENONE){
 
-        xbee_log(*xbee, 1, "con unvalidate ret : %d", ret);
+        xbee_log(*xbee, 10, "con unvalidate ret : %d", ret);
 
         return ret;
 
@@ -220,7 +212,7 @@ xbee_err xbee_connector(struct xbee** xbee, struct xbee_con** con
 
     if ((ret = xbee_conDataSet(*con, Received_Queue, NULL)) != XBEE_ENONE) {
 
-        xbee_log(*xbee, -1, "xbee_conDataSet() returned: %d", ret);
+        xbee_log(*xbee, 10, "xbee_conDataSet() returned: %d", ret);
 
         return ret;
 
@@ -297,7 +289,7 @@ bool xbee_check_CallBack(struct xbee_con* con, pkt_ptr pkt_Queue
 xbee_err xbee_release(struct xbee* xbee, struct xbee_con* con
                       , pkt_ptr pkt_Queue, pkt_ptr Received_Queue){
 
-    add_log(&pkt_Queue -> xbee_log, collect_info, "Stop xbee ...", false);
+    printf("Stop xbee ...\n");
 
     /* Close connection                                                      */
     if(xbee_conValidate(con) != XBEE_ENONE){
@@ -308,9 +300,7 @@ xbee_err xbee_release(struct xbee* xbee, struct xbee_con* con
 
             memset(ret_value, 0, 100);
 
-            sprintf(ret_value, "xbee_conEnd() returned: %d.", ret);
-
-            add_log(&pkt_Queue -> xbee_log, collect_info, ret_value, false);
+            printf("xbee_conEnd() returned: %d.\n", ret);
 
         }
     }
@@ -319,14 +309,12 @@ xbee_err xbee_release(struct xbee* xbee, struct xbee_con* con
 
     Free_Packet_Queue(Received_Queue);
 
-    add_log(&pkt_Queue -> xbee_log, collect_info, "Stop connection Succeeded.", false);
+    printf("Stop connection Succeeded.\n");
 
     /* Close xbee                                                            */
     xbee_shutdown(xbee);
 
-    add_log(&pkt_Queue -> xbee_log, collect_info, "Shutdown Xbee Succeeded.", false);
-
-    release_log_struct(&pkt_Queue -> xbee_log);
+    printf("Shutdown Xbee Succeeded.\n");
 
     }
 
@@ -345,7 +333,8 @@ void CallBack(struct xbee *xbee, struct xbee_con *con, struct xbee_pkt **pkt
 
         display_pkt("Receied Data", Received_Queue, Received_Queue->front);
 
-        xbee_log(xbee, -1, "rx: [%s]\n", (*pkt)->data);
+        xbee_log(xbee, 10, "rx: [%s]\n", (*pkt)->data);
+
 
     }
 

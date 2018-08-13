@@ -43,7 +43,6 @@
 #include <unistd.h>
 #include <xbee.h>
 #include "pkt_Queue.h"
-#include "xbee_log.h"
 
 #ifndef xbee_API_H
 #define xbee_API_H
