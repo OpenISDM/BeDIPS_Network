@@ -83,7 +83,7 @@ xbee_err xbee_initial(char* xbee_mode, char* xbee_device, int xbee_baudrate
  *     xbee_err: If return 0, everything work successfully.
  *               If not 0, somthing wrong.
  */
-xbee_err xbee_connector(struct xbee** xbee, struct xbee_con** con
+xbee_err xbee_connector(struct xbee* xbee, struct xbee_con* con
                       , pkt_ptr pkt_Queue, pkt_ptr Received_Queue);
 
 /* xbee_send_pkt

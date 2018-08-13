@@ -149,7 +149,7 @@ int main(void) {
 
         //usleep(2000000);
 
-        xbee_connector(&xbee, &con, &pkt_Queue, &Received_Queue);
+        xbee_connector(xbee, con, &pkt_Queue, &Received_Queue);
 
         pPkt tmppkt = get_pkt(&Received_Queue);
 
