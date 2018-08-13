@@ -331,7 +331,7 @@ void CallBack(struct xbee *xbee, struct xbee_con *con, struct xbee_pkt **pkt
         addpkt(Received_Queue, str_to_type((*pkt) -> conType)
              , print_address((*pkt) -> address.addr64), (*pkt)->data);
 
-        display_pkt("Receied Data", Received_Queue, Received_Queue->front);
+        display_pkt("Received Data", Received_Queue, Received_Queue->front);
 
         xbee_log(xbee, 10, "rx: [%s]\n", (*pkt)->data);
 
