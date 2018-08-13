@@ -74,7 +74,7 @@ xbee_err xbee_connector(struct xbee* xbee, struct xbee_con* con
 
     bool Require_CallBack = true;
 
-    if((ret = xbee_conValidate(*con)) == XBEE_ENONE){
+    if((ret = xbee_conValidate(con)) == XBEE_ENONE){
 
     	if(is_null(pkt_Queue))
 
@@ -91,12 +91,12 @@ xbee_err xbee_connector(struct xbee* xbee, struct xbee_con* con
 
         else{
 
-            Require_CallBack = !(xbee_check_CallBack(*con, pkt_Queue, true));
+            Require_CallBack = !(xbee_check_CallBack(con, pkt_Queue, true));
 
             /* Close connection                                               */
-            if ((ret = xbee_conEnd(*con)) != XBEE_ENONE) {
+            if ((ret = xbee_conEnd(con)) != XBEE_ENONE) {
 
-                xbee_log(*xbee, 10, "xbee_conEnd() returned: %d", ret);
+                xbee_log(xbee, 10, "xbee_conEnd() returned: %d", ret);
 
             }
 
@@ -144,9 +144,9 @@ xbee_err xbee_connector(struct xbee* xbee, struct xbee_con* con
 
     if(Mode == Local_AT){
 
-        if((ret = xbee_conNew(*xbee, con, strMode, NULL)) != XBEE_ENONE) {
+        if((ret = xbee_conNew(xbee, &con, strMode, NULL)) != XBEE_ENONE) {
 
-            xbee_log(*xbee, 10, "xbee_conNew() returned: %d (%s)", ret
+            xbee_log(xbee, 10, "xbee_conNew() returned: %d (%s)", ret
                                               , xbee_errorToStr(ret));
 
             return ret;
@@ -159,9 +159,9 @@ xbee_err xbee_connector(struct xbee* xbee, struct xbee_con* con
 
     else if(Mode == Data){
 
-        if((ret = xbee_conNew(*xbee, con, strMode, &address)) != XBEE_ENONE) {
+        if((ret = xbee_conNew(xbee, &con, strMode, &address)) != XBEE_ENONE) {
 
-            xbee_log(*xbee, 10, "xbee_conNew() returned: %d (%s)", ret
+            xbee_log(xbee, 10, "xbee_conNew() returned: %d (%s)", ret
                                               , xbee_errorToStr(ret));
 
             return ret;
@@ -183,9 +183,9 @@ xbee_err xbee_connector(struct xbee* xbee, struct xbee_con* con
     if(Require_CallBack){
 
         /* Set CallBack Function to call CallBack if packet received          */
-        if((ret = xbee_conCallbackSet(*con, CallBack, NULL)) != XBEE_ENONE) {
+        if((ret = xbee_conCallbackSet(con, CallBack, NULL)) != XBEE_ENONE) {
 
-            xbee_log(*xbee, 10, "xbee_conCallbackSet() returned: %d", ret);
+            xbee_log(xbee, 10, "xbee_conCallbackSet() returned: %d", ret);
 
             return ret;
 
@@ -193,26 +193,26 @@ xbee_err xbee_connector(struct xbee* xbee, struct xbee_con* con
 
     }
 
-    if((ret = xbee_conValidate(*con)) != XBEE_ENONE){
+    if((ret = xbee_conValidate(con)) != XBEE_ENONE){
 
-        xbee_log(*xbee, 10, "con unvalidate ret : %d", ret);
+        xbee_log(xbee, 10, "con unvalidate ret : %d", ret);
 
         return ret;
 
     }
 
     /* If settings.catchAll = 1, then all packets will receive                */
-    if ((ret = xbee_conSettings(*con, NULL, &settings)) != XBEE_ENONE)
+    if ((ret = xbee_conSettings(con, NULL, &settings)) != XBEE_ENONE)
                                                             return ret;
 
     settings.catchAll = 1;
 
-    if ((ret = xbee_conSettings(*con, &settings, NULL)) != XBEE_ENONE)
+    if ((ret = xbee_conSettings(con, &settings, NULL)) != XBEE_ENONE)
                                                             return ret;
 
-    if ((ret = xbee_conDataSet(*con, Received_Queue, NULL)) != XBEE_ENONE) {
+    if ((ret = xbee_conDataSet(con, Received_Queue, NULL)) != XBEE_ENONE) {
 
-        xbee_log(*xbee, 10, "xbee_conDataSet() returned: %d", ret);
+        xbee_log(xbee, 10, "xbee_conDataSet() returned: %d", ret);
 
         return ret;
 
