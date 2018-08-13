@@ -51,7 +51,7 @@ xbee_err xbee_initial(char* xbee_mode, char* xbee_device, int xbee_baudrate
     printf("xbee_baudrate : %d\n", xbee_baudrate);
 
     if ((ret = xbee_setup(xbee, xbee_mode, xbee_device, xbee_baudrate))
-                                                        != XBEE_ENONE) {
+                       != XBEE_ENONE) {
 
         printf("Connection Failed\nret: %d (%s)\n", ret, xbee_errorToStr(ret));
 
@@ -64,7 +64,7 @@ xbee_err xbee_initial(char* xbee_mode, char* xbee_device, int xbee_baudrate
     if((ret = xbee_validate(*xbee)) != XBEE_ENONE){
 
         printf("Connection unvalidate\nret: %d (%s)\n", ret
-                                                      , xbee_errorToStr(ret));
+              , xbee_errorToStr(ret));
 
         return ret;
 

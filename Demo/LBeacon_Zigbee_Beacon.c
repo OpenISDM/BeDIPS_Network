@@ -84,7 +84,7 @@ int main(void) {
         xbee_release(xbee, con, &pkt_Queue, &Received_Queue);
 
         return -1;
-        
+
     }
 
         addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
@@ -173,7 +173,9 @@ int main(void) {
             }
 
             delpkt(&Received_Queue);
+
         }
+        
     }
 
     xbee_release(xbee, con, &pkt_Queue, &Received_Queue);

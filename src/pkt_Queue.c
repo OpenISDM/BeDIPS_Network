@@ -291,7 +291,14 @@ char* type_to_str(int type){
 int str_to_type(const char* conType){
 
     if(memcmp(conType, "Transmit Status"
-            , sizeof("Transmit Status")* sizeof(char)) == 0){
+            , strlen("Transmit Status")* sizeof(char)) == 0){
+
+        return Data;
+
+    }
+
+    else if(memcmp(conType, "Data"
+            , strlen("Data")* sizeof(char)) == 0){
 
         return Data;
 
@@ -376,7 +383,7 @@ pPkt get_pkt(pkt_ptr pkt_queue){
         return NULL;
 
     }
-    
+
     display_pkt("Get_pkt", pkt_queue, pkt_queue -> front);
 
     return &(pkt_queue -> Queue[pkt_queue -> front]);
