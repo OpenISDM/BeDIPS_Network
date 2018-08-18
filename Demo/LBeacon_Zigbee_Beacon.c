@@ -148,7 +148,7 @@ int main(void) {
 
         /* If there are remain some packet need to send in the Queue,        */
         /* send the packet                                                   */
-        xbee_send_pkt(xbee_config.con, &xbee_config.pkt_Queue);
+        xbee_send_pkt(&xbee_config);
 
         //usleep(2000000);
 

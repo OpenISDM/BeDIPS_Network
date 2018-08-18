@@ -288,12 +288,12 @@ xbee_err xbee_connector(pxbee_config xbee_config){
  *      xbee error code
  *      if 0, work successfully.
  */
-xbee_err xbee_send_pkt(struct xbee_con* con, pkt_ptr pkt_Queue){
+xbee_err xbee_send_pkt(pxbee_config xbee_config){
 
-    if(!(is_null(pkt_Queue))){
+    if(!(is_null(&xbee_config -> pkt_Queue))){
 
-        if(!(address_compare(pkt_Queue -> Queue[pkt_Queue -> front].address
-                           , pkt_Queue -> address))){
+        if(!(address_compare(xbee_config -> pkt_Queue.Queue[xbee_config -> pkt_Queue.front].address
+                           , xbee_config -> pkt_Queue.address))){
 
             printf("Not the same, Error\n");
 
@@ -301,9 +301,9 @@ xbee_err xbee_send_pkt(struct xbee_con* con, pkt_ptr pkt_Queue){
 
         }
 
-        xbee_conTx(con, NULL, pkt_Queue -> Queue[pkt_Queue -> front].content);
+        xbee_conTx(xbee_config -> con, NULL, xbee_config -> pkt_Queue.Queue[xbee_config -> pkt_Queue.front].content);
 
-        delpkt(pkt_Queue);
+        delpkt(&xbee_config -> pkt_Queue);
 
     }
 
