@@ -38,10 +38,9 @@
 
 #include "xbee_API.h"
 
-xbee_err xbee_initial(char* xbee_mode, char* xbee_device, struct xbee** xbee, pkt_ptr pkt_Queue
-                    , pkt_ptr Received_Queue){
+xbee_err xbee_initial(pxbee_config xbee_config){
 
-    if ((ret = xbee_setup(xbee, xbee_mode, xbee_device, 9600))
+    if ((ret = xbee_setup(&xbee_config -> xbee, xbee_config -> xbee_mode, xbee_config -> xbee_device, 9600))
                        != XBEE_ENONE) {
 
         printf("Connection Failed\nret: %d (%s)\n", ret, xbee_errorToStr(ret));
@@ -52,7 +51,7 @@ xbee_err xbee_initial(char* xbee_mode, char* xbee_device, struct xbee** xbee, pk
 
     printf("xbee Connected\n");
 
-    if((ret = xbee_validate(*xbee)) != XBEE_ENONE){
+    if((ret = xbee_validate(xbee_config -> xbee)) != XBEE_ENONE){
 
         printf("Connection unvalidate\nret: %d (%s)\n", ret
               , xbee_errorToStr(ret));
@@ -61,9 +60,9 @@ xbee_err xbee_initial(char* xbee_mode, char* xbee_device, struct xbee** xbee, pk
 
     }
 
-    init_Packet_Queue(pkt_Queue);
+    init_Packet_Queue(&xbee_config -> pkt_Queue);
 
-    init_Packet_Queue(Received_Queue);
+    init_Packet_Queue(&xbee_config -> Received_Queue);
 
     return ret;
 }
@@ -82,20 +81,32 @@ int xbee_LoadConfig(pxbee_config xbee_config){
 
     memset(AT_Command, 0, 30 * sizeof(char));
 
-    while((ch = fgetc(cfg)) != EOF){
-        if(ch == '\n'){
-            char command[6], arg[26];
-            memset(command, 0, 5 * sizeof(char));
-            memset(arg, 0, 25 * sizeof(char));
-            sscanf(AT_Command, "%s %s\n", command, arg);
-            sprintf(AT_Command, "%s\r", AT_Command);
-            sprintf(command, "%s\r", command);
-            printf("%s\n", AT_Command);
-            xbee_Send_Command(&xbee_config -> xbee_datastream, AT_Command, "OK");
-            printf("%s\n", command);
-            xbee_Send_Command(&xbee_config -> xbee_datastream, command, arg);
+    bool ATWR = false;
 
-            printf("%s\n%s\n", command, arg);
+    while((ch = fgetc(cfg)) != EOF && !ATWR){
+        if(ch == '\n'){
+            if(AT_Command[0] == 'A' && AT_Command[1] == 'T'){
+                if(AT_Command[2] == 'W' && AT_Command[3] == 'R'){
+
+                    sprintf(AT_Command, "%s\r", AT_Command);
+                    xbee_Send_Command(&xbee_config -> xbee_datastream, AT_Command, "OK");
+                    ATWR = true;
+                }
+                else{
+                    char command[6], arg[26];
+                    memset(command, 0, 5 * sizeof(char));
+                    memset(arg, 0, 25 * sizeof(char));
+                    sscanf(AT_Command, "%s %s\n", command, arg);
+                    sprintf(AT_Command, "%s\r", AT_Command);
+                    sprintf(command, "%s\r", command);
+                    printf("%s\n", AT_Command);
+                    xbee_Send_Command(&xbee_config -> xbee_datastream, AT_Command, "OK");
+                    printf("%s\n", command);
+                    xbee_Send_Command(&xbee_config -> xbee_datastream, command, arg);
+                }
+
+            }
+
             memset(AT_Command, 0, 30 * sizeof(char));
             count = 0;
         }

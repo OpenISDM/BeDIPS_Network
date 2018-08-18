@@ -217,7 +217,7 @@ char* xbee_Serial_Return(int *xbee_datastream){
 
 int  xbee_Send_Command(int *xbee_datastream, char *Command
                      , char *Command_Result){
-    printf("Send Command\n");
+    printf("Start Command\n");
     if(xbee_Serial_Tx(xbee_datastream, "+++") != 0){
         return -1;
     }

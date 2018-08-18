@@ -42,17 +42,23 @@
 
 int main(void) {
 
-    char* xbee_mode = "xbeeZB";
+    sxbee_config xbee_config;
 
-    char* xbee_device = "/dev/ttyAMA0";
+    xbee_config.xbee_mode = "xbeeZB";
 
-    struct xbee *xbee;
+    xbee_config.xbee_device = "/dev/ttyAMA0";
 
-    struct xbee_con *con;
+    xbee_config.xbee_datastream = -1;
 
-    spkt_ptr pkt_Queue, Received_Queue;
+    xbee_config.config_location = "./xbee_config.conf";
 
-    xbee_initial(xbee_mode, xbee_device, &xbee, &pkt_Queue, &Received_Queue);
+    xbee_Serial_init(&xbee_config.xbee_datastream, xbee_config.xbee_device);
+
+    xbee_LoadConfig(&xbee_config);
+
+    close(xbee_config.xbee_datastream);
+
+    xbee_initial(&xbee_config);
 
     printf("Start establishing Connection to xbee.");
 
@@ -62,112 +68,112 @@ int main(void) {
 
     printf("Establishing Connection...\n");
 
-    xbee_connector(&xbee, &con, &pkt_Queue, &Received_Queue);
+    xbee_connector(&xbee_config.xbee, &xbee_config.con, &xbee_config.pkt_Queue, &xbee_config.Received_Queue);
 
     printf("Connection Successfully Established.\n");
 
-    if((ret = xbee_conValidate(con)) != XBEE_ENONE){
+    if((ret = xbee_conValidate(xbee_config.con)) != XBEE_ENONE){
 
         printf("con unvalidate ret : %d\n", ret);
 
-        xbee_release(xbee, con, &pkt_Queue, &Received_Queue);
+        xbee_release(xbee_config.xbee, xbee_config.con, &xbee_config.pkt_Queue, &xbee_config.Received_Queue);
 
         return -1;
 
     }
 
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&pkt_Queue, Data, Broadcast, "AAAAA");
-        addpkt(&pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
-        addpkt(&pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
-        addpkt(&pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
-        addpkt(&pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&pkt_Queue, Data, Broadcast, "AAAAA");
-        addpkt(&pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&pkt_Queue, Data, Broadcast, "AAAAA");
-        addpkt(&pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&pkt_Queue, Data, Broadcast, "AAAAA");
-        addpkt(&pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&pkt_Queue, Data, Broadcast, "AAAAA");
-        addpkt(&pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&pkt_Queue, Data, Broadcast, "AAAAA");
-        addpkt(&pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&pkt_Queue, Data, Broadcast, "AAAAA");
-        addpkt(&pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&pkt_Queue, Data, Broadcast, "AAAAA");
-        addpkt(&pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&pkt_Queue, Data, Broadcast, "AAAAA");
-        addpkt(&pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Broadcast, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Broadcast, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Broadcast, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Broadcast, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Broadcast, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Broadcast, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Broadcast, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Broadcast, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Broadcast, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
+        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
 
     /* Start the chain reaction!                                             */
 
     while(1) {
 
-        if(xbee_check_CallBack(con, &pkt_Queue, false)) break;
+        if(xbee_check_CallBack(xbee_config.con, &xbee_config.pkt_Queue, false)) break;
 
-        if(!xbee_check_CallBack(con, &pkt_Queue, true))
+        if(!xbee_check_CallBack(xbee_config.con, &xbee_config.pkt_Queue, true))
 
-            addpkt(&pkt_Queue, Data, Gateway, "AAAAA");
+            addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
 
         /* If there are remain some packet need to send in the Queue,        */
         /* send the packet                                                   */
-        xbee_send_pkt(con, &pkt_Queue);
+        xbee_send_pkt(xbee_config.con, &xbee_config.pkt_Queue);
 
         //usleep(2000000);
 
-        xbee_connector(&xbee, &con, &pkt_Queue, &Received_Queue);
+        xbee_connector(&xbee_config.xbee, &xbee_config.con, &xbee_config.pkt_Queue, &xbee_config.Received_Queue);
 
-        pPkt tmppkt = get_pkt(&Received_Queue);
+        pPkt tmppkt = get_pkt(&xbee_config.Received_Queue);
 
         if (tmppkt != NULL){
 
             /* If data[0] == '@', callback will be end.                       */
             if(tmppkt -> content[0] == '@'){
 
-                xbee_conCallbackSet(con, NULL, NULL);
+                xbee_conCallbackSet(xbee_config.con, NULL, NULL);
 
                 printf("*** DISABLED CALLBACK... ***\n");
 
             }
 
-            delpkt(&Received_Queue);
+            delpkt(&xbee_config.Received_Queue);
 
         }
 
     }
 
-    xbee_release(xbee, con, &pkt_Queue, &Received_Queue);
+    xbee_release(xbee_config.xbee, xbee_config.con, &xbee_config.pkt_Queue, &xbee_config.Received_Queue);
 
     return 0;
 }
