@@ -92,6 +92,12 @@ int xbee_LoadConfig(pxbee_config xbee_config){
                     xbee_Send_Command(&xbee_config -> xbee_datastream, AT_Command, "OK");
                     ATWR = true;
                 }
+                else if(AT_Command[2] == 'R' && AT_Command[3] == 'E'){
+
+                    sprintf(AT_Command, "%s\r", AT_Command);
+                    xbee_Send_Command(&xbee_config -> xbee_datastream, AT_Command, "OK");
+
+                }
                 else{
                     char command[6], arg[26];
                     memset(command, 0, 5 * sizeof(char));
