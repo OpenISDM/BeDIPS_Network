@@ -62,6 +62,7 @@ typedef struct xbee_config {
     char*   config_location;
 
     //API
+    char* xbee_mode;
     struct xbee *xbee;
     struct xbee_con *con;
     spkt_ptr pkt_Queue, Received_Queue;
