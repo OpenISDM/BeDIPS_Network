@@ -68,7 +68,7 @@ int main(void) {
 
     printf("Establishing Connection...\n");
 
-    xbee_connector(&xbee_config.xbee, &xbee_config.con, &xbee_config.pkt_Queue, &xbee_config.Received_Queue);
+    xbee_connector(&xbee_config);
 
     printf("Connection Successfully Established.\n");
 
@@ -152,7 +152,7 @@ int main(void) {
 
         //usleep(2000000);
 
-        xbee_connector(&xbee_config.xbee, &xbee_config.con, &xbee_config.pkt_Queue, &xbee_config.Received_Queue);
+        xbee_connector(&xbee_config);
 
         pPkt tmppkt = get_pkt(&xbee_config.Received_Queue);
 

@@ -103,8 +103,7 @@ int xbee_LoadConfig(pxbee_config xbee_config);
  *     xbee_err: If return 0, everything work successfully.
  *               If not 0, somthing wrong.
  */
-xbee_err xbee_connector(struct xbee** xbee, struct xbee_con** con
-                      , pkt_ptr pkt_Queue, pkt_ptr Received_Queue);
+xbee_err xbee_connector(pxbee_config xbee_config);
 
 /* xbee_send_pkt
  *      A function for sending pkt to dest address.
