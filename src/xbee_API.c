@@ -38,11 +38,10 @@
 
 #include "xbee_API.h"
 
-xbee_err xbee_initial(char* xbee_mode, char* xbee_device, int xbee_baudrate
-                    , struct xbee** xbee, pkt_ptr pkt_Queue
+xbee_err xbee_initial(char* xbee_mode, char* xbee_device, struct xbee** xbee, pkt_ptr pkt_Queue
                     , pkt_ptr Received_Queue){
 
-    if ((ret = xbee_setup(xbee, xbee_mode, xbee_device, xbee_baudrate))
+    if ((ret = xbee_setup(xbee, xbee_mode, xbee_device, 9600))
                        != XBEE_ENONE) {
 
         printf("Connection Failed\nret: %d (%s)\n", ret, xbee_errorToStr(ret));
@@ -67,6 +66,47 @@ xbee_err xbee_initial(char* xbee_mode, char* xbee_device, int xbee_baudrate
     init_Packet_Queue(Received_Queue);
 
     return ret;
+}
+
+int xbee_LoadConfig(pxbee_config xbee_config){
+    int count = 0;
+    char ch, AT_Command[30];
+    FILE *cfg;
+
+    cfg = fopen(xbee_config -> config_location, "r"); // read mode
+
+    if (cfg == NULL){
+        printf("Error while opening the file.\n");
+        return -1;
+    }
+
+    memset(AT_Command, 0, 30 * sizeof(char));
+
+    while((ch = fgetc(cfg)) != EOF){
+        if(ch == '\n'){
+            char command[6], arg[26];
+            memset(command, 0, 5 * sizeof(char));
+            memset(arg, 0, 25 * sizeof(char));
+            sscanf(AT_Command, "%s %s\n", command, arg);
+            sprintf(AT_Command, "%s\r", AT_Command);
+            sprintf(command, "%s\r", command);
+            printf("%s\n", AT_Command);
+            xbee_Send_Command(&xbee_config -> xbee_datastream, AT_Command, "OK");
+            printf("%s\n", command);
+            xbee_Send_Command(&xbee_config -> xbee_datastream, command, arg);
+
+            printf("%s\n%s\n", command, arg);
+            memset(AT_Command, 0, 30 * sizeof(char));
+            count = 0;
+        }
+        else{
+            AT_Command[count] = ch;
+            count ++;
+        }
+    }
+
+    fclose(cfg);
+    return 0;
 }
 
 xbee_err xbee_connector(struct xbee** xbee, struct xbee_con** con

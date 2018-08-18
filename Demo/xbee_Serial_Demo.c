@@ -36,28 +36,34 @@
  *      Gary Xiao		, garyh0205@hotmail.com
  */
 
-#include "../src/xbee_Serial.h"
+#include "../src/xbee_API.h"
+
 
 int main(){
-    int xbee_datastream = -1;
 
-    char* xbee_device = "/dev/ttyAMA0";
+    sxbee_config xbee_config;
 
-    int xbee_Serial_buffer = 50;
+    xbee_config.xbee_datastream = -1;
 
-    xbee_Serial_init(&xbee_datastream, xbee_device);
+    xbee_config.xbee_device = "/dev/ttyUSB1";
+
+    xbee_config.config_location = "./xbee_config.conf";
+
+    xbee_Serial_init(&xbee_config.xbee_datastream, xbee_config.xbee_device);
+
+    xbee_LoadConfig(&xbee_config);
 
     printf("ATID 55\n");
-    xbee_Send_Command(&xbee_datastream, xbee_Serial_buffer, "ATID 55\r", "OK");
+    xbee_Send_Command(&xbee_config.xbee_datastream, "ATID 55\r", "OK");
     getchar();
     printf("ATSH\n");
-    xbee_Send_Command_result(&xbee_datastream, xbee_Serial_buffer, "ATSH\r");
+    xbee_Send_Command_result(&xbee_config.xbee_datastream, "ATSH\r");
     getchar();
     printf("ATWR\n");
-    xbee_Send_Command(&xbee_datastream, xbee_Serial_buffer, "ATWR\r", "OK");
+    xbee_Send_Command(&xbee_config.xbee_datastream, "ATWR\r", "OK");
     getchar();
     //----- CLOSE THE SERIAL -----
-    close(xbee_datastream);
+    close(xbee_config.xbee_datastream);
 
     return 0;
 }

@@ -46,16 +46,13 @@ int main(void) {
 
     char* xbee_device = "/dev/ttyAMA0";
 
-    int xbee_baudrate = 9600;
-
     struct xbee *xbee;
 
     struct xbee_con *con;
 
     spkt_ptr pkt_Queue, Received_Queue;
 
-    xbee_initial(xbee_mode, xbee_device, xbee_baudrate
-               , &xbee, &pkt_Queue, &Received_Queue);
+    xbee_initial(xbee_mode, xbee_device, &xbee, &pkt_Queue, &Received_Queue);
 
     printf("Start establishing Connection to xbee.");
 

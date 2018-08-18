@@ -44,11 +44,13 @@
 #include <termios.h>        //Used for Serial
 #include <string.h>
 
+
 #ifndef xbee_Serial_H
 #define xbee_Serial_H
 
 #define baudrate B9600
 #define databits  CS8
+#define xbee_Serial_buffer 50
 
 /*
  * A flag to record does the command returned value.
@@ -80,7 +82,7 @@ enum{ Remain , Ended };
  *     int: If return 0, everything work successfully.
  *               If not 0, somthing wrong.
  */
-int xbee_Serial_Tx(int *xbee_datastream, int xbee_Serial_buffer, char* Data);
+int xbee_Serial_Tx(int *xbee_datastream, char* Data);
 
 /*
  * xbee_Serial_Rx
@@ -93,7 +95,7 @@ int xbee_Serial_Tx(int *xbee_datastream, int xbee_Serial_buffer, char* Data);
  *     int: If return 0, everything work successfully.
  *               If not 0, somthing wrong.
  */
- int xbee_Serial_Rx(int *xbee_datastream, int xbee_Serial_buffer, char* Data);
+ int xbee_Serial_Rx(int *xbee_datastream, char* Data);
 
 /*
  * xbee_Serial_Return
@@ -104,7 +106,7 @@ int xbee_Serial_Tx(int *xbee_datastream, int xbee_Serial_buffer, char* Data);
  * Return Value:
  *     char: return the data read from Serial.
  */
-char* xbee_Serial_Return(int *xbee_datastream, int xbee_Serial_buffer);
+char* xbee_Serial_Return(int *xbee_datastream);
 
 /*
  * xbee_Send_Command
@@ -118,7 +120,7 @@ char* xbee_Serial_Return(int *xbee_datastream, int xbee_Serial_buffer);
  *     int: If return 0, everything work successfully.
  *          If not 0, somthing wrong.
  */
-int xbee_Send_Command(int *xbee_datastream, int xbee_Serial_buffer, char* Command, char* Command_Result);
+int xbee_Send_Command(int *xbee_datastream, char* Command, char* Command_Result);
 
 /*
  * xbee_Send_Command
@@ -131,6 +133,6 @@ int xbee_Send_Command(int *xbee_datastream, int xbee_Serial_buffer, char* Comman
  *     char: If return result, everything work successfully.
  *           If return NULL, somthing wrong.
  */
- char* xbee_Send_Command_result(int *xbee_datastream, int xbee_Serial_buffer, char* Command);
+ char* xbee_Send_Command_result(int *xbee_datastream, char* Command);
 
 #endif

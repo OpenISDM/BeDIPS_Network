@@ -91,15 +91,16 @@ int xbee_Serial_init(int *xbee_datastream, char *xbee_device){
         return -99;
     }
 
-
     return 0;
 }
 
-int xbee_Serial_Tx(int* xbee_datastream, int xbee_Serial_buffer, char* Data){
+int xbee_Serial_Tx(int* xbee_datastream, char* Data){
 
     //----- TX BYTES -----
-    unsigned char tx_buffer[xbee_Serial_buffer];
+    unsigned char tx_buffer[xbee_Serial_buffer + 1];
     unsigned char *p_tx_buffer;
+
+    memset(tx_buffer, 0, sizeof(char) * (xbee_Serial_buffer + 1));
 
     p_tx_buffer = &tx_buffer[0];
 
@@ -119,7 +120,7 @@ int xbee_Serial_Tx(int* xbee_datastream, int xbee_Serial_buffer, char* Data){
     return 0;
 }
 
-int xbee_Serial_Rx(int *xbee_datastream, int xbee_Serial_buffer, char* Data){
+int xbee_Serial_Rx(int *xbee_datastream, char* Data){
     int Waiting;
     if(strlen(Data) > 0){
         Waiting = Remain;
@@ -134,31 +135,35 @@ int xbee_Serial_Rx(int *xbee_datastream, int xbee_Serial_buffer, char* Data){
     {
         // Read up to xbee_Serial_buffer characters from the port
         // if they are there
-        unsigned char rx_buffer[xbee_Serial_buffer];
+        unsigned char rx_buffer[xbee_Serial_buffer + 1];
+
+        memset(rx_buffer, 0, sizeof(char) * (xbee_Serial_buffer + 1));
+
         //Datastream, buffer to store in, number of bytes to read (max)
         printf("Start Read\n");
         int rx_length = 0;
         do{
+            memset(rx_buffer, 0, sizeof(char) * (xbee_Serial_buffer + 1));
             rx_length = read(*xbee_datastream, (void*)rx_buffer
                                             , xbee_Serial_buffer);
-            rx_buffer[rx_length] = '\0';
+            printf("rx_buffer : %s\n", rx_buffer);
             if(rx_length == 0){
                 printf("No Data Received\n");
             }
  	        else{
                 printf("%d bytes read : %s\n", rx_length - 1, rx_buffer);
-                if((strlen(Data) - Received) > (rx_length - 1)){
+                if((strlen(Data) - Received) > rx_length - 1){
                     printf("OverFlow\n");
                     return -1;
                 }
-                for(int i = 0 ; i < rx_length -1; i++){
-                    printf("%c and %c is the same?\n", rx_buffer[i]
-                                            , Data[i + Received]);
+                for(int i = 0 ; i < rx_length - 1; i++){
                     if(rx_buffer[i] != Data[i + Received]){
+                        printf("%c and %c Not matched.\n", rx_buffer[i], Data[i + Received]);
                         printf("Data Receive Not Matched\n");
                         return -1;
                     }
                 }
+                printf("Data Matched\n");
                 Received += rx_length - 1;
                 if(strlen(Data) == Received)
                     Waiting = Ended;
@@ -173,10 +178,13 @@ int xbee_Serial_Rx(int *xbee_datastream, int xbee_Serial_buffer, char* Data){
     return 0;
 }
 
-char* xbee_Serial_Return(int *xbee_datastream, int xbee_Serial_buffer){
+char* xbee_Serial_Return(int *xbee_datastream){
 
-    unsigned char rx_buffer[xbee_Serial_buffer];
+    unsigned char rx_buffer[xbee_Serial_buffer + 1];
     int rx_length;
+
+    memset(rx_buffer, 0, sizeof(char) * (xbee_Serial_buffer + 1));
+
     //----- CHECK FOR ANY RX BYTES -----
     if (*xbee_datastream != -1){
         // Read up to xbee_Serial_buffer characters from the port if they are there
@@ -207,29 +215,29 @@ char* xbee_Serial_Return(int *xbee_datastream, int xbee_Serial_buffer){
     return return_received;
 }
 
-int  xbee_Send_Command(int *xbee_datastream, int xbee_Serial_buffer
-                            , char *Command, char *Command_Result){
+int  xbee_Send_Command(int *xbee_datastream, char *Command
+                     , char *Command_Result){
     printf("Send Command\n");
-    if(xbee_Serial_Tx(xbee_datastream, xbee_Serial_buffer, "+++") != 0){
+    if(xbee_Serial_Tx(xbee_datastream, "+++") != 0){
         return -1;
     }
 
     usleep(100000);
 
     printf("Receive Result\n");
-    if(xbee_Serial_Rx(xbee_datastream, xbee_Serial_buffer, "OK") != 0){
+    if(xbee_Serial_Rx(xbee_datastream, "OK") != 0){
         return -1;
     }
 
     printf("Send Command\n");
-    if(xbee_Serial_Tx(xbee_datastream, xbee_Serial_buffer,Command) != 0){
+    if(xbee_Serial_Tx(xbee_datastream,Command) != 0){
         return -1;
     }
 
     usleep(100000);
 
     printf("Receive Result\n");
-    if(xbee_Serial_Rx(xbee_datastream, xbee_Serial_buffer,Command_Result) != 0){
+    if(xbee_Serial_Rx(xbee_datastream, Command_Result) != 0){
         return -1;
     }
 
@@ -238,21 +246,20 @@ int  xbee_Send_Command(int *xbee_datastream, int xbee_Serial_buffer
     return 0;
 }
 
-char* xbee_Send_Command_result(int *xbee_datastream, int xbee_Serial_buffer
-                                                            , char *Command){
+char* xbee_Send_Command_result(int *xbee_datastream, char *Command){
     printf("Send Command\n");
-    if((xbee_Send_Command(xbee_datastream, xbee_Serial_buffer, "+++", "OK"))
+    if((xbee_Send_Command(xbee_datastream, "+++", "OK"))
                                                                     != 0){
         return "NULL";
     }
 
-    if(xbee_Serial_Tx(xbee_datastream, xbee_Serial_buffer,Command) != 0){
+    if(xbee_Serial_Tx(xbee_datastream,Command) != 0){
         return "NULL";
     }
 
     usleep(100000);
 
-    char* result =  xbee_Serial_Return(xbee_datastream, xbee_Serial_buffer);
+    char* result =  xbee_Serial_Return(xbee_datastream);
 
     return result;
 }

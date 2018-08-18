@@ -43,12 +43,32 @@
 #include <unistd.h>
 #include <xbee.h>
 #include "pkt_Queue.h"
+#include "xbee_Serial.h"
 
 #ifndef xbee_API_H
 #define xbee_API_H
 
 /* A variable to get error code */
 xbee_err ret;
+
+typedef struct xbee_config {
+
+    //Universal
+    char*   xbee_device;
+    char    Local_Address[17];
+
+    //Serial
+    int    xbee_datastream;
+    char*   config_location;
+
+    //API
+    struct xbee *xbee;
+    struct xbee_con *con;
+    spkt_ptr pkt_Queue, Received_Queue;
+
+} sxbee_config;
+
+typedef sxbee_config* pxbee_config;
 
 /*
  * xbee_initial
@@ -66,10 +86,10 @@ xbee_err ret;
  *     xbee_err: If return 0, everything work successfully.
  *               If not 0, somthing wrong.
  */
-xbee_err xbee_initial(char* xbee_mode, char* xbee_device, int xbee_baudrate
-                    , struct xbee** xbee, pkt_ptr pkt_Queue
-                    , pkt_ptr Received_Queue);
+xbee_err xbee_initial(char* xbee_mode, char* xbee_device, struct xbee** xbee
+                    , pkt_ptr pkt_Queue, pkt_ptr Received_Queue);
 
+int xbee_LoadConfig(pxbee_config xbee_config);
 
 /*
  * xbee_connector
