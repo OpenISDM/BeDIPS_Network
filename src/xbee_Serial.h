@@ -47,16 +47,15 @@
 #ifndef xbee_Serial_H
 #define xbee_Serial_H
 
+#define baudrate B9600
+#define databits  CS8
+
 /*
  * A flag to record does the command returned value.
  * Remain : the command we send haven't return value.
  * Ended  : the command we send had return value.
  */
 enum{ Remain , Ended };
-
-//-------------------------
-//----- SETUP Serial -----
-//-------------------------
 
 /*
  * xbee_Serial_init
@@ -68,7 +67,7 @@ enum{ Remain , Ended };
  *     int: If return 0, everything work successfully.
  *               If not 0, somthing wrong.
  */
- int xbee_Serial_init(int *xbee_datastream, char *xbee_device );
+ int xbee_Serial_init(int *xbee_datastream, char *xbee_device);
 
 /*
  * xbee_Serial_Tx

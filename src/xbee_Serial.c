@@ -38,49 +38,17 @@
 
 #include "xbee_Serial.h"
 
-int xbee_Serial_init(int *xbee_datastream, char *xbee_device ){
-    //  Open the Serial
-    //  The flags (defined in fcntl.h):
-    //  Access modes (use 1 of these):
-    //      O_RDONLY - Open for reading only.
-    //      O_RDWR - Open for reading and writing.
-    //      O_WRONLY - Open for writing only.
-    //
-    //  O_NDELAY / O_NONBLOCK (same function) - Enables nonblocking mode.
-    //      When set read requests on the file can return immediately with a
-    //      failure status. If there is no input immediately available
-    //      (instead of blocking). Likewise, write requests can also return
-    //      immediately with a failure status. If the output can't be written
-    //      immediately.
-    //
-    //  O_NOCTTY - When set and path identifies a terminal device,
-    //             open() shall not cause the terminal device to become
-    //             the controlling terminal for the process.
+int xbee_Serial_init(int *xbee_datastream, char *xbee_device){
 
     //Open in non blocking read/write mode  // | O_NOCTTY | O_NDELAY
     if ((*xbee_datastream = open(xbee_device, O_RDWR )) == -1){
-        //ERROR  CAN'T OPEN SERIAL PORT
+
         printf("Error - Unable to open Serial.  Ensure it is not in use by \
         another application\n");
-        return -1;
-    }
 
-    //CONFIGURE THE SERIAL
-    //The flags (defined in /usr/include/termios.h ---
-    //see http://pubs.opengroup.org/onlinepubs/007908799/xsh/termios.h.html):
-    //  Baud rate: B1200, B2400, B4800, B9600, B19200, B38400,
-    //             B57600, B115200, B230400, B460800, B500000,
-    //             B576000, B921600, B1000000, B1152000, B1500000,
-    //             B2000000, B2500000, B3000000, B3500000, B4000000
-    //  CSIZE  : CS5, CS6, CS7, CS8
-    //  CLOCAL : Ignore modem status lines
-    //  CREAD  : Enable receiver
-    //  IGNPAR : Ignore characters with parity errors
-    //  ICRNL  : Map CR to NL on input
-    //  (Use for ASCII comms where you want to auto correct end of line
-    //  characters don't use for bianry comms!)
-    //  PARENB : Parity enable
-    //  PARODD : Odd parity (else even)
+        return -1;
+
+    }
 
     // set new parameters to the serial device
     struct termios newtio;
@@ -92,7 +60,7 @@ int xbee_Serial_init(int *xbee_datastream, char *xbee_device ){
     // again set everything to 0
     bzero(&newtio, sizeof(newtio));
 
-    newtio.c_cflag |= B9600; // Set Baudrate first time
+    newtio.c_cflag |= baudrate; // Set Baudrate first time
     newtio.c_cflag |= CLOCAL; // Local line - do not change "owner" of port
     newtio.c_cflag |= CREAD; // Enable receiver
 
@@ -103,14 +71,14 @@ int xbee_Serial_init(int *xbee_datastream, char *xbee_device ){
     newtio.c_cflag &= ~PARENB; // no parentybyte
     newtio.c_cflag &= ~CSTOPB; // 1 stop bit
     newtio.c_cflag &= ~CSIZE; // Mask the character size bits
-    newtio.c_cflag |= CS8; // 8 data bits
+    newtio.c_cflag |= databits; // 8 data bits
 
     // output mode to
     newtio.c_oflag = 0;
 
     // Set teh baudrate for sure
-    cfsetispeed(&newtio, B9600);
-    cfsetospeed(&newtio, B9600);
+    cfsetispeed(&newtio, baudrate);
+    cfsetospeed(&newtio, baudrate);
 
     newtio.c_cc[VTIME] = 10; /* inter-character timer  */
     newtio.c_cc[VMIN] = 0; /* blocking read until  */
