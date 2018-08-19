@@ -76,7 +76,7 @@ int main(void) {
 
         printf("con unvalidate ret : %d\n", ret);
 
-        xbee_release(xbee_config.xbee, xbee_config.con, &xbee_config.pkt_Queue, &xbee_config.Received_Queue);
+        xbee_release(&xbee_config);
 
         return -1;
 
@@ -140,9 +140,9 @@ int main(void) {
 
     while(1) {
 
-        if(xbee_check_CallBack(xbee_config.con, &xbee_config.pkt_Queue, false)) break;
+        if(xbee_check_CallBack(&xbee_config, false)) break;
 
-        if(!xbee_check_CallBack(xbee_config.con, &xbee_config.pkt_Queue, true))
+        if(!xbee_check_CallBack(&xbee_config, true))
 
             addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
 
@@ -173,7 +173,7 @@ int main(void) {
 
     }
 
-    xbee_release(xbee_config.xbee, xbee_config.con, &xbee_config.pkt_Queue, &xbee_config.Received_Queue);
+    xbee_release(&xbee_config);
 
     return 0;
 }

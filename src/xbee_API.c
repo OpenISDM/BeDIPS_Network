@@ -147,7 +147,7 @@ xbee_err xbee_connector(pxbee_config xbee_config){
 
         else{
 
-            Require_CallBack = !(xbee_check_CallBack(xbee_config -> con, &xbee_config -> pkt_Queue, true));
+            Require_CallBack = !(xbee_check_CallBack(xbee_config, true));
 
             /* Close connection                                               */
             if ((ret = xbee_conEnd(xbee_config -> con)) != XBEE_ENONE) {
@@ -317,21 +317,20 @@ xbee_err xbee_send_pkt(pxbee_config xbee_config){
 
 }
 
-bool xbee_check_CallBack(struct xbee_con* con, pkt_ptr pkt_Queue
-                       , bool exclude_pkt_Queue){
+bool xbee_check_CallBack(pxbee_config xbee_config, bool exclude_pkt_Queue){
 
     /* Pointer point_to_CallBack will store the callback function.       */
     /* If pointer point_to_CallBack is NULL, break the Loop              */
 
     void *point_to_CallBack;
 
-    if ((ret = xbee_conCallbackGet(con
+    if ((ret = xbee_conCallbackGet(xbee_config -> con
      , (xbee_t_conCallback*)&point_to_CallBack))!= XBEE_ENONE) {
 
          return true;
     }
 
-    if (point_to_CallBack == NULL && (exclude_pkt_Queue || is_null(pkt_Queue))){
+    if (point_to_CallBack == NULL && (exclude_pkt_Queue || is_null(&xbee_config -> pkt_Queue))){
 
         return true;
 
@@ -341,15 +340,14 @@ bool xbee_check_CallBack(struct xbee_con* con, pkt_ptr pkt_Queue
 
 }
 
-xbee_err xbee_release(struct xbee* xbee, struct xbee_con* con
-                      , pkt_ptr pkt_Queue, pkt_ptr Received_Queue){
+xbee_err xbee_release(pxbee_config xbee_config){
 
     printf("Stop xbee ...\n");
 
     /* Close connection                                                      */
-    if(xbee_conValidate(con) != XBEE_ENONE){
+    if(xbee_conValidate(xbee_config -> con) != XBEE_ENONE){
 
-        if ((ret = xbee_conEnd(con)) != XBEE_ENONE) {
+        if ((ret = xbee_conEnd(xbee_config -> con)) != XBEE_ENONE) {
 
             char ret_value[100];
 
@@ -360,14 +358,14 @@ xbee_err xbee_release(struct xbee* xbee, struct xbee_con* con
         }
     }
 
-    Free_Packet_Queue(pkt_Queue);
+    Free_Packet_Queue(&xbee_config -> pkt_Queue);
 
-    Free_Packet_Queue(Received_Queue);
+    Free_Packet_Queue(&xbee_config -> Received_Queue);
 
     printf("Stop connection Succeeded.\n");
 
     /* Close xbee                                                            */
-    xbee_shutdown(xbee);
+    xbee_shutdown(xbee_config -> xbee);
 
     printf("Shutdown Xbee Succeeded.\n");
 

@@ -128,11 +128,9 @@ xbee_err xbee_send_pkt(pxbee_config xbee_config);
  *      True if CallBack is disabled and pkt_Queue is NULL, else false.
  *
  */
-bool xbee_check_CallBack(struct xbee_con* con, pkt_ptr pkt_Queue
-                                             , bool exclude_pkt_Queue);
+bool xbee_check_CallBack(pxbee_config xbee_config, bool exclude_pkt_Queue);
 
-xbee_err xbee_release(struct xbee* xbee, struct xbee_con* con
-                      , pkt_ptr pkt_Queue, pkt_ptr Received_Queue);
+xbee_err xbee_release(pxbee_config xbee_config);
 
 /* ---------------------------callback Section------------------------------  */
 /* It will be executed once for each packet that is received on               */
