@@ -83,6 +83,17 @@ int xbee_LoadConfig(pxbee_config xbee_config){
 
     bool ATWR = false;
 
+    while(xbee_Send_Command(&xbee_config -> xbee_datastream, "+++", "OK") == -1){
+        if(count == 5){
+            return -1;
+        }
+        else{
+            count ++;
+        }
+    }
+
+    count = 0;
+
     while((ch = fgetc(cfg)) != EOF && !ATWR){
         if(ch == '\n'){
             if(AT_Command[0] == 'A' && AT_Command[1] == 'T'){
@@ -92,7 +103,7 @@ int xbee_LoadConfig(pxbee_config xbee_config){
                     xbee_Send_Command(&xbee_config -> xbee_datastream, AT_Command, "OK");
                     ATWR = true;
                 }
-                else if(AT_Command[2] == 'R' && AT_Command[3] == 'E') || (AT_Command[2] == 'I' && AT_Command[3] == 'D'){
+                else if((AT_Command[2] == 'R' && AT_Command[3] == 'E') || (AT_Command[2] == 'I' && AT_Command[3] == 'D')){
 
                     sprintf(AT_Command, "%s\r", AT_Command);
                     xbee_Send_Command(&xbee_config -> xbee_datastream, AT_Command, "OK");

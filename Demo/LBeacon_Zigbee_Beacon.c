@@ -52,6 +52,8 @@ int main(void) {
 
     xbee_config.config_location = "./xbee_config.conf";
 
+    xbee_Serial_Power_Reset(xbee_Serial_Power_Pin);
+
     xbee_Serial_init(&xbee_config.xbee_datastream, xbee_config.xbee_device);
 
     xbee_LoadConfig(&xbee_config);

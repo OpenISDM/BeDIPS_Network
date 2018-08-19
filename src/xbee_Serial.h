@@ -43,7 +43,7 @@
 #include <fcntl.h>          //Used for Serial
 #include <termios.h>        //Used for Serial
 #include <string.h>
-
+#include <wiringPi.h>
 
 #ifndef xbee_Serial_H
 #define xbee_Serial_H
@@ -51,13 +51,15 @@
 #define baudrate B9600
 #define databits  CS8
 #define xbee_Serial_buffer 50
-
+#define xbee_Serial_Power_Pin 1 //wiringPi pin 1 is BCM_GPIO 18.
 /*
  * A flag to record does the command returned value.
  * Remain : the command we send haven't return value.
  * Ended  : the command we send had return value.
  */
 enum{ Remain , Ended };
+
+int xbee_Serial_Power_Reset(int Wiring_Pi_Pin);
 
 /*
  * xbee_Serial_init

@@ -38,6 +38,29 @@
 
 #include "xbee_Serial.h"
 
+int xbee_Serial_Power_Reset(int Wiring_Pi_Pin){
+    //Check we have wiringPi
+    if (wiringPiSetup () == -1 ){
+        printf("Wiring_Pi Setup failed.\n");
+        return -1;
+    }
+
+    //set Pin 12 as outputs...
+    printf ("Setup %d is Output...\n", Wiring_Pi_Pin);
+
+    pinMode(Wiring_Pi_Pin, OUTPUT);
+
+    digitalWrite (Wiring_Pi_Pin, 0);
+
+    usleep(2000);
+
+    digitalWrite (Wiring_Pi_Pin, 1);
+
+    usleep(2000);
+
+    return 0;
+}
+
 int xbee_Serial_init(int *xbee_datastream, char *xbee_device){
 
     //Open in non blocking read/write mode  // | O_NOCTTY | O_NDELAY
@@ -248,8 +271,7 @@ int  xbee_Send_Command(int *xbee_datastream, char *Command
 
 char* xbee_Send_Command_result(int *xbee_datastream, char *Command){
     printf("Send Command\n");
-    if((xbee_Send_Command(xbee_datastream, "+++", "OK"))
-                                                                    != 0){
+    if((xbee_Send_Command(xbee_datastream, "+++", "OK")) != 0){
         return "NULL";
     }
 
