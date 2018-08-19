@@ -380,6 +380,12 @@ int queue_len(pkt_ptr pkt_queue){
 
     }
 
+    else if (pkt_queue -> front == pkt_queue -> rear){
+
+        return 1;
+
+    }
+
     else if (pkt_queue -> rear > pkt_queue -> front){
 
         return (pkt_queue -> rear - pkt_queue -> front + 1);
