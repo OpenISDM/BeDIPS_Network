@@ -17,6 +17,9 @@ The official website of Raspberry Pi is https://www.raspberrypi.org<br />
 The download link of RASPBIAN STRETCH LITE(2017-11-29 version) is <br />http://vx2-downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2017-12-01/2017-11-29-raspbian-stretch-lite.zip
 
 
+### === Requirement === ###
+<pre><code>sudo apt-get install -y wiringpi git vim</code></pre>
+
 ### === Building libxbee3 library ===
 If you are building libxbee, then there are a number of options avaliable to you.<br />
 Initially you should run the following command:
