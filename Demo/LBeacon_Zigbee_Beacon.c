@@ -42,6 +42,8 @@
 
 int main(void) {
 
+    int ret;
+
     sxbee_config xbee_config;
 
     xbee_config.xbee_mode = "xbeeZB";

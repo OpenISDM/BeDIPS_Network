@@ -40,104 +40,133 @@
 
 xbee_err xbee_initial(pxbee_config xbee_config){
 
-    if ((ret = xbee_setup(&xbee_config -> xbee, xbee_config -> xbee_mode, xbee_config -> xbee_device, 9600))
-                       != XBEE_ENONE) {
+    int ret;
 
-        printf("Connection Failed\nret: %d (%s)\n", ret, xbee_errorToStr(ret));
+    if ((ret = xbee_setup(&xbee_config -> xbee, xbee_config -> xbee_mode
+       , xbee_config -> xbee_device, 9600)) != XBEE_ENONE)  return ret;
 
-        return ret;
+    if((ret = xbee_validate(xbee_config -> xbee)) != XBEE_ENONE) return ret;
 
-    }
-
-    printf("xbee Connected\n");
-
-    if((ret = xbee_validate(xbee_config -> xbee)) != XBEE_ENONE){
-
-        printf("Connection unvalidate\nret: %d (%s)\n", ret
-              , xbee_errorToStr(ret));
+    if(ret = init_Packet_Queue(&xbee_config -> pkt_Queue) != pkt_Queue_SUCCESS)
 
         return ret;
 
-    }
+    if(ret = init_Packet_Queue(&xbee_config -> Received_Queue)
+        != pkt_Queue_SUCCESS) return ret;
 
-    init_Packet_Queue(&xbee_config -> pkt_Queue);
-
-    init_Packet_Queue(&xbee_config -> Received_Queue);
-
-    return ret;
+    return XBEE_ENONE;
 }
 
 int xbee_LoadConfig(pxbee_config xbee_config){
-    int count = 0;
+
+    int count = 0, ret;
+
     char ch, AT_Command[30];
+
     FILE *cfg;
 
-    cfg = fopen(xbee_config -> config_location, "r"); // read mode
+    cfg = fopen(xbee_config -> config_location, "r");           // read mode
 
-    if (cfg == NULL){
-        printf("Error while opening the file.\n");
-        return -1;
-    }
+    if (cfg == NULL)
+
+        return File_OPEN_ERROR;
 
     memset(AT_Command, 0, 30 * sizeof(char));
 
     bool ATWR = false;
 
-    while(xbee_Send_Command(&xbee_config -> xbee_datastream, "+++", "OK") == -1){
-        if(count == 5){
-            return -1;
-        }
-        else{
-            count ++;
-        }
-    }
+    if(ret = xbee_Send_Command(&xbee_config -> xbee_datastream, "+++"
+                          , "OK") != 0) return ret;
 
     count = 0;
 
     while((ch = fgetc(cfg)) != EOF && !ATWR){
+
         if(ch == '\n'){
-            if(AT_Command[0] == 'A' && AT_Command[1] == 'T'){
-                if(AT_Command[2] == 'W' && AT_Command[3] == 'R'){
+
+            if(AT_Command[0] == 'A' && AT_Command[1] == 'T') {
+
+                if(AT_Command[2] == 'W' && AT_Command[3] == 'R') {
 
                     sprintf(AT_Command, "%s\r", AT_Command);
-                    xbee_Send_Command(&xbee_config -> xbee_datastream, AT_Command, "OK");
+
+                    if(ret = xbee_Send_Command(&xbee_config -> xbee_datastream
+                                    , AT_Command, "OK") != 0)
+
+                      return ret;
+
                     ATWR = true;
+
                 }
-                else if((AT_Command[2] == 'R' && AT_Command[3] == 'E') || (AT_Command[2] == 'I' && AT_Command[3] == 'D')){
+
+                else if((AT_Command[2] == 'R' && AT_Command[3] == 'E')
+                     || (AT_Command[2] == 'I' && AT_Command[3] == 'D')){
 
                     sprintf(AT_Command, "%s\r", AT_Command);
-                    xbee_Send_Command(&xbee_config -> xbee_datastream, AT_Command, "OK");
+
+                    if(ret = xbee_Send_Command(&xbee_config -> xbee_datastream
+                                    , AT_Command, "OK"))
+
+                      return ret;
 
                 }
                 else{
+
                     char command[6], arg[26];
-                    memset(command, 0, 5 * sizeof(char));
-                    memset(arg, 0, 25 * sizeof(char));
+
+                    memset(command, 0, 6 * sizeof(char));
+
+                    memset(arg, 0, 26 * sizeof(char));
+
                     sscanf(AT_Command, "%s %s\n", command, arg);
+
                     sprintf(AT_Command, "%s\r", AT_Command);
+
                     sprintf(command, "%s\r", command);
+
                     printf("%s\n", AT_Command);
-                    xbee_Send_Command(&xbee_config -> xbee_datastream, AT_Command, "OK");
+
+                    if(ret = xbee_Send_Command(&xbee_config -> xbee_datastream
+                                    , AT_Command, "OK"))
+
+                      return ret;
+
                     printf("%s\n", command);
-                    xbee_Send_Command(&xbee_config -> xbee_datastream, command, arg);
+
+                    if(ret = xbee_Send_Command(&xbee_config -> xbee_datastream
+                                    , command, arg))
+
+                      return ret;
+
                 }
 
             }
 
             memset(AT_Command, 0, 30 * sizeof(char));
+
             count = 0;
+
         }
+
         else{
+
             AT_Command[count] = ch;
+
             count ++;
+
         }
+
     }
 
     fclose(cfg);
+
     return 0;
+
 }
 
 xbee_err xbee_connector(pxbee_config xbee_config){
+
+    int ret;
 
     bool Require_CallBack = true;
 
@@ -147,10 +176,8 @@ xbee_err xbee_connector(pxbee_config xbee_config){
 
             return XBEE_ENONE;
 
-        else if(address_compare(xbee_config -> pkt_Queue.Queue[xbee_config -> pkt_Queue.front].address
-                              , xbee_config -> pkt_Queue.address)){
-
-            printf("Same Address\n");
+        else if(address_compare(xbee_config -> pkt_Queue.Queue[xbee_config
+             -> pkt_Queue.front].address, xbee_config -> pkt_Queue.address)){
 
             return XBEE_ENONE;
 
@@ -163,7 +190,7 @@ xbee_err xbee_connector(pxbee_config xbee_config){
             /* Close connection                                               */
             if ((ret = xbee_conEnd(xbee_config -> con)) != XBEE_ENONE) {
 
-                xbee_log(xbee_config -> xbee, 10, "xbee_conEnd() returned: %d", ret);
+                return ret;
 
             }
 
@@ -187,60 +214,46 @@ xbee_err xbee_connector(pxbee_config xbee_config){
 
     if(!is_null(&xbee_config -> pkt_Queue)){
 
-        address_copy(xbee_config -> pkt_Queue.Queue[xbee_config -> pkt_Queue.front].address
-                   , address.addr64);
+        address_copy(xbee_config -> pkt_Queue.Queue[xbee_config
+                  -> pkt_Queue.front].address, address.addr64);
 
-        address_copy(xbee_config -> pkt_Queue.Queue[xbee_config -> pkt_Queue.front].address
-                   , xbee_config -> pkt_Queue.address);
+        address_copy(xbee_config -> pkt_Queue.Queue[xbee_config
+                 -> pkt_Queue.front].address, xbee_config -> pkt_Queue.address);
 
-        Mode = xbee_config -> pkt_Queue.Queue[xbee_config -> pkt_Queue.front].type;
+        Mode = xbee_config -> pkt_Queue.Queue[xbee_config
+            -> pkt_Queue.front].type;
 
     }
 
-    else{
+    else
 
         Mode = Data;
 
-    }
-
-    printf("Fill Address Success\n");
-
     char* strMode = type_to_str(Mode);
-
-    printf("Mode : %s\n", strMode);
 
     if(Mode == Local_AT){
 
-        if((ret = xbee_conNew(xbee_config -> xbee, &xbee_config -> con, strMode, NULL)) != XBEE_ENONE) {
-
-            xbee_log(xbee_config -> xbee, 10, "xbee_conNew() returned: %d (%s)", ret
-                                              , xbee_errorToStr(ret));
+        if((ret = xbee_conNew(xbee_config -> xbee, &xbee_config -> con, strMode
+                            , NULL)) != XBEE_ENONE) {
 
             return ret;
 
         }
-
-        printf("Enter Local_AT Mode\n");
 
     }
 
     else if(Mode == Data){
 
-        if((ret = xbee_conNew(xbee_config -> xbee, &xbee_config -> con, strMode, &address)) != XBEE_ENONE) {
-            xbee_log(xbee_config -> xbee, 10, "xbee_conNew() returned: %d (%s)", ret
-                                              , xbee_errorToStr(ret));
+        if((ret = xbee_conNew(xbee_config -> xbee, &xbee_config -> con, strMode
+                            , &address)) != XBEE_ENONE) {
 
             return ret;
 
         }
 
-        printf("Enter Data Mode\n");
-
     }
 
     else{
-
-        printf("<<Error>> conMode Error\n");
 
         return XBEE_EFAILED;
 
@@ -249,44 +262,27 @@ xbee_err xbee_connector(pxbee_config xbee_config){
     if(Require_CallBack){
 
         /* Set CallBack Function to call CallBack if packet received          */
-        if((ret = xbee_conCallbackSet(xbee_config -> con, CallBack, NULL)) != XBEE_ENONE) {
-
-            xbee_log(xbee_config -> xbee, 10, "xbee_conCallbackSet() returned: %d", ret);
-
-            return ret;
-
-        }
+        if((ret = xbee_conCallbackSet(xbee_config -> con, CallBack
+                                    , NULL)) != XBEE_ENONE) return ret;
 
     }
 
-    if((ret = xbee_conValidate(xbee_config -> con)) != XBEE_ENONE){
-
-        xbee_log(xbee_config -> xbee, 10, "con unvalidate ret : %d", ret);
-
-        return ret;
-
-    }
+    if((ret = xbee_conValidate(xbee_config -> con)) != XBEE_ENONE) return ret;
 
     /* If settings.catchAll = 1, then all packets will receive                */
-    if ((ret = xbee_conSettings(xbee_config -> con, NULL, &settings)) != XBEE_ENONE)
-                                                            return ret;
+    if ((ret = xbee_conSettings(xbee_config -> con, NULL, &settings))
+                                != XBEE_ENONE) return ret;
 
     settings.catchAll = 1;
 
-    if ((ret = xbee_conSettings(xbee_config -> con, &settings, NULL)) != XBEE_ENONE)
-                                                            return ret;
+    if ((ret = xbee_conSettings(xbee_config -> con, &settings, NULL))
+                                != XBEE_ENONE) return ret;
 
-    if ((ret = xbee_conDataSet(xbee_config -> con, &xbee_config -> Received_Queue, NULL)) != XBEE_ENONE) {
-
-        xbee_log(xbee_config -> xbee, 10, "xbee_conDataSet() returned: %d", ret);
-
-        return ret;
-
-    }
-
-    printf("Connector Established\n");
+    if ((ret = xbee_conDataSet(xbee_config -> con, &xbee_config
+                            -> Received_Queue, NULL)) != XBEE_ENONE) return ret;
 
     return XBEE_ENONE;
+
 }
 
 /*
@@ -303,24 +299,15 @@ xbee_err xbee_send_pkt(pxbee_config xbee_config){
 
     if(!(is_null(&xbee_config -> pkt_Queue))){
 
-        if(!(address_compare(xbee_config -> pkt_Queue.Queue[xbee_config -> pkt_Queue.front].address
-                           , xbee_config -> pkt_Queue.address))){
-
-            printf("Not the same, Error\n");
+        if(!(address_compare(xbee_config -> pkt_Queue.Queue[xbee_config
+          -> pkt_Queue.front].address, xbee_config -> pkt_Queue.address)))
 
             return XBEE_ENONE;
 
-        }
-
-        xbee_conTx(xbee_config -> con, NULL, xbee_config -> pkt_Queue.Queue[xbee_config -> pkt_Queue.front].content);
+        xbee_conTx(xbee_config -> con, NULL, xbee_config
+                -> pkt_Queue.Queue[xbee_config -> pkt_Queue.front].content);
 
         delpkt(&xbee_config -> pkt_Queue);
-
-    }
-
-    else{
-
-        printf("pkt_queue is NULL");
 
     }
 
@@ -333,19 +320,15 @@ bool xbee_check_CallBack(pxbee_config xbee_config, bool exclude_pkt_Queue){
     /* Pointer point_to_CallBack will store the callback function.       */
     /* If pointer point_to_CallBack is NULL, break the Loop              */
 
+    int ret;
+
     void *point_to_CallBack;
 
     if ((ret = xbee_conCallbackGet(xbee_config -> con
-     , (xbee_t_conCallback*)&point_to_CallBack))!= XBEE_ENONE) {
+     , (xbee_t_conCallback*)&point_to_CallBack))!= XBEE_ENONE) return true;
 
-         return true;
-    }
-
-    if (point_to_CallBack == NULL && (exclude_pkt_Queue || is_null(&xbee_config -> pkt_Queue))){
-
-        return true;
-
-    }
+    if (point_to_CallBack == NULL && (exclude_pkt_Queue
+     || is_null(&xbee_config -> pkt_Queue))) return true;
 
     return false;
 
@@ -353,32 +336,23 @@ bool xbee_check_CallBack(pxbee_config xbee_config, bool exclude_pkt_Queue){
 
 xbee_err xbee_release(pxbee_config xbee_config){
 
-    printf("Stop xbee ...\n");
+    int ret;
 
     /* Close connection                                                      */
     if(xbee_conValidate(xbee_config -> con) != XBEE_ENONE){
 
-        if ((ret = xbee_conEnd(xbee_config -> con)) != XBEE_ENONE) {
+        if ((ret = xbee_conEnd(xbee_config -> con)) != XBEE_ENONE) return ret;
 
-            char ret_value[100];
-
-            memset(ret_value, 0, 100);
-
-            printf("xbee_conEnd() returned: %d.\n", ret);
-
-        }
     }
 
     Free_Packet_Queue(&xbee_config -> pkt_Queue);
 
     Free_Packet_Queue(&xbee_config -> Received_Queue);
 
-    printf("Stop connection Succeeded.\n");
-
     /* Close xbee                                                            */
     xbee_shutdown(xbee_config -> xbee);
 
-    printf("Shutdown Xbee Succeeded.\n");
+    return XBEE_ENONE;
 
     }
 
@@ -387,8 +361,6 @@ void CallBack(struct xbee *xbee, struct xbee_con *con, struct xbee_pkt **pkt
                                                             , void **data) {
 
     pkt_ptr Received_Queue = (pkt_ptr)*data;
-
-    printf("Enter CallBack Data\n");
 
     if (((*pkt) -> dataLen > 0 ) && (str_to_type((*pkt) -> conType) == Data)) {
 

@@ -182,10 +182,5 @@ int main(){
 
     Free_Packet_Queue(&pkt_queue);
 
-    display_pkt("Test-front", &pkt_queue, pkt_queue.front);
-    display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
-
-    Free_Packet_Queue(&pkt_queue);
-
     return 0;
 }

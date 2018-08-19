@@ -37,31 +37,23 @@
 
 #include "pkt_Queue.h"
 
-void init_Packet_Queue(pkt_ptr pkt_queue){
+int init_Packet_Queue(pkt_ptr pkt_queue){
 
-    pkt_queue -> locker = false;
+    int ret;
 
-    bool status;
-
-    do{
-
-        status = pkt_queue -> locker;
-
-        pkt_queue -> locker = true;
-
-    } while(status == true);
+    pthread_mutex_init(&pkt_queue -> mutex, 0);
 
     pkt_queue -> front = -1;
 
     pkt_queue -> rear  = -1;
 
-    pkt_queue -> locker = false;
-
-    printf("init_Packet_Queue Success.\n");
+    return pkt_Queue_SUCCESS;
 
 }
 
-void Free_Packet_Queue(pkt_ptr pkt_queue){
+int Free_Packet_Queue(pkt_ptr pkt_queue){
+
+    int ret;
 
     while (!(is_null(pkt_queue))){
 
@@ -69,23 +61,17 @@ void Free_Packet_Queue(pkt_ptr pkt_queue){
 
     }
 
-    printf("Free_Packet_Queue Success.\n");
+    pthread_mutex_destroy(&pkt_queue -> mutex);
+
+    return pkt_Queue_SUCCESS;
 
 }
 
-void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
+int addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
 
-    bool status;
+    int ret;
 
-    do{
-
-        status = pkt_queue -> locker;
-
-        pkt_queue -> locker = true;
-
-    } while(status == true);
-
-    printf("addpkt start\n");
+    pthread_mutex_lock(&pkt_queue -> mutex);
 
     printf("------Content------\n");
     printf("type    : %s\n", type_to_str(type));
@@ -94,8 +80,6 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
     printf("-------------------\n");
 
     if(is_null(pkt_queue)){
-
-        printf("pkt_Queue is NULL.\n");
 
         pkt_queue -> front = 0;
 
@@ -107,11 +91,9 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
 
         if(is_full(pkt_queue)){
 
-            printf("pkt_Queue is FULL.\n");
+            pthread_mutex_unlock(&pkt_queue -> mutex);
 
-            pkt_queue->locker = false;
-
-            return;
+            return pkt_Queue_FULL;
 
         }
 
@@ -119,22 +101,18 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
 
             if( pkt_queue -> rear == MAX_PKT_LENGTH - 1){
 
-                printf("pkt_Queue rear pointer return to the first of of the packet Queue.\n");
-
                 pkt_queue -> rear = 0;
 
             }
 
             else{
 
-                printf("pkt_Queue rear pointer point to next location.\n");
-
                 pkt_queue -> rear ++ ;
 
             }
+
         }
 
-        printf("addpkt Success.\n");
     }
 
     pkt_queue -> Queue[pkt_queue -> rear].type = type;
@@ -164,30 +142,20 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
     printf("%d\n", queue_len(pkt_queue));
     printf("==================\n");
 
-    pkt_queue->locker = false;
+    pthread_mutex_unlock(&pkt_queue -> mutex);
 
-    return;
+    return pkt_Queue_SUCCESS;
 }
 
- void delpkt(pkt_ptr pkt_queue) {
+int delpkt(pkt_ptr pkt_queue) {
 
-    bool status;
-
-    do{
-
-        status = pkt_queue -> locker;
-
-        pkt_queue -> locker = true;
-
-    } while(status == true);
+    pthread_mutex_lock(&pkt_queue -> mutex);
 
     if(is_null(pkt_queue)) {
 
-        printf("Packet Queue is empty!\n");
+        pthread_mutex_unlock(&pkt_queue -> mutex);
 
-        pkt_queue -> locker = false;
-
-        return;
+        return pkt_Queue_SUCCESS;
 
     }
 
@@ -196,8 +164,6 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
     free(pkt_queue -> Queue[pkt_queue -> front].content);
 
     if(pkt_queue -> front == pkt_queue -> rear){
-
-        printf("Packet Queue Reset to NULL\n");
 
         pkt_queue -> front = -1;
 
@@ -208,8 +174,6 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
 
         if(pkt_queue -> front == MAX_PKT_LENGTH - 1){
 
-            printf("pkt_Queue front pointer return to the first of of the packet Queue.\n");
-
             pkt_queue -> front = 0;
 
         }
@@ -218,13 +182,9 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
 
             pkt_queue -> front += 1;
 
-            printf("pkt_Queue front pointer point to next location.\n");
-
         }
 
     }
-
-    printf("delpkt Success.\n");
 
     char len[10];
 
@@ -236,9 +196,9 @@ void addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
     printf("%d\n", queue_len(pkt_queue));
     printf("==================\n");
 
-    pkt_queue->locker = false;
+    pthread_mutex_unlock(&pkt_queue -> mutex);
 
-    return;
+    return pkt_Queue_SUCCESS;
 }
 
 char* print_address(unsigned char* address){
@@ -279,14 +239,13 @@ char* type_to_str(int type){
 int str_to_type(const char* conType){
 
     if(memcmp(conType, "Transmit Status"
-            , strlen("Transmit Status")* sizeof(char)) == 0){
+     , strlen("Transmit Status")* sizeof(char)) == 0){
 
         return Data;
 
     }
 
-    else if(memcmp(conType, "Data"
-            , strlen("Data")* sizeof(char)) == 0){
+    else if(memcmp(conType, "Data", strlen("Data")* sizeof(char)) == 0){
 
         return Data;
 
@@ -294,7 +253,7 @@ int str_to_type(const char* conType){
 
     else{
 
-        return -1;
+        return UNKNOWN;
 
     }
 
@@ -327,9 +286,12 @@ bool address_compare(unsigned char* addr1,unsigned char* addr2){
     return false;
 
 }
+
 void address_copy(unsigned char* src_addr, unsigned char* dest_addr){
 
     memcpy(dest_addr, src_addr, 8);
+
+    return;
 
 }
 
@@ -387,23 +349,17 @@ bool is_full(pkt_ptr pkt_Queue){
 
     if(pkt_Queue -> front == pkt_Queue -> rear + 1){
 
-        printf("is_full return true.\n");
-
         return true;
 
     }
 
     else if(pkt_Queue -> front == 0 && pkt_Queue -> rear == MAX_PKT_LENGTH - 1){
 
-        printf("is_full return true.\n");
-
         return true;
 
     }
 
     else{
-
-        printf("is_full return false.\n");
 
         return false;
 
@@ -424,9 +380,19 @@ int queue_len(pkt_ptr pkt_queue){
 
     }
 
+    else if (pkt_queue -> rear > pkt_queue -> front){
+
+        return (pkt_queue -> rear - pkt_queue -> front + 1);
+
+    }
+
+    else if (pkt_queue -> front > pkt_queue -> rear){
+
+        return ((MAX_PKT_LENGTH - pkt_queue -> front) + pkt_queue -> rear + 1);
+
+    }
+
     else{
-
-        return pkt_queue->rear - pkt_queue->front + 1;
-
+        return queue_len_error;
     }
 }
