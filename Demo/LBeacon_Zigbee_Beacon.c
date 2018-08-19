@@ -154,7 +154,7 @@ int main(void) {
         /* send the packet                                                   */
         xbee_send_pkt(&xbee_config);
 
-        //usleep(2000000);
+        usleep(xbee_usleep_time);
 
         xbee_connector(&xbee_config);
 

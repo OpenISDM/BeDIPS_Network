@@ -124,19 +124,11 @@ int xbee_LoadConfig(pxbee_config xbee_config){
 
                     sprintf(command, "%s\r", command);
 
-                    printf("%s\n", AT_Command);
+                    if(ret = xbee_Send_Command(&xbee_config -> xbee_datastream
+                                    , AT_Command, "OK")) return ret;
 
                     if(ret = xbee_Send_Command(&xbee_config -> xbee_datastream
-                                    , AT_Command, "OK"))
-
-                      return ret;
-
-                    printf("%s\n", command);
-
-                    if(ret = xbee_Send_Command(&xbee_config -> xbee_datastream
-                                    , command, arg))
-
-                      return ret;
+                                    , command, arg)) return ret;
 
                 }
 
