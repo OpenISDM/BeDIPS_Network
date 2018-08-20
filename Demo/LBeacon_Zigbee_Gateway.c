@@ -16,11 +16,11 @@
  *   	This file contains the program to set up a star network by XBEE S2C
  *      module in order to deal with NSI(Network Setup and Initialization)
  *      and Data transmission between Gateway and LBeacon. And This file is
- *		for LBeacon.
+ *		for Gateway
  *
  * File Name:
  *
- *      LBeacon_Zigbee_LBeacon.c
+ *      LBeacon_Zigbee_Gateway.c
  *
  * Abstract:
  *
@@ -52,7 +52,7 @@ int main(void) {
 
     xbee_config.xbee_datastream = -1;
 
-    xbee_config.config_location = "./xbee_Beacon_config.conf";
+    xbee_config.config_location = "./xbee_Gateway_config.conf";
 
     xbee_Serial_Power_Reset(xbee_Serial_Power_Pin);
 

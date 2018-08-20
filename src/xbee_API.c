@@ -84,6 +84,8 @@ int xbee_LoadConfig(pxbee_config xbee_config){
 
         if(ch == '\n'){
 
+            printf("%s\n", AT_Command);
+
             if(AT_Command[0] == 'A' && AT_Command[1] == 'T') {
 
                 if(AT_Command[2] == 'W' && AT_Command[3] == 'R') {
