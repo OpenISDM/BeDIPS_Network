@@ -92,6 +92,10 @@ int main(void) {
 
         if(xbee_check_CallBack(&xbee_config, false)) break;
 
+        if(!xbee_check_CallBack(&xbee_config, true))
+
+            addpkt(&xbee_config.pkt_Queue, Data, Broadcast, "AAAAA");
+
         /* If there are remain some packet need to send in the Queue,        */
         /* send the packet                                                   */
         xbee_send_pkt(&xbee_config);
