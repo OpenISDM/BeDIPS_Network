@@ -88,7 +88,10 @@ int xbee_LoadConfig(pxbee_config xbee_config){
 
             if(AT_Command[0] == 'A' && AT_Command[1] == 'T') {
 
-                if(AT_Command[2] == 'W' && AT_Command[3] == 'R') {
+                if((AT_Command[2] == 'W' && AT_Command[3] == 'R')
+                || (AT_Command[2] == 'A' && AT_Command[3] == 'C')
+                || (AT_Command[2] == 'R' && AT_Command[3] == 'E')
+                || (AT_Command[2] == 'I' && AT_Command[3] == 'D')) {
 
                     sprintf(AT_Command, "%s\r", AT_Command);
 
@@ -96,22 +99,12 @@ int xbee_LoadConfig(pxbee_config xbee_config){
                                     , AT_Command, "OK") != 0)
 
                       return ret;
+                if(AT_Command[2] == 'W' && AT_Command[3] == 'R')
 
                     ATWR = true;
 
                 }
 
-                else if((AT_Command[2] == 'R' && AT_Command[3] == 'E')
-                     || (AT_Command[2] == 'I' && AT_Command[3] == 'D')){
-
-                    sprintf(AT_Command, "%s\r", AT_Command);
-
-                    if(ret = xbee_Send_Command(&xbee_config -> xbee_datastream
-                                    , AT_Command, "OK"))
-
-                      return ret;
-
-                }
                 else{
 
                     char command[6], arg[26];
