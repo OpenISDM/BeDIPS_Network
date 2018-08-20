@@ -52,7 +52,7 @@ int main(void) {
 
     xbee_config.xbee_datastream = -1;
 
-    xbee_config.config_location = "./xbee_Beacon_config.conf";
+    xbee_config.config_location = "/home/pi/Lbeacon-zigbee/Demo/xbee_Beacon_config.conf";
 
     xbee_Serial_Power_Reset(xbee_Serial_Power_Pin);
 
