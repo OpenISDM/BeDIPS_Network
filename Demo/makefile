@@ -1,6 +1,8 @@
 srcPath = ../src/
 CC = gcc -std=gnu99
 
+LBeacon_Zigbee_Gateway.out: $(srcPath)xbee_Serial.o $(srcPath)xbee_API.o $(srcPath)pkt_Queue.o LBeacon_Zigbee_Gateway.c
+	$(CC) -lxbee -lwiringPi $(srcPath)xbee_Serial.o $(srcPath)xbee_API.o $(srcPath)pkt_Queue.o LBeacon_Zigbee_Gateway.c -o LBeacon_Zigbee_Gateway.out
 LBeacon_Zigbee_Beacon.out: $(srcPath)xbee_Serial.o $(srcPath)xbee_API.o $(srcPath)pkt_Queue.o LBeacon_Zigbee_Beacon.c
 	$(CC) -lxbee -lwiringPi $(srcPath)xbee_Serial.o $(srcPath)xbee_API.o $(srcPath)pkt_Queue.o LBeacon_Zigbee_Beacon.c -o LBeacon_Zigbee_Beacon.out
 pkt_Queue_Demo.out: $(srcPath)pkt_Queue.o pkt_Queue_Demo.c
