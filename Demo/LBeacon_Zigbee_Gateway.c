@@ -86,69 +86,11 @@ int main(void) {
 
     }
 
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Broadcast, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Broadcast, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Broadcast, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Broadcast, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Broadcast, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Broadcast, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Broadcast, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Broadcast, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Broadcast, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, "0013A2004127CE8B", "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-        addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
-
     /* Start the chain reaction!                                             */
 
     while(1) {
 
         if(xbee_check_CallBack(&xbee_config, false)) break;
-
-        if(!xbee_check_CallBack(&xbee_config, true))
-
-            addpkt(&xbee_config.pkt_Queue, Data, Gateway, "AAAAA");
 
         /* If there are remain some packet need to send in the Queue,        */
         /* send the packet                                                   */
