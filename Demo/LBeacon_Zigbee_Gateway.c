@@ -100,7 +100,7 @@ int main(void) {
         /* send the packet                                                   */
         xbee_send_pkt(&xbee_config);
 
-        usleep(xbee_usleep_time);
+        usleep(100000);
 
         xbee_connector(&xbee_config);
 

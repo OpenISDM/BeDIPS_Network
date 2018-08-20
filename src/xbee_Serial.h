@@ -52,7 +52,7 @@
 #define databits  CS8
 #define xbee_Serial_buffer 50
 #define xbee_Serial_Power_Pin 1 //wiringPi pin 1 is BCM_GPIO 18.
-#define xbee_usleep_time 1000000
+#define xbee_usleep_time 500000
 
 /*
  * A flag to record does the command returned value.
