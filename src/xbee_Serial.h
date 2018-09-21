@@ -60,12 +60,13 @@
  * Ended  : the command we send had return value.
  *
  */
-enum{ Remain , Ended };
+enum { Remain , Ended };
 
-enum{ Wiring_Pi_Setup_Fail = -1, Serial_init_Fail = -2,
-      Serial_Setting_Fail = -3, Data_Receive_MisMatch = -4,
-      Data_Receive_OverFlow = -5, xbee_datastream_Error = -6,
-      Serial_Tx_Error = -7, Serial_Rx_Error = -8};
+enum { Wiring_Pi_Setup_Fail = -1  , Serial_init_Fail = -2,
+       Serial_Setting_Fail = -3   , Data_Receive_MisMatch = -4,
+       Data_Receive_OverFlow = -5 , xbee_datastream_Error = -6,
+       Serial_Tx_Error = -7       , Serial_Rx_Error = -8
+     };
 
 /*
  * xbee_Serial_Power_Reset
@@ -118,7 +119,7 @@ int xbee_Serial_Power_Reset(int Wiring_Pi_Pin);
  *          If not 0, somthing wrong.
  *
  */
-int xbee_Serial_Tx(int *xbee_datastream, char* Data);
+int xbee_Serial_Tx(int *xbee_datastream, char *Data);
 
 /*
  * xbee_Serial_Rx
@@ -136,7 +137,7 @@ int xbee_Serial_Tx(int *xbee_datastream, char* Data);
  *               If not 0, somthing wrong.
  *
  */
- int xbee_Serial_Rx(int *xbee_datastream, char* Data);
+ int xbee_Serial_Rx(int *xbee_datastream, char *Data);
 
 /*
  * xbee_Serial_Return
@@ -152,7 +153,7 @@ int xbee_Serial_Tx(int *xbee_datastream, char* Data);
  *     char: return the data read from Serial.
  *
  */
-char* xbee_Serial_Return(int *xbee_datastream);
+char *xbee_Serial_Return(int *xbee_datastream);
 
 /*
  * xbee_Send_Command
@@ -171,8 +172,8 @@ char* xbee_Serial_Return(int *xbee_datastream);
  *          If not 0, somthing wrong.
  *
  */
-int xbee_Send_Command(int *xbee_datastream, char* Command
-                    , char* Command_Result);
+int xbee_Send_Command(int *xbee_datastream, char *Command
+                    , char *Command_Result);
 
 /*
  * xbee_Send_Command
@@ -190,6 +191,6 @@ int xbee_Send_Command(int *xbee_datastream, char* Command
  *           If return NULL, somthing wrong.
  *
  */
- char* xbee_Send_Command_result(int *xbee_datastream, char* Command);
+ char *xbee_Send_Command_result(int *xbee_datastream, char *Command);
 
 #endif

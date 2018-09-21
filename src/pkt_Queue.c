@@ -41,7 +41,7 @@ int init_Packet_Queue(pkt_ptr pkt_queue){
 
     int ret;
 
-    pthread_mutex_init(&pkt_queue -> mutex, 0);
+    pthread_mutex_init( &pkt_queue -> mutex, 0);
 
     pkt_queue -> front = -1;
 
@@ -55,13 +55,13 @@ int Free_Packet_Queue(pkt_ptr pkt_queue){
 
     int ret;
 
-    while (!(is_null(pkt_queue))){
+    while ( !(is_null(pkt_queue))){
 
         delpkt(pkt_queue);
 
     }
 
-    pthread_mutex_destroy(&pkt_queue -> mutex);
+    pthread_mutex_destroy( &pkt_queue -> mutex);
 
     return pkt_Queue_SUCCESS;
 
@@ -71,7 +71,7 @@ int addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
 
     int ret;
 
-    pthread_mutex_lock(&pkt_queue -> mutex);
+    pthread_mutex_lock( &pkt_queue -> mutex);
 
     printf("------Content------\n");
     printf("type    : %s\n", type_to_str(type));
@@ -91,7 +91,7 @@ int addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
 
         if(is_full(pkt_queue)){
 
-            pthread_mutex_unlock(&pkt_queue -> mutex);
+            pthread_mutex_unlock( &pkt_queue -> mutex);
 
             return pkt_Queue_FULL;
 
@@ -125,7 +125,7 @@ int addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
                                           malloc((cont_len + 1) * sizeof(char));
 
     memset(pkt_queue -> Queue[pkt_queue -> rear].content, 0
-         , sizeof((cont_len + 1)*sizeof(char)));
+         , sizeof((cont_len + 1) * sizeof(char)));
 
     strncpy(pkt_queue -> Queue[pkt_queue -> rear].content, content, cont_len);
 
@@ -133,27 +133,28 @@ int addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
 
     display_pkt("Addedpkt", pkt_queue, pkt_queue -> rear);
 
-
     char len[10];
+
     memset(len, 0, 10);
+
     sprintf(len, "%d\0", queue_len(pkt_queue));
 
     printf("= pkt_queue len  =\n");
     printf("%d\n", queue_len(pkt_queue));
     printf("==================\n");
 
-    pthread_mutex_unlock(&pkt_queue -> mutex);
+    pthread_mutex_unlock( &pkt_queue -> mutex);
 
     return pkt_Queue_SUCCESS;
 }
 
 int delpkt(pkt_ptr pkt_queue) {
 
-    pthread_mutex_lock(&pkt_queue -> mutex);
+    pthread_mutex_lock( &pkt_queue -> mutex);
 
     if(is_null(pkt_queue)) {
 
-        pthread_mutex_unlock(&pkt_queue -> mutex);
+        pthread_mutex_unlock( &pkt_queue -> mutex);
 
         return pkt_Queue_SUCCESS;
 
@@ -196,16 +197,16 @@ int delpkt(pkt_ptr pkt_queue) {
     printf("%d\n", queue_len(pkt_queue));
     printf("==================\n");
 
-    pthread_mutex_unlock(&pkt_queue -> mutex);
+    pthread_mutex_unlock( &pkt_queue -> mutex);
 
     return pkt_Queue_SUCCESS;
 }
 
-char* print_address(unsigned char* address){
+char *print_address(unsigned char *address){
 
-    char* char_addr = malloc(sizeof(char)*17);
+    char *char_addr = malloc(sizeof(char) * 17);
 
-    memset(char_addr, 0, sizeof(char)*17);
+    memset(char_addr, 0, sizeof(char) * 17);
 
     sprintf(char_addr, "%02x%02x%02x%02x%02x%02x%02x%02x", address[0]
     , address[1], address[2], address[3], address[4], address[5], address[6]
@@ -236,16 +237,16 @@ char* type_to_str(int type){
     }
 }
 
-int str_to_type(const char* conType){
+int str_to_type(const char *conType){
 
     if(memcmp(conType, "Transmit Status"
-     , strlen("Transmit Status")* sizeof(char)) == 0){
+     , strlen("Transmit Status") * sizeof(char)) == 0){
 
         return Data;
 
     }
 
-    else if(memcmp(conType, "Data", strlen("Data")* sizeof(char)) == 0){
+    else if(memcmp(conType, "Data", strlen("Data") * sizeof(char)) == 0){
 
         return Data;
 
@@ -259,23 +260,23 @@ int str_to_type(const char* conType){
 
 }
 
-void Fill_Address(char *raw,unsigned char* addr){
+void Fill_Address(char *raw,unsigned char *addr){
 
-    for(int i = 0;i < 8;i++){
+    for(int i = 0 ; i < 8 ; i ++){
 
         char tmp[2];
 
-        tmp[0] = raw[i*2];
+        tmp[0] = raw[i * 2];
 
-        tmp[1] = raw[i*2+1];
+        tmp[1] = raw[i * 2 + 1];
 
-        addr[i] = strtol(tmp,(void*) NULL, 16);
+        addr[i] = strtol(tmp,(void *) NULL, 16);
 
     }
 
 }
 
-bool address_compare(unsigned char* addr1,unsigned char* addr2){
+bool address_compare(unsigned char *addr1, unsigned char *addr2){
 
     if (memcmp(addr1, addr2, 8) == 0){
 
@@ -287,7 +288,7 @@ bool address_compare(unsigned char* addr1,unsigned char* addr2){
 
 }
 
-void address_copy(unsigned char* src_addr, unsigned char* dest_addr){
+void address_copy(unsigned char *src_addr, unsigned char *dest_addr){
 
     memcpy(dest_addr, src_addr, 8);
 
@@ -295,7 +296,7 @@ void address_copy(unsigned char* src_addr, unsigned char* dest_addr){
 
 }
 
-void display_pkt(char* content, pkt_ptr pkt_queue, int pkt_num){
+void display_pkt(char *content, pkt_ptr pkt_queue, int pkt_num){
 
     if(pkt_num == -1)
 

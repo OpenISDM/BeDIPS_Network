@@ -51,24 +51,24 @@
 typedef struct xbee_config {
 
     //Universal
-    char*   xbee_device;
+    char   *xbee_device;
     char    Local_Address[17];
 
     //Serial
-    int    xbee_datastream;
-    char*   config_location;
+    int     xbee_datastream;
+    char   *config_location;
 
     //API
-    char* xbee_mode;
+    char *xbee_mode;
     struct xbee *xbee;
     struct xbee_con *con;
     spkt_ptr pkt_Queue, Received_Queue;
 
 } sxbee_config;
 
-typedef sxbee_config* pxbee_config;
+typedef sxbee_config *pxbee_config;
 
-enum{File_OPEN_ERROR = -1,};
+enum{File_OPEN_ERROR = -1};
 
 /*
  *
