@@ -68,119 +68,31 @@ int main(){
 
     delpkt(&pkt_queue);
 
-    addpkt(&pkt_queue, Data,"0123456789ABCDEF", "2");
+    int l = MAX_QUEUE_LENGTH;
+    while(l --){
 
-    display_pkt("Test-front", &pkt_queue, pkt_queue.front);
-    display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
-
-    display_pkt("Test-front", &pkt_queue, pkt_queue.front);
-    display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
-
-    delpkt(&pkt_queue);
-
-    display_pkt("Test-front", &pkt_queue, pkt_queue.front);
-    display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
-
-    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "3");
+        char l_str[10];
+        memset(l_str, 0, sizeof(char) * 10);
+        sprintf(l_str, "%d", l);
+        addpkt(&pkt_queue, Data,"0123456789ABCDEF", l_str);
+    }
 
     display_pkt("Test-front", &pkt_queue, pkt_queue.front);
     display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
 
     delpkt(&pkt_queue);
 
-    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "4");
-
-    display_pkt("Test-front", &pkt_queue, pkt_queue.front);
-    display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
-
-    delpkt(&pkt_queue);
-
-    display_pkt("Test-front", &pkt_queue, pkt_queue.front);
-    display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
-
-    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "5");
-
-    display_pkt("Test-front", &pkt_queue, pkt_queue.front);
-    display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
-
-    delpkt(&pkt_queue);
-
-    display_pkt("Test-front", &pkt_queue, pkt_queue.front);
-    display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
-
-    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "6");
-
-    display_pkt("Test-front", &pkt_queue, pkt_queue.front);
-    display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
-
-    delpkt(&pkt_queue);
-
-    display_pkt("Test-front", &pkt_queue, pkt_queue.front);
-    display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
-
-    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "7");
-
-    display_pkt("Test-front", &pkt_queue, pkt_queue.front);
-    display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
-
-    delpkt(&pkt_queue);
-
-    printf("Add * 3.\n");
-
-    display_pkt("Test-front", &pkt_queue, pkt_queue.front);
-    display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
-
-    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "8");
-
-    display_pkt("Test-front", &pkt_queue, pkt_queue.front);
-    display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
-
-    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "9");
-
-    display_pkt("Test-front", &pkt_queue, pkt_queue.front);
-    display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
-
-    delpkt(&pkt_queue);
-
-    display_pkt("Test-front", &pkt_queue, pkt_queue.front);
-    display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
-
-    delpkt(&pkt_queue);
-
-    display_pkt("Test-front", &pkt_queue, pkt_queue.front);
-    display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
-
-    printf("Add * 2.\n");
-
-    display_pkt("Test-front", &pkt_queue, pkt_queue.front);
-    display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
-
-    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "10");
-
-    display_pkt("Test-front", &pkt_queue, pkt_queue.front);
-    display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
-
-    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "11");
-
-    display_pkt("Test-front", &pkt_queue, pkt_queue.front);
-    display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
-
-    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "12");
-
-    display_pkt("Test-front", &pkt_queue, pkt_queue.front);
-    display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
-
-    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "13");
-
-    display_pkt("Test-front", &pkt_queue, pkt_queue.front);
-    display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
-
-    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "14");
-
-    display_pkt("Test-front", &pkt_queue, pkt_queue.front);
-    display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
+    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "END");
 
     Free_Packet_Queue(&pkt_queue);
+
+    char id[Address_length + 1];
+
+    memset(id, 0, sizeof(char) * (Address_length + 1));
+
+    generate_identification(id);
+
+    printf("%s\n", id);
 
     return 0;
 }

@@ -204,9 +204,9 @@ int delpkt(pkt_ptr pkt_queue) {
 
 char *print_address(unsigned char *address){
 
-    char *char_addr = malloc(sizeof(char) * 17);
+    char *char_addr = malloc(sizeof(char) * (Address_length + 1));
 
-    memset(char_addr, 0, sizeof(char) * 17);
+    memset(char_addr, 0, sizeof(char) * (Address_length + 1));
 
     sprintf(char_addr, "%02x%02x%02x%02x%02x%02x%02x%02x", address[0]
     , address[1], address[2], address[3], address[4], address[5], address[6]
@@ -270,7 +270,7 @@ void Fill_Address(char *raw,unsigned char *addr){
 
         tmp[1] = raw[i * 2 + 1];
 
-        addr[i] = strtol(tmp,(void *) NULL, 16);
+        addr[i] = strtol(tmp,(void *) NULL, Address_length);
 
     }
 
@@ -402,4 +402,24 @@ int queue_len(pkt_ptr pkt_queue){
     else{
         return queue_len_error;
     }
+}
+
+void generate_identification(char *identification){
+
+    //char identification[Address_length + 1];
+
+    char str[] = "0123456789ABCDEF";
+
+    memset(identification, 0 , sizeof(char) * (Address_length + 1));
+
+    /* Seed number for rand() */
+    srand((unsigned int) time(0) + getpid());
+
+    for(int length = 0 ; length < Address_length + 1 ; length ++) {
+        identification[length] = str[rand() % 16];
+        srand(rand());
+    }
+
+    //return identification;
+
 }

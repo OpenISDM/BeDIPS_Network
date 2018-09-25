@@ -42,6 +42,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <time.h>
 
 #ifndef pkt_Queue_H
 #define pkt_Queue_H
@@ -55,6 +56,8 @@
 //define the maximum length of pkt Queue.
 #define MAX_QUEUE_LENGTH 1024
 
+#define Address_length 16
+
 enum {UNKNOWN, Data, Local_AT, NONE};
 
 enum{ pkt_Queue_SUCCESS = 0, pkt_Queue_FULL = -1, queue_len_error = -2};
@@ -67,7 +70,7 @@ typedef struct pkt {
 
     // Brocast:     000000000000FFFF;
     // Coordinator: 0000000000000000
-    unsigned char address[8];
+    unsigned char address[Address_length/2];
 
     // Data
     char *content;
@@ -86,7 +89,7 @@ typedef struct pkt_header {
 
     sPkt Queue[MAX_QUEUE_LENGTH];
 
-    unsigned char address[8];
+    unsigned char address[Address_length/2];
 
     pthread_mutex_t mutex;
 
@@ -338,5 +341,7 @@ bool is_full(pkt_ptr pkt_Queue);
  *
  */
 int queue_len(pkt_ptr pkt_queue);
+
+void generate_identification(char *identification);
 
 #endif
