@@ -84,7 +84,7 @@ typedef struct pkt_header {
 
     int rear;
 
-    sPkt Queue[MAX_PKT_LENGTH];
+    sPkt Queue[MAX_QUEUE_LENGTH];
 
     unsigned char address[8];
 

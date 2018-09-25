@@ -99,7 +99,7 @@ int addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
 
         else{
 
-            if( pkt_queue -> rear == MAX_PKT_LENGTH - 1){
+            if( pkt_queue -> rear == MAX_QUEUE_LENGTH - 1){
 
                 pkt_queue -> rear = 0;
 
@@ -173,7 +173,7 @@ int delpkt(pkt_ptr pkt_queue) {
     }
     else{
 
-        if(pkt_queue -> front == MAX_PKT_LENGTH - 1){
+        if(pkt_queue -> front == MAX_QUEUE_LENGTH - 1){
 
             pkt_queue -> front = 0;
 
@@ -354,7 +354,7 @@ bool is_full(pkt_ptr pkt_Queue){
 
     }
 
-    else if(pkt_Queue -> front == 0 && pkt_Queue -> rear == MAX_PKT_LENGTH - 1){
+    else if(pkt_Queue -> front == 0 && pkt_Queue -> rear == MAX_QUEUE_LENGTH - 1){
 
         return true;
 
@@ -395,7 +395,7 @@ int queue_len(pkt_ptr pkt_queue){
 
     else if (pkt_queue -> front > pkt_queue -> rear){
 
-        return ((MAX_PKT_LENGTH - pkt_queue -> front) + pkt_queue -> rear + 1);
+        return ((MAX_QUEUE_LENGTH - pkt_queue -> front) + pkt_queue -> rear + 1);
 
     }
 
