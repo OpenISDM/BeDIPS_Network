@@ -13,8 +13,8 @@
  *
  * File Description:
  *
- *   	This file contains the header of function declarations and variable
- *      used in pkt_Queue.h
+ *   	This file contains the header of function declarations
+ *      used in pkt_Queue.c
  *
  * File Name:
  *
@@ -49,7 +49,11 @@
 #define Gateway   "0000000000000000"
 #define Broadcast "000000000000FFFF"
 
-#define MAX_PKT_LENGTH 1024
+//define the maximum pkt length per pkt.
+#define MAX_PKT_LENGTH 100
+
+//define the maximum length of pkt Queue.
+#define MAX_QUEUE_LENGTH 1024
 
 enum {UNKNOWN, Data, Local_AT, NONE};
 
