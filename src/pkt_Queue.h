@@ -42,7 +42,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <pthread.h>
-#include <time.h>
+#include <sys/time.h>
 
 #ifndef pkt_Queue_H
 #define pkt_Queue_H
@@ -67,6 +67,8 @@ typedef struct pkt {
 
     //"Data" type
     int type;
+
+    char identification[Address_length/2];
 
     // Brocast:     000000000000FFFF;
     // Coordinator: 0000000000000000

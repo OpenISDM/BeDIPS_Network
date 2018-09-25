@@ -117,6 +117,14 @@ int addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content ) {
 
     pkt_queue -> Queue[pkt_queue -> rear].type = type;
 
+    char identification_char[Address_length + 1];
+
+    memset(identification_char, 0, sizeof(char) * (Address_length + 1));
+
+    generate_identification(identification_char);
+
+    Fill_Address(identification_char, pkt_queue -> Queue[pkt_queue -> rear].identification);
+
     Fill_Address(raw_addr, pkt_queue -> Queue[pkt_queue -> rear].address);
 
     int cont_len = strlen(content);
@@ -302,13 +310,16 @@ void display_pkt(char *content, pkt_ptr pkt_queue, int pkt_num){
 
         return;
 
-    char* char_addr = print_address(pkt_queue -> Queue[pkt_num].address);
+    char *char_addr = print_address(pkt_queue -> Queue[pkt_num].address);
+    char *identification = print_address(pkt_queue -> Queue[pkt_num].identification);
 
     printf("==================\n");
     printf("%s\n", content);
     printf("==================\n");
     printf("== type ==\n");
     printf("%s\n", type_to_str(pkt_queue -> Queue[pkt_num].type));
+    printf("== Identification ==\n");
+    printf("%s\n", identification);
     printf("== address ==\n");
     printf("%s\n", char_addr);
     printf("== content ==\n");
@@ -316,6 +327,7 @@ void display_pkt(char *content, pkt_ptr pkt_queue, int pkt_num){
     printf("==================\n");
 
     free(char_addr);
+    free(identification);
 
     return;
 }
@@ -412,8 +424,14 @@ void generate_identification(char *identification){
 
     memset(identification, 0 , sizeof(char) * (Address_length + 1));
 
+    struct timeval tv;
+
+    struct timezone tz;
+
+    gettimeofday (&tv , &tz);
+
     /* Seed number for rand() */
-    srand((unsigned int) time(0) + getpid());
+    srand((unsigned int) (tv.tv_sec * 1000 + tv.tv_usec));
 
     for(int length = 0 ; length < Address_length + 1 ; length ++) {
         identification[length] = str[rand() % 16];
