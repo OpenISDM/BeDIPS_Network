@@ -52,7 +52,7 @@ typedef struct xbee_config {
 
     //Universal
     char   *xbee_device;
-    char    Local_Address[17];
+    char    Local_Address[Address_length + 1];
 
     //Serial
     int     xbee_datastream;
@@ -67,6 +67,10 @@ typedef struct xbee_config {
 } sxbee_config;
 
 typedef sxbee_config *pxbee_config;
+
+typedef struct rcv_buffer_head {
+    char [MAX_QUEUE_LENGTH][]
+}
 
 enum{File_OPEN_ERROR = -1};
 

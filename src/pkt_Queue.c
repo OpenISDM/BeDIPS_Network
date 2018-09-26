@@ -418,8 +418,6 @@ int queue_len(pkt_ptr pkt_queue){
 
 void generate_identification(char *identification){
 
-    //char identification[Address_length + 1];
-
     char str[] = "0123456789ABCDEF";
 
     memset(identification, 0 , sizeof(char) * (Address_length + 1));
@@ -437,7 +435,5 @@ void generate_identification(char *identification){
         identification[length] = str[rand() % 16];
         srand(rand());
     }
-
-    //return identification;
 
 }

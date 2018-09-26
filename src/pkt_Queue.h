@@ -344,6 +344,20 @@ bool is_full(pkt_ptr pkt_Queue);
  */
 int queue_len(pkt_ptr pkt_queue);
 
+/*
+ * generate_identification
+ *
+ *      Generate a 16 hex number as a unique number to identify same pkt.
+ *
+ * Parameter:
+ *
+ *      identification: The char pointer use for storing the unique number.
+ *
+ * Return Value:
+ *
+ *      None
+ *
+ */
 void generate_identification(char *identification);
 
 #endif
