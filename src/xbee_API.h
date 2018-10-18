@@ -148,7 +148,7 @@ xbee_err xbee_send_pkt(pxbee_config xbee_config);
  * Parameter:
  *
  *     xbee_config: A structure contain all variables for xbee.
- *     exclude_pkt_Queue : If true, ignore pkt_Queue.
+ *     ignore_pkt_Queue : If true, ignore pkt_Queue.
  *
  * Return Value:
  *
