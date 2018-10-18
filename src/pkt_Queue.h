@@ -74,17 +74,23 @@ enum{ pkt_Queue_SUCCESS = 0, pkt_Queue_FULL = -1, queue_len_error = -2};
 /* packet format */
 typedef struct pkt {
 
-    //"Data" type
-    int type;
-
-    char identification[Address_length/2];
-
     // Brocast:     000000000000FFFF;
     // Coordinator: 0000000000000000
-    unsigned char address[Address_length/2];
+    unsigned char address[Address_length_Hex];
+
+    //"Data" type
+    unsigned int type;
+
+    unsigned char identification[identification_length_Hex];
+
+    unsigned int Data_fragmentation;
+
+    unsigned int Data_offset;
+
+    char Reserved[3];
 
     // Data
-    char *content;
+    char content[MAX_XBEE_DATA_LENGTH];
 
 } sPkt;
 
@@ -100,7 +106,7 @@ typedef struct pkt_header {
 
     sPkt Queue[MAX_QUEUE_LENGTH];
 
-    unsigned char address[Address_length/2];
+    unsigned char address[Address_length_Hex];
 
     pthread_mutex_t mutex;
 
