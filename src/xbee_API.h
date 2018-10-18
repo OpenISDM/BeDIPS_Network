@@ -52,7 +52,7 @@ typedef struct xbee_config {
 
     //Universal
     char   *xbee_device;
-    char    Local_Address[Address_length + 1];
+    char    Local_Address[Address_length];
 
     //Serial
     int     xbee_datastream;
@@ -62,15 +62,12 @@ typedef struct xbee_config {
     char *xbee_mode;
     struct xbee *xbee;
     struct xbee_con *con;
+
     spkt_ptr pkt_Queue, Received_Queue;
 
 } sxbee_config;
 
 typedef sxbee_config *pxbee_config;
-
-typedef struct rcv_buffer_head {
-    char [MAX_QUEUE_LENGTH][]
-}
 
 enum{File_OPEN_ERROR = -1};
 
@@ -177,7 +174,7 @@ xbee_err xbee_send_pkt(pxbee_config xbee_config);
  *      is false), else false.
  *
  */
-bool xbee_check_CallBack(pxbee_config xbee_config, bool exclude_pkt_Queue);
+bool xbee_check_CallBack(pxbee_config xbee_config, bool ignore_pkt_Queue);
 
 /*
  * xbee_release
