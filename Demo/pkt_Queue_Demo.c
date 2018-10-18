@@ -39,60 +39,67 @@
 
 int main(){
 
-    spkt_ptr pkt_queue ;
+    spkt_ptr pkt_queue;
+
+    printf("%d\n", queue_len(&pkt_queue));
+
+    char *id = malloc(sizeof(char) * (identification_length + 1));
+
+    memset(id, 0, sizeof(char) * (identification_length + 1));
+
+    generate_identification(id, identification_length);
+
+    printf("%s\n", id);
+
+    generate_identification(id, identification_length);
+
+    printf("%s\n", id);
+
+    generate_identification(id, identification_length);
+
+    printf("%s\n", id);
+
+    generate_identification(id, identification_length);
+
+    printf("%s\n", id);
 
     /* Initialize Queue for packets                                          */
     init_Packet_Queue(&pkt_queue);
 
-    if(is_null(&pkt_queue)){
-        printf("Queue is NULL.\n");
+    for(int i = 0; i < MAX_QUEUE_LENGTH;i++){
+
+        addpkt(&pkt_queue, Data, id, 0, 0, Broadcast, "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
+
+        sleep(1);
+
     }
-
-    char len[10];
-
-    printf("add and delete recursively.\n");
-
-    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "1");
-
-    display_pkt("Test-front", &pkt_queue, pkt_queue.front);
-    display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
-
-    address_copy(pkt_queue.Queue[pkt_queue.front].address, pkt_queue.address);
-    if(address_compare(pkt_queue.Queue[pkt_queue.front].address
-                     , pkt_queue.address)){
-        printf("Address The Same.\n");
-    }
-
-    display_pkt("Test-front", &pkt_queue, pkt_queue.front);
-    display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
 
     delpkt(&pkt_queue);
 
-    int l = MAX_QUEUE_LENGTH;
-    while(l --){
+    sleep(1);
 
-        char l_str[10];
-        memset(l_str, 0, sizeof(char) * 10);
-        sprintf(l_str, "%d", l);
-        addpkt(&pkt_queue, Data,"0123456789ABCDEF", l_str);
-    }
+    addpkt(&pkt_queue, Data, id, 0, 0, Broadcast, "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
 
-    display_pkt("Test-front", &pkt_queue, pkt_queue.front);
-    display_pkt("Test-rear", &pkt_queue, pkt_queue.rear);
+    sleep(1);
 
     delpkt(&pkt_queue);
 
-    addpkt(&pkt_queue, Data, "0123456789ABCDEF", "END");
+    sleep(1);
+
+    delpkt(&pkt_queue);
+
+    sleep(1);
+
+    addpkt(&pkt_queue, Data, id, 0, 0, Broadcast, "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
+
+    sleep(1);
 
     Free_Packet_Queue(&pkt_queue);
 
-    char id[Address_length + 1];
+    sleep(1);
 
-    memset(id, 0, sizeof(char) * (Address_length + 1));
-
-    generate_identification(id);
-
-    printf("%s\n", id);
+    free(id);
 
     return 0;
+
 }
