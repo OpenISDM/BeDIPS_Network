@@ -124,6 +124,27 @@ int xbee_LoadConfig(pxbee_config xbee_config);
  */
 xbee_err xbee_connector(pxbee_config xbee_config);
 
+/* xbee_add_pkt
+ *
+ *      A function for add pkt to the assigned pkt_Queue.
+ *
+ * Parameter:
+ *
+ *     xbee_config : A structure contain all variables for xbee.
+ *     type      : Record the type of packets working environment.
+ *     raw_addr  : The destnation address of the packet.
+ *     header    : A 3 byte array to put in pkt header.
+ *     content   : The content we decided to send.
+ *
+ * Return Value:
+ *
+ *      xbee_err: If return 0, everything work successfully.
+ *                If not 0, something wrong.
+ *
+ */
+xbee_err xbee_addpkt(pxbee_config xbee_config, unsigned int type, char *raw_addr
+                     char *header, char *content);
+
 /* xbee_send_pkt
  *
  *      A function for sending pkt to dest address.
