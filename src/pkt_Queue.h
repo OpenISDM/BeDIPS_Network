@@ -120,7 +120,7 @@ typedef spkt_ptr *pkt_ptr;
  *
  * Parameter:
  *
- *      pkt_queue : A struct stored pointers of the first and the last of packet.
+ *      pkt_queue : A struct store pointer of the pkt Queue.
  *
  * Return Value:
  *
@@ -146,12 +146,16 @@ int Free_Packet_Queue(pkt_ptr pkt_queue);
 /*
  * addpkt
  *
- *     Add new packet into the packet queue we assigned.
+ *     Add new packet into the packet queue we assigned. And this function is
+ *     for the data length shorter than MAX_XBEE_DATA_LENGTH.
  *
  * Parameter:
  *
  *     pkt_Queue: The Queue we store pkt.
  *     type      : Record the type of packets working environment.
+ *     identification      : The unique number to identidy pkts.
+ *     Data_fragmentation  : To identify last packet.
+ *     Data_offset         : To identify which part of the original pkt.
  *     raw_addr  : The destnation address of the packet.
  *     content   : The content we decided to send.
  *
@@ -162,7 +166,9 @@ int Free_Packet_Queue(pkt_ptr pkt_queue);
  *          If not 0, Somthing Wrong.
  *
  */
-int addpkt(pkt_ptr pkt_queue, int type, char *raw_addr, char *content);
+int addpkt(pkt_ptr pkt_queue, unsigned int type, unsigned char *identification
+         , unsigned int Data_fragmentation, unsigned int Data_offset
+         , char *raw_addr, char *content);
 
 /*
  * delpkt
@@ -213,20 +219,39 @@ char *type_to_str(int type);
 int str_to_type(const char *conType);
 
 /*
- * print_address
+ * char_to_hex
  *
- *     Convert hex type address to char type address.
+ *     Convert array from char to hex.
  *
  * Parameter:
  *
- *     address: A address stored in Hex.
+ *     raw    : The original char type array.
+ *     result : The destnation variable to store the converted result(hex).
+ *     size   : size of the raw array. (result size must half of raw size.)
  *
  * Return Value:
  *
- *     char_addr: A address stored in char convert from address.
+ *     None
  *
  */
-char *print_address(unsigned char *address);
+void char_to_hex(char *raw, unsigned char *raw_hex, int size);
+
+/*
+ * hex_to_char
+ *
+ *     Convert hex to char.
+ *
+ * Parameter:
+ *
+ *     hex  : A array stored in Hex.
+ *     size : size of the hex length.
+ *
+ * Return Value:
+ *
+ *     char pointer : A pointer stored char array convert from hex.
+ *
+ */
+char *hex_to_char(unsigned char *hex, int size);
 
 /* display_pkt
  *
@@ -234,9 +259,9 @@ char *print_address(unsigned char *address);
  *
  * Parameter:
  *
- *     content: The title we want to show in front of the packet content.
- *     pkt: The packet we want to see it's content.
- *     pkt_num: chose whitch pkts we want to display.
+ *     content : The title we want to show in front of the packet content.
+ *     pkt     : The packet we want to see it's content.
+ *     pkt_num : chose whitch pkts we want to display.
  *
  * Return Value:
  *
@@ -251,65 +276,32 @@ void display_pkt(char *content, pkt_ptr pkt_queue, int pkt_num);
  *
  * Parameter:
  *
- *     pkt_Queue: The Queue we store pkt.
+ *     pkt_Queue : The Queue we store pkt.
  *
  * Return Value:
  *
- *     pPkt: the pkt address.
+ *     pPkt : the pkt address.
  *
  */
 pPkt get_pkt(pkt_ptr pkt_queue);
 
 /*
- * Fill_address
+ * array_copy
  *
- *     Convert the address from raw(char) to addr(Hex).
- *
- * Parameter:
- *
- *     raw: The original char type address.
- *     addr: The destnation variable to store the converted result.
- *
- * Return Value:
- *
- *     None
- *
- */
-void Fill_Address(char *raw, unsigned char *addr);
-
-/*
- * address_compare
- *
- *      Compare the address whether is the same.
+ *      Copy the src array to dest array.
  *
  * Parameter:
  *
- *      addr1: the address we want to compare.
- *      addr2: the address we want to compare.
- *
- * Return Value:
- *
- *      bool: if true, the same.
- *
- */
-bool address_compare(unsigned char *addr1, unsigned char *addr2);
-
-/*
- * address_copy
- *
- *      Compare the address whether is the same.
- *
- * Parameter:
- *
- *      addr1: the src address we copy from.
- *      addr2: the dest address we copy to.
+ *      src  : the src array we copy from.
+ *      dest : the dest array we copy to.
+ *      size : size of the src array. (Must same as dest array)
  *
  * Return Value:
  *
  *      None
  *
  */
-void address_copy(unsigned char *src_addr, unsigned char *dest_addr);
+void array_copy(unsigned char *src, unsigned char *dest, int size);
 
 /*
  * is_null
@@ -318,11 +310,11 @@ void address_copy(unsigned char *src_addr, unsigned char *dest_addr);
  *
  * Parameter:
  *
- *      pkt_Queue: the pkt we stored in the Queue.
+ *      pkt_Queue : the pkt we stored in the Queue.
  *
  * Return Value:
  *
- *      bool: true if null.
+ *      bool : true if null.
  *
  */
 bool is_null(pkt_ptr pkt_Queue);
@@ -334,11 +326,11 @@ bool is_null(pkt_ptr pkt_Queue);
  *
  * Parameter:
  *
- *      pkt_Queue: the pkt we stored in the Queue.
+ *      pkt_Queue : the pkt we stored in the Queue.
  *
  * Return Value:
  *
- *      bool: true if full.
+ *      bool : true if full.
  *
  */
 bool is_full(pkt_ptr pkt_Queue);
@@ -350,29 +342,48 @@ bool is_full(pkt_ptr pkt_Queue);
  *
  * Parameter:
  *
- *      pkt_Queue: The queue we want to count.
+ *      pkt_Queue : The queue we want to count.
  *
  * Return Value:
  *
- *      int: the length of the Queue.
+ *      int : the length of the Queue.
  *
  */
 int queue_len(pkt_ptr pkt_queue);
 
 /*
- * generate_identification
  *
- *      Generate a 16 hex number as a unique number to identify same pkt.
+ * print_content
+ *
+ *      print pkt content.
  *
  * Parameter:
  *
- *      identification: The char pointer use for storing the unique number.
+ *      content : The pointer of content we desire to read.
+ *      size    : The size of content.
+ *
+ * Return Value:
+ *
+ *      NONE
+ *
+ */
+void print_content(char *content, int size);
+
+/*
+ * generate_identification
+ *
+ *      Generate a specific hex number as a unique number to identify same pkt.
+ *
+ * Parameter:
+ *
+ *      identification : The char pointer use for storing the unique number.
+ *      size           : size of identification.
  *
  * Return Value:
  *
  *      None
  *
  */
-void generate_identification(char *identification);
+void generate_identification(char *identification, int size);
 
 #endif
