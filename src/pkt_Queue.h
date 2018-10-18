@@ -51,12 +51,21 @@
 #define Broadcast "000000000000FFFF"
 
 //define the maximum pkt length per pkt.
-#define MAX_PKT_LENGTH 100
+#define MAX_XBEE_PKT_LENGTH 100
+
+//define the maximum data length per pkt.
+#define MAX_XBEE_DATA_LENGTH 90
 
 //define the maximum length of pkt Queue.
 #define MAX_QUEUE_LENGTH 1024
 
 #define Address_length 16
+
+#define Address_length_Hex 8
+
+#define identification_length 6
+
+#define identification_length_Hex 3
 
 enum {UNKNOWN, Data, Local_AT, NONE};
 
