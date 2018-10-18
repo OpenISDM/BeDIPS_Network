@@ -56,6 +56,8 @@
 //define the maximum data length per pkt.
 #define MAX_XBEE_DATA_LENGTH 90
 
+#define XBEE_RESERVE_BYTE 3
+
 //define the maximum length of pkt Queue.
 #define MAX_QUEUE_LENGTH 1024
 
@@ -87,7 +89,7 @@ typedef struct pkt {
 
     unsigned int Data_offset;
 
-    char Reserved[3];
+    char Reserved[XBEE_RESERVE_BYTE];
 
     // Data
     char content[MAX_XBEE_DATA_LENGTH];
