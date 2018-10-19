@@ -69,6 +69,8 @@
 
 #define identification_length_Hex 3
 
+#define XBEE_PKT_OFFSET_TIMES 10
+
 enum {UNKNOWN, Data, Local_AT, NONE};
 
 enum{ pkt_Queue_SUCCESS = 0, pkt_Queue_FULL = -1, queue_len_error = -2};

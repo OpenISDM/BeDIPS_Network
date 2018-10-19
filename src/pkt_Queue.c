@@ -88,11 +88,23 @@ int addpkt(pkt_ptr pkt_queue, unsigned int type, unsigned char *identification
 
     printf("--------- Content ---------\n");
     printf("type               : %s\n", type_to_str(type));
-    printf("identification     : %s\n", identification);
+
+    printf("identification     : ");
+
+    print_content(identification, identification_length);
+
+    printf("\n");
     printf("Data Fragmentation : %d\n", Data_fragmentation);
+
     printf("Data_offset        : %d\n", Data_offset);
-    printf("address            : %s\n", raw_addr);
+
+    printf("address            : ");
+
+    print_content(raw_addr, Address_length);
+
+    printf("\n");
     printf("--------- content ---------\n");
+
     print_content(content, MAX_XBEE_DATA_LENGTH);
 
     printf("\n");

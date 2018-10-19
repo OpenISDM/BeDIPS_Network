@@ -43,9 +43,9 @@ int main(){
 
     printf("%d\n", queue_len(&pkt_queue));
 
-    char *id = malloc(sizeof(char) * (identification_length + 1));
+    char *id = malloc(sizeof(char) * (identification_length));
 
-    memset(id, 0, sizeof(char) * (identification_length + 1));
+    memset(id, 0, sizeof(char) * (identification_length));
 
     generate_identification(id, identification_length);
 
