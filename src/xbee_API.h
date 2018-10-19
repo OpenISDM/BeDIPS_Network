@@ -132,6 +132,7 @@ xbee_err xbee_connector(pxbee_config xbee_config);
  *     raw_addr  : The destnation address of the packet.
  *     header    : A 3 byte array to put in pkt header.
  *     content   : The content we decided to send.
+ *     size      : size of the content.
  *
  * Return Value:
  *
@@ -140,7 +141,7 @@ xbee_err xbee_connector(pxbee_config xbee_config);
  *
  */
 xbee_err xbee_addpkt(pxbee_config xbee_config, unsigned int type, char *raw_addr
-                     char *header, char *content);
+                     char *header, char *content, int size);
 
 /* xbee_send_pkt
  *
