@@ -1,39 +1,39 @@
 /*
- * Copyright (c) 2016 Academia Sinica, Institute of Information Science
- *
- * License:
- *
- *      GPL 3.0 : The content of this file is subject to the terms and
- *      cnditions defined in file 'COPYING.txt', which is part of this
- *      source code package.
- *
- * Project Name:
- *
- *      BeDIPS
- *
- * File Description:
- *
- *   	This file contains the program to connect to Wi-Fi by API mode and in
- *      the project, we use it for data transmission most.
- *
- * File Name:
- *
- *      UDP_API.c
- *
- * Abstract:
- *
- *      BeDIPS uses LBeacons to deliver 3D coordinates and textual
- *      descriptions of their locations to users' devices. Basically, a
- *      LBeacon is an inexpensive, Bluetooth Smart Ready device. The 3D
- *      coordinates and location description of every LBeacon are retrieved
- *      from BeDIS (Building/environment Data and Information System) and
- *      stored locally during deployment and maintenance times. Once
- *      initialized, each LBeacon broadcasts its coordinates and location
- *      description to Bluetooth enabled user devices within its coverage
- *      area.
- *
- * Authors:
- *      Gary Xiao		, garyh0205@hotmail.com
+  Copyright (c) 2016 Academia Sinica, Institute of Information Science
+
+  License:
+
+       GPL 3.0 : The content of this file is subject to the terms and
+       cnditions defined in file 'COPYING.txt', which is part of this
+       source code package.
+
+  Project Name:
+
+       BeDIPS
+
+  File Description:
+
+       This file contains the program to connect to Wi-Fi and in
+       the project, we use it for data transmission most.
+
+  File Name:
+
+       UDP_API.c
+
+  Abstract:
+
+       BeDIPS uses LBeacons to deliver 3D coordinates and textual
+       descriptions of their locations to users' devices. Basically, a
+       LBeacon is an inexpensive, Bluetooth Smart Ready device. The 3D
+       coordinates and location description of every LBeacon are retrieved
+       from BeDIS (Building/environment Data and Information System) and
+       stored locally during deployment and maintenance times. Once
+       initialized, each LBeacon broadcasts its coordinates and location
+       description to Bluetooth enabled user devices within its coverage
+       area.
+
+  Authors:
+       Gary Xiao		, garyh0205@hotmail.com
  */
 #include "UDP_API.h"
 
@@ -73,11 +73,11 @@ int udp_initial(pudp_config udp_config){
         perror("bind error.\n");
     }
 
-    
+
     pthread_create(&udp_config -> udp_send, NULL, udp_send_pkt, (void*) udp_config);
 
     usleep(10);
-    
+
     pthread_create(&udp_config -> udp_receive, NULL, udp_receive_pkt, (void*) udp_config);
 
     return 0;
@@ -109,9 +109,9 @@ int udp_addpkt(pkt_ptr pkt_queue, char *raw_addr, char *content, int size){
     int address_loc = 0;
 
     printf(" adj address\n");
-    
+
     for(int n = 0; n < 4; n++){
-        
+
         printf("n = %d\n", n);
 
         int count = 0;
@@ -155,7 +155,7 @@ int udp_addpkt(pkt_ptr pkt_queue, char *raw_addr, char *content, int size){
     }
 
     printf("Address :");
-    
+
     print_content(address, Address_length);
 
 
@@ -213,7 +213,7 @@ void *udp_send_pkt(void *udpconfig){
             array_copy(&tmp_address[9], &dest_address[12], 3);
 
             printf("Dest Address : %s\n", dest_address );
-           
+
             memset(&si_send, 0, sizeof(si_send));
             si_send.sin_family = AF_INET;
             si_send.sin_port   = htons(UDP_LISTEN_PORT);
@@ -250,26 +250,26 @@ void *udp_receive_pkt(void *udpconfig){
     char recv_buf[MAX_DATA_LENGTH];
 
     struct sockaddr_in si_recv;
-    
+
     int socketaddr_len = sizeof(si_recv);
 
     //keep listening for data
     while(!(udp_config -> shutdown)){
-        
+
         memset(&si_recv, 0, sizeof(si_recv));
 
         printf("recv pkt.\n");
 
         printf("Waiting for data...");
         fflush(stdout);
-        
+
         printf("MAX_DATA_LENGH : %d\n", MAX_DATA_LENGTH);
 
         //try to receive some data, this is a blocking call
         if ((recv_len = recvfrom(udp_config -> recv_socket, recv_buf, MAX_DATA_LENGTH, 0, (struct sockaddr *) &si_recv, &socketaddr_len)) == -1){
-            
+
             perror("recvfrom error.\n");
-        
+
         }
 
         if(udp_addpkt(&udp_config -> Received_Queue, inet_ntoa(si_recv.sin_addr), recv_buf, recv_len) == -1){
