@@ -52,7 +52,11 @@ xbee_err xbee_initial(pxbee_config xbee_config){
         return ret;
 
     if(ret = init_Packet_Queue( &xbee_config -> Received_Queue)
-        != pkt_Queue_SUCCESS) return ret;
+        != pkt_Queue_SUCCESS)
+
+        return ret;
+
+    xbee_config -> shutdown = false;
 
     return XBEE_ENONE;
 }
@@ -201,11 +205,12 @@ xbee_err xbee_connector(pxbee_config xbee_config){
 
     if(!is_null( &xbee_config -> pkt_Queue)){
 
-        address_copy(xbee_config -> pkt_Queue.Queue[xbee_config
-                  -> pkt_Queue.front].address, address.addr64);
+        array_copy(xbee_config -> pkt_Queue.Queue[xbee_config
+                -> pkt_Queue.front].address, address.addr64, Address_length);
 
-        address_copy(xbee_config -> pkt_Queue.Queue[xbee_config
-                 -> pkt_Queue.front].address, xbee_config -> pkt_Queue.address);
+        array_copy(xbee_config -> pkt_Queue.Queue[xbee_config
+                -> pkt_Queue.front].address, xbee_config -> pkt_Queue.address
+                 , Address_length);
 
         Mode = xbee_config -> pkt_Queue.Queue[xbee_config
             -> pkt_Queue.front].type;
@@ -272,37 +277,121 @@ xbee_err xbee_connector(pxbee_config xbee_config){
 
 }
 
-/*
- * xbee_send_pkt
- *      For sending pkt to dest address.
- * Parameter:
- *      con : a pointer for xbee connector.
- *      pkt_Queue : A pointer point to the packet queue we use.
- * Return Value:
- *      xbee error code
- *      if 0, work successfully.
- */
-xbee_err xbee_send_pkt(pxbee_config xbee_config){
+void *xbee_send_pkt(void *xbeeconfig){
 
-    if(!(is_null( &xbee_config -> pkt_Queue))){
+    pxbee_config xbee_config = (pxbee_config) xbeeconfig;
 
-        if( !(address_compare(xbee_config -> pkt_Queue.Queue[xbee_config
-          -> pkt_Queue.front].address, xbee_config -> pkt_Queue.address)))
+    while(!(xbee_config -> shutdown)){
 
-            return XBEE_ENONE;
+        if(!(is_null( &xbee_config -> pkt_Queue))){
 
-        xbee_conTx(xbee_config -> con, NULL, xbee_config
-                -> pkt_Queue.Queue[xbee_config -> pkt_Queue.front].content);
+            if( !(address_compare(xbee_config -> pkt_Queue.Queue[xbee_config
+              -> pkt_Queue.front].address, xbee_config -> pkt_Queue.address)))
 
-        delpkt( &xbee_config -> pkt_Queue);
+                return XBEE_ENONE;
+
+            //Assemble the content.
+
+            char tmp_content[MAX_XBEE_PKT_LENGTH];
+
+            memset(&tmp_content, 0, sizeof(char) * MAX_XBEE_PKT_LENGTH);
+
+            //Copy hex identification to content.
+
+            array_copy(xbee_config -> pkt_Queue.Queue[xbee_config
+                    -> pkt_Queue.front].identification, &tmp_content[0]
+                     , sizeof(char) * identification_length_Hex);
+
+            char hex_Data_fragmentation[2];
+
+            //Convert integer Data Fragmentation to hex.
+
+            sprintf(hex_Data_fragmentation, "%02x", xbee_config
+         -> pkt_Queue.Queue[xbee_config -> pkt_Queue.front].Data_fragmentation);
+
+            char_to_hex( (char *) &hex_Data_fragmentation, &tmp_content[3]
+                       , sizeof(char) * 2);
+
+            char hex_Data_offset[4];
+
+            //Convert integer Data offset to hex.
+
+            sprintf(hex_Data_offset, "%04x", xbee_config
+         -> pkt_Queue.Queue[xbee_config -> pkt_Queue.front].Data_offset);
+
+            char_to_hex( (char *) &hex_Data_fragmentation, &tmp_content[4]
+                       , sizeof(char) * 4);
+
+            array_copy(xbee_config -> pkt_Queue.Queue[xbee_config
+                    -> pkt_Queue.front].Reserved, &tmp_content[6]
+                     , sizeof(char) * XBEE_RESERVE_BYTE);
+
+            array_copy(xbee_config -> pkt_Queue.Queue[xbee_config
+                    -> pkt_Queue.front].content, &tmp_content[9]
+                     , sizeof(char) * MAX_XBEE_DATA_LENGTH);
+
+            xbee_connTx(xbee_config -> con, NULL, (unsigned char *) &tmp_content
+                      , MAX_XBEE_PKT_LENGTH);
+
+            delpkt( &xbee_config -> pkt_Queue);
+
+        }
 
     }
 
-    return XBEE_ENONE;
+}
+
+xbee_err xbee_addpkt(pxbee_config xbee_config, unsigned int type, char *raw_addr
+                   , char *header, char *content, int size){
+
+    char identification[identification_length];
+
+    memset(identification, 0, sizeof(char) * identification_length);
+
+    generate_identification(identification, identification_length);
+
+    unsigned int offset = 0;
+
+    unsigned int  Data_fragmentation = 1;
+
+    char tmp_content[MAX_XBEE_DATA_LENGTH];
+
+    while(Data_fragmentation == 1){
+
+        memset(tmp_content, 0, sizeof(char) * MAX_XBEE_DATA_LENGTH);
+
+        int loc = 0;
+
+        for(loc = 0;loc < MAX_XBEE_DATA_LENGTH;loc ++){
+
+            tmp_content[loc] = content[offset * XBEE_PKT_OFFSET_TIMES + loc];
+
+            if((offset * XBEE_PKT_OFFSET_TIMES + loc  + 1) == size){
+
+                break;
+
+            }
+
+        }
+
+        if((offset + 1) * XBEE_PKT_OFFSET_TIMES <= size){
+
+            Data_fragmentation = 0;
+
+        }
+
+        addpkt(xbee_config -> pkt_Queue, type, identification
+             , Data_fragmentation, Data_offset, raw_addr, tmp_content);
+
+        offset = offset + (MAX_XBEE_DATA_LENGTH / XBEE_PKT_OFFSET_TIMES);
+
+    }
+
+    return 0;
 
 }
 
-bool xbee_check_CallBack(pxbee_config xbee_config, bool exclude_pkt_Queue){
+bool xbee_check_CallBack(pxbee_config xbee_config, bool ignore_pkt_Queue){
 
     /* Pointer point_to_CallBack will store the callback function.       */
     /* If pointer point_to_CallBack is NULL, break the Loop              */
@@ -314,7 +403,7 @@ bool xbee_check_CallBack(pxbee_config xbee_config, bool exclude_pkt_Queue){
     if ((ret = xbee_conCallbackGet(xbee_config -> con
      , (xbee_t_conCallback *) &point_to_CallBack)) != XBEE_ENONE) return true;
 
-    if (point_to_CallBack == NULL && (exclude_pkt_Queue
+    if (point_to_CallBack == NULL && (ignore_pkt_Queue
      || is_null( &xbee_config -> pkt_Queue))) return true;
 
     return false;
@@ -325,7 +414,6 @@ xbee_err xbee_release(pxbee_config xbee_config){
 
     int ret;
 
-    /* Close connection                                                      */
     if(xbee_conValidate(xbee_config -> con) != XBEE_ENONE){
 
         if ((ret = xbee_conEnd(xbee_config -> con)) != XBEE_ENONE) return ret;
@@ -351,13 +439,12 @@ void CallBack(struct xbee *xbee, struct xbee_con *con, struct xbee_pkt **pkt
 
     if ((( *pkt) -> dataLen > 0 ) && (str_to_type(( *pkt) -> conType) == Data)) {
 
-        addpkt(Received_Queue, str_to_type(( *pkt) -> conType)
-             , print_address(( *pkt) -> address.addr64), ( *pkt)->data);
+        //addpkt(Received_Queue, str_to_type(( *pkt) -> conType)
+        //     , print_address(( *pkt) -> address.addr64), ( *pkt)->data);
 
         display_pkt("Received Data", Received_Queue, Received_Queue->front);
 
         xbee_log(xbee, 10, "rx: [%s]\n", ( *pkt)->data);
-
 
     }
 
