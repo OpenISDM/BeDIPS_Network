@@ -50,6 +50,8 @@
 
 #define UDP_LISTEN_PORT 8888    //The port on which to listen for incoming data
 
+#define UDP_SELECT_TIMEOUT 1    //second
+
 typedef struct udp_config{
 
     struct sockaddr_in si_server;
@@ -68,14 +70,88 @@ typedef struct udp_config{
 
 typedef sudp_config *pudp_config;
 
+/*
+ *
+ * udp_initial
+ *
+ *     For initialize UDP Socketm including it's buffer.
+ *
+ * Parameter:
+ *
+ *     udp_config: A structure contain all variables for UDP.
+ *
+ * Return Value:
+ *
+ *     int : If return 0, everything work successfully.
+ *               If not 0, somthing wrong.
+ *
+ */
 int udp_initial(pudp_config udp_config);
 
+/* udp_addpkt
+ *
+ *      A function for add pkt to the assigned pkt_Queue.
+ *
+ * Parameter:
+ *
+ *     udp_config : A structure contain all variables for UDP.
+ *     raw_addr  : The destnation address of the packet.
+ *     content   : The content we decided to send.
+ *     size      : size of the content.
+ *
+ * Return Value:
+ *
+ *      int : If return 0, everything work successfully.
+ *                If not 0, something wrong.
+ *
+ */
 int udp_addpkt(pkt_ptr pkt_queue, char *raw_addr, char *content, int size);
 
+/* xbee_send_pkt
+ *
+ *      A thread for sending pkt to dest address.
+ *
+ * Parameter:
+ *
+ *     udpconfig: A structure contain all variables for UDP.
+ *
+ * Return Value:
+ *
+ *      None
+ *
+ */
 void *udp_send_pkt(void *udpconfig);
 
-void *udp_receive_pkt(void *udpconfig);
+/* xbee_recv_pkt
+ *
+ *      A thread for recv pkt.
+ *
+ * Parameter:
+ *
+ *     udpconfig: A structure contain all variables for UDP.
+ *
+ * Return Value:
+ *
+ *      None
+ *
+ */
+void *udp_recv_pkt(void *udpconfig);
 
+/*
+ * udp_release
+ *
+ *      Release All pkt and mutex.
+ *
+ * Parameter:
+ *
+ *     udp_config: A structure contain all variables for UDP.
+ *
+ * Return Value:
+ *
+ *      int : If return 0, everything work successfully.
+ *                If not 0, something wrong.
+ *
+ */
 int udp_release(pudp_config udp_config);
 
 #endif

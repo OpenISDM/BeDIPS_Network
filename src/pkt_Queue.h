@@ -50,6 +50,8 @@
 #define Gateway   "0000000000000000"
 #define Broadcast "000000000000FFFF"
 
+#define MAX_DATA_LENGTH 1024
+
 //define the maximum pkt length per pkt.
 #define MAX_XBEE_PKT_LENGTH 100
 
@@ -71,7 +73,7 @@
 
 #define XBEE_PKT_OFFSET_TIMES 10
 
-enum {UNKNOWN, Data, Local_AT, NONE};
+enum {UNKNOWN, Data, Local_AT, UDP, NONE};
 
 enum{ pkt_Queue_SUCCESS = 0, pkt_Queue_FULL = -1, queue_len_error = -2};
 
@@ -94,7 +96,7 @@ typedef struct pkt {
     char Reserved[XBEE_RESERVE_BYTE];
 
     // Data
-    char content[MAX_XBEE_DATA_LENGTH];
+    char content[MAX_DATA_LENGTH];
 
 } sPkt;
 
@@ -172,7 +174,7 @@ int Free_Packet_Queue(pkt_ptr pkt_queue);
  */
 int addpkt(pkt_ptr pkt_queue, unsigned int type, unsigned char *identification
          , unsigned int Data_fragmentation, unsigned int Data_offset
-         , char *raw_addr, char *content);
+         , char *raw_addr, char *content, int content_size);
 
 /*
  * delpkt
@@ -306,6 +308,23 @@ pPkt get_pkt(pkt_ptr pkt_queue);
  *
  */
 void array_copy(unsigned char *src, unsigned char *dest, int size);
+
+/*
+ * address_compare
+ *
+ *      Compare the address whether is the same.
+ *
+ * Parameter:
+ *
+ *      addr1: the address we want to compare.
+ *      addr2: the address we want to compare.
+ *
+ * Return Value:
+ *
+ *      bool: if true, the same.
+ *
+ */
+bool address_compare(unsigned char *addr1,unsigned char *addr2);
 
 /*
  * is_null

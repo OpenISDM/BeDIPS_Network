@@ -80,7 +80,7 @@ int Free_Packet_Queue(pkt_ptr pkt_queue){
 
 int addpkt(pkt_ptr pkt_queue, unsigned int type, unsigned char *identification
          , unsigned int Data_fragmentation, unsigned int Data_offset
-         , char *raw_addr, char *content) {
+         , char *raw_addr, char *content, int content_size) {
 
     int ret;
 
@@ -105,7 +105,7 @@ int addpkt(pkt_ptr pkt_queue, unsigned int type, unsigned char *identification
     printf("\n");
     printf("--------- content ---------\n");
 
-    print_content(content, MAX_XBEE_DATA_LENGTH);
+    print_content(content, MAX_DATA_LENGTH);
 
     printf("\n");
     printf("---------------------------\n");
@@ -157,10 +157,10 @@ int addpkt(pkt_ptr pkt_queue, unsigned int type, unsigned char *identification
     pkt_queue -> Queue[pkt_queue -> rear].Data_offset = Data_offset;
 
     memset(pkt_queue -> Queue[pkt_queue -> rear].content, 0
-         , MAX_XBEE_DATA_LENGTH * sizeof(char));
+         , MAX_DATA_LENGTH * sizeof(char));
 
     strncpy(pkt_queue -> Queue[pkt_queue -> rear].content, content
-          , MAX_XBEE_DATA_LENGTH);
+          , content_size);
 
     display_pkt("addedpkt", pkt_queue, pkt_queue -> rear);
 
@@ -193,7 +193,7 @@ int delpkt(pkt_ptr pkt_queue) {
     display_pkt("deledpkt", pkt_queue, pkt_queue -> front);
 
     memset(pkt_queue -> Queue[pkt_queue -> front].content, 0
-         , MAX_XBEE_DATA_LENGTH * sizeof(char));
+         , MAX_DATA_LENGTH * sizeof(char));
 
     pkt_queue -> Queue[pkt_queue -> front].type = NONE;
 
@@ -302,6 +302,12 @@ char* type_to_str(int type){
 
             break;
 
+        case UDP:
+
+            return "UDP";
+
+            break;
+
         default:
 
             return "UNKNOWN";
@@ -364,23 +370,23 @@ char *hex_to_char(unsigned char *hex, int size){
     return char_addr;
 }
 
-bool address_compare(unsigned char *addr1, unsigned char *addr2){
+void array_copy(unsigned char *src, unsigned char *dest, int size){
 
-    if (memcmp(addr1, addr2, Address_length_Hex) == 0){
+    memcpy(dest, src, size);
+
+    return;
+
+}
+
+bool address_compare(unsigned char *addr1,unsigned char *addr2){
+
+    if (memcmp(addr1, addr2, 8) == 0){
 
         return true;
 
     }
 
     return false;
-
-}
-
-void array_copy(unsigned char *src, unsigned char *dest, int size){
-
-    memcpy(dest, src, size);
-
-    return;
 
 }
 

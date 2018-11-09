@@ -63,6 +63,15 @@ int udp_initial(pudp_config udp_config){
         perror("socket errror.\n");
     }
 
+    struct timeval timeout;
+    timeout.tv_sec = UDP_SELECT_TIMEOUT; //秒
+
+    if (setsockopt(udp_config -> recv_socket, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) == -1) {
+
+        perror("setsockopt failed:");
+
+    }
+
     udp_config -> si_server.sin_family = AF_INET;
     udp_config -> si_server.sin_port = htons(UDP_LISTEN_PORT);
     udp_config -> si_server.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -73,12 +82,9 @@ int udp_initial(pudp_config udp_config){
         perror("bind error.\n");
     }
 
+    pthread_create(&udp_config -> udp_receive, NULL, udp_recv_pkt, (void*) udp_config);
 
     pthread_create(&udp_config -> udp_send, NULL, udp_send_pkt, (void*) udp_config);
-
-    usleep(10);
-
-    pthread_create(&udp_config -> udp_receive, NULL, udp_receive_pkt, (void*) udp_config);
 
     return 0;
 
@@ -108,11 +114,7 @@ int udp_addpkt(pkt_ptr pkt_queue, char *raw_addr, char *content, int size){
 
     int address_loc = 0;
 
-    printf(" adj address\n");
-
     for(int n = 0; n < 4; n++){
-
-        printf("n = %d\n", n);
 
         int count = 0;
         unsigned char tmp[3];
@@ -241,9 +243,11 @@ void *udp_send_pkt(void *udpconfig){
 
 }
 
-void *udp_receive_pkt(void *udpconfig){
+void *udp_recv_pkt(void *udpconfig){
 
     pudp_config udp_config = (pudp_config) udpconfig;
+
+    int ret;
 
     int recv_len;
 
@@ -258,12 +262,11 @@ void *udp_receive_pkt(void *udpconfig){
 
         memset(&si_recv, 0, sizeof(si_recv));
 
+        memset(&recv_buf, 0, sizeof(char) * MAX_DATA_LENGTH);
+
+        recv_len = 0;
+
         printf("recv pkt.\n");
-
-        printf("Waiting for data...");
-        fflush(stdout);
-
-        printf("MAX_DATA_LENGH : %d\n", MAX_DATA_LENGTH);
 
         //try to receive some data, this is a blocking call
         if ((recv_len = recvfrom(udp_config -> recv_socket, recv_buf, MAX_DATA_LENGTH, 0, (struct sockaddr *) &si_recv, &socketaddr_len)) == -1){
@@ -271,19 +274,22 @@ void *udp_receive_pkt(void *udpconfig){
             perror("recvfrom error.\n");
 
         }
+        else if(recv_len > 0){
 
-        if(udp_addpkt(&udp_config -> Received_Queue, inet_ntoa(si_recv.sin_addr), recv_buf, recv_len) == -1){
+            if(udp_addpkt(&udp_config -> Received_Queue, inet_ntoa(si_recv.sin_addr), recv_buf, recv_len) == -1){
 
-            perror("udp_addpkt error.\n");
+                perror("udp_addpkt error.\n");
+
+            }
+
+            //print details of the client/peer and the data received
+            printf("Received packet from %s:%d\n", inet_ntoa(si_recv.sin_addr), ntohs(si_recv.sin_port));
+            printf("Data: %s\n" , recv_buf);
 
         }
-
-        //print details of the client/peer and the data received
-        printf("Received packet from %s:%d\n", inet_ntoa(si_recv.sin_addr), ntohs(si_recv.sin_port));
-        printf("Data: %s\n" , recv_buf);
-
-
-
+        else{
+            perror("else recvfrom error.\n");
+        }
     }
     printf("Exit Receive.\n");
 }
