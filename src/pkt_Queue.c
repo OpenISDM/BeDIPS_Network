@@ -270,7 +270,7 @@ void display_pkt(char *content, pkt_ptr pkt_queue, int pkt_num){
 
     printf("==== content =====\n");
 
-    print_content(pkt_queue -> Queue[pkt_num].content, MAX_XBEE_DATA_LENGTH);
+    print_content(pkt_queue -> Queue[pkt_num].content, MAX_DATA_LENGTH);
 
     printf("\n");
 

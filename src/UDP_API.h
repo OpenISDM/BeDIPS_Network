@@ -36,13 +36,13 @@
       Gary Xiao		, garyh0205@hotmail.com
  */
 
-#include<stdio.h> //printf
-#include<string.h> //memset
-#include<stdlib.h> //exit(0)
+#include <stdio.h> //printf
+#include <string.h> //memset
+#include <stdlib.h> //exit(0)
 #include <stdbool.h>
 #include <pthread.h>
-#include<arpa/inet.h>
-#include<sys/socket.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
 #include "pkt_Queue.h"
 
 #ifndef UDP_API_H

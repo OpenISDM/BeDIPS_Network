@@ -156,11 +156,6 @@ int udp_addpkt(pkt_ptr pkt_queue, char *raw_addr, char *content, int size){
             address_loc ++;
     }
 
-    printf("Address :");
-
-    print_content(address, Address_length);
-
-
     memset(&tmp_content, 0, sizeof(char) * MAX_DATA_LENGTH);
 
     for(int loc = 0;loc < MAX_DATA_LENGTH;loc ++){
