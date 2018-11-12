@@ -3,10 +3,10 @@ CC = gcc -std=gnu99
 
 LBeacon_Zigbee_Gateway.out: $(srcPath)xbee_Serial.o $(srcPath)xbee_API.o $(srcPath)pkt_Queue.o LBeacon_Zigbee_Gateway.c
 	$(CC) -lxbee -lwiringPi $(srcPath)xbee_Serial.o $(srcPath)xbee_API.o $(srcPath)pkt_Queue.o LBeacon_Zigbee_Gateway.c -o LBeacon_Zigbee_Gateway.out
-LBeacon_Zigbee_Beacon.out: $(srcPath)xbee_Serial.o $(srcPath)xbee_API.o $(srcPath)pkt_Queue.o LBeacon_Zigbee_Beacon.c
-	$(CC) -lxbee -lwiringPi $(srcPath)xbee_Serial.o $(srcPath)xbee_API.o $(srcPath)pkt_Queue.o LBeacon_Zigbee_Beacon.c -o LBeacon_Zigbee_Beacon.out
+LBeacon_Zigbee_Beacon.out:  $(srcPath)xbee_Serial.o $(srcPath)xbee_API.o $(srcPath)pkt_Queue.o LBeacon_Zigbee_Beacon.c
+	$(CC) -lxbee -lwiringPi $(srcPath)xbee_Serial.o $(srcPath)xbee_API.o $(srcPath)pkt_Queue.o LBeacon_Zigbee_Beacon.c  -o LBeacon_Zigbee_Beacon.out
 UDP_Demo.out: $(srcPath)UDP_API.o $(srcPath)pkt_Queue.o UDP_Demo.c
-	$(CC) -lpthread $(srcPath)UDP_API.o $(srcPath)pkt_Queue.o ./UDP_Demo.c -o UDP_Demo.out
+	$(CC) -pthread $(srcPath)UDP_API.o $(srcPath)pkt_Queue.o ./UDP_Demo.c -o UDP_Demo.out
 pkt_Queue_Demo.out: $(srcPath)pkt_Queue.o pkt_Queue_Demo.c
 	$(CC) $(srcPath)pkt_Queue.o ./pkt_Queue_Demo.c -o pkt_Queue_Demo.out
 xbee_Serial_Demo.out: $(srcPath)xbee_Serial.o $(srcPath)xbee_API.o $(srcPath)pkt_Queue.o xbee_Serial_Demo.c

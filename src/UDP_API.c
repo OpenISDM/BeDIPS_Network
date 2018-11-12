@@ -84,6 +84,8 @@ int udp_initial(pudp_config udp_config){
 
     pthread_create(&udp_config -> udp_receive, NULL, udp_recv_pkt, (void*) udp_config);
 
+    sleep(2);
+
     pthread_create(&udp_config -> udp_send, NULL, udp_send_pkt, (void*) udp_config);
 
     return 0;
@@ -265,6 +267,8 @@ void *udp_recv_pkt(void *udpconfig){
 
         //try to receive some data, this is a blocking call
         if ((recv_len = recvfrom(udp_config -> recv_socket, recv_buf, MAX_DATA_LENGTH, 0, (struct sockaddr *) &si_recv, &socketaddr_len)) == -1){
+
+            printf("error recv_len %d\n", recv_len);
 
             perror("recvfrom error.\n");
 
