@@ -3,37 +3,37 @@
 
   License:
 
-       GPL 3.0 : The content of this file is subject to the terms and
-       cnditions defined in file 'COPYING.txt', which is part of this
-       source code package.
+      GPL 3.0 : The content of this file is subject to the terms and
+      cnditions defined in file 'COPYING.txt', which is part of this
+      source code package.
 
   Project Name:
 
-       BeDIPS
+      BeDIPS
 
   File Description:
 
-       This file contains the program to connect to Wi-Fi and in
-       the project, we use it for data transmission most.
+      This file contains the program to connect to Wi-Fi and in
+      the project, we use it for data transmission most.
 
   File Name:
 
-       UDP_API.c
+      UDP_API.c
 
   Abstract:
 
-       BeDIPS uses LBeacons to deliver 3D coordinates and textual
-       descriptions of their locations to users' devices. Basically, a
-       LBeacon is an inexpensive, Bluetooth Smart Ready device. The 3D
-       coordinates and location description of every LBeacon are retrieved
-       from BeDIS (Building/environment Data and Information System) and
-       stored locally during deployment and maintenance times. Once
-       initialized, each LBeacon broadcasts its coordinates and location
-       description to Bluetooth enabled user devices within its coverage
-       area.
+      BeDIPS uses LBeacons to deliver 3D coordinates and textual
+      descriptions of their locations to users' devices. Basically, a
+      LBeacon is an inexpensive, Bluetooth Smart Ready device. The 3D
+      coordinates and location description of every LBeacon are retrieved
+      from BeDIS (Building/environment Data and Information System) and
+      stored locally during deployment and maintenance times. Once
+      initialized, each LBeacon broadcasts its coordinates and location
+      description to Bluetooth enabled user devices within its coverage
+      area.
 
   Authors:
-       Gary Xiao		, garyh0205@hotmail.com
+      Gary Xiao		, garyh0205@hotmail.com
  */
 #include "UDP_API.h"
 
@@ -84,7 +84,6 @@ int udp_initial(pudp_config udp_config){
 
     pthread_create(&udp_config -> udp_receive, NULL, udp_recv_pkt, (void*) udp_config);
 
-    sleep(2);
 
     pthread_create(&udp_config -> udp_send, NULL, udp_send_pkt, (void*) udp_config);
 
@@ -94,9 +93,7 @@ int udp_initial(pudp_config udp_config){
 
 int udp_addpkt(pkt_ptr pkt_queue, char *raw_addr, char *content, int size){
 
-    printf("udp_addpkt\n");
-
-    int UDP = 3;
+    const int UDP = 3;
 
     char identification[identification_length];
 
@@ -112,19 +109,24 @@ int udp_addpkt(pkt_ptr pkt_queue, char *raw_addr, char *content, int size){
 
     char address[Address_length];
 
-    memset(address, 0, Address_length);
+    memset(&address, 0, Address_length);
 
+    //Record current filled Address Location.
     int address_loc = 0;
 
+    // Four part in a address.(devided by '.')
     for(int n = 0; n < 4; n++){
 
+        //in each part, at most 3 number.
         int count = 0;
+
         unsigned char tmp[3];
+
         memset(&tmp, 0, sizeof(char) * 3);
 
         while(count != 3){
 
-
+            //When read '.' from address_loc means the end of this part.
             if (raw_addr[address_loc] == '.'){
 
                 address_loc ++;
@@ -140,11 +142,14 @@ int udp_addpkt(pkt_ptr pkt_queue, char *raw_addr, char *content, int size){
                 address_loc ++;
 
                 if(address_loc >= strlen(raw_addr))
+
                     break;
+
             }
 
         }
 
+        //
         for(int lo = 0; lo < 3;lo ++){
 
             if ((3 - count) > lo )
@@ -182,11 +187,10 @@ void *udp_send_pkt(void *udpconfig){
 
     struct sockaddr_in si_send;
 
-    int socketaddr_len = sizeof(si_send);
+    const int socketaddr_len = sizeof(si_send);
 
+    // Stored a recovered address.
     char dest_address[17];
-
-    printf("send pkt.\n");
 
     while(!(udp_config -> shutdown)){
 
@@ -197,19 +201,36 @@ void *udp_send_pkt(void *udpconfig){
             char *tmp_address = hex_to_char(udp_config -> pkt_Queue.Queue[udp_config
                   -> pkt_Queue.front].address, 12);
 
-            array_copy(tmp_address, dest_address, 3);
+            int address_loc = 0;
 
-            dest_address[3] = '.';
+            for(int n=0;n < 4;n ++){
 
-            array_copy(&tmp_address[3], &dest_address[4], 3);
+                bool no_zero = false;
 
-            dest_address[7] = '.';
+                for(int loc=0;loc < 3;loc ++){
 
-            array_copy(&tmp_address[6], &dest_address[8], 3);
+                    if(tmp_address[n * 3 + loc]== '0' && no_zero == false && loc != 2){
 
-            dest_address[11] = '.';
+                        continue;
 
-            array_copy(&tmp_address[9], &dest_address[12], 3);
+                    }
+
+                    no_zero = true;
+
+                    dest_address[address_loc] = tmp_address[n * 3 + loc];
+
+                    address_loc ++;
+
+                }
+
+                if(n < 3){
+
+                    dest_address[address_loc] = '.';
+
+                    address_loc ++;
+                }
+
+            }
 
             printf("Dest Address : %s\n", dest_address );
 
@@ -265,7 +286,7 @@ void *udp_recv_pkt(void *udpconfig){
 
         printf("recv pkt.\n");
 
-        //try to receive some data, this is a blocking call
+        //try to receive some data, this is a non-blocking call
         if ((recv_len = recvfrom(udp_config -> recv_socket, recv_buf, MAX_DATA_LENGTH, 0, (struct sockaddr *) &si_recv, &socketaddr_len)) == -1){
 
             printf("error recv_len %d\n", recv_len);
@@ -274,12 +295,6 @@ void *udp_recv_pkt(void *udpconfig){
 
         }
         else if(recv_len > 0){
-
-            if(udp_addpkt(&udp_config -> Received_Queue, inet_ntoa(si_recv.sin_addr), recv_buf, recv_len) == -1){
-
-                perror("udp_addpkt error.\n");
-
-            }
 
             //print details of the client/peer and the data received
             printf("Received packet from %s:%d\n", inet_ntoa(si_recv.sin_addr), ntohs(si_recv.sin_port));

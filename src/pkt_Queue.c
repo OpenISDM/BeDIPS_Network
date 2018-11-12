@@ -204,19 +204,15 @@ int delpkt(pkt_ptr pkt_queue) {
         pkt_queue -> rear  = -1;
 
     }
+    else if(pkt_queue -> front == MAX_QUEUE_LENGTH - 1){
+
+        pkt_queue -> front = 0;
+
+    }
+
     else{
 
-        if(pkt_queue -> front == MAX_QUEUE_LENGTH - 1){
-
-            pkt_queue -> front = 0;
-
-        }
-
-        else{
-
-            pkt_queue -> front += 1;
-
-        }
+        pkt_queue -> front += 1;
 
     }
 
@@ -286,7 +282,7 @@ void display_pkt(char *content, pkt_ptr pkt_queue, int pkt_num){
 
 /* Tools */
 
-char* type_to_str(int type){
+char *type_to_str(int type){
 
     switch(type){
 
@@ -363,7 +359,7 @@ char *hex_to_char(unsigned char *hex, int size){
 
     for(int len = 0;len < size;len ++){
 
-        sprintf(&char_addr[len * 2], "%02x", hex[len]);
+        sprintf( &char_addr[len * 2], "%02x", hex[len]);
 
     }
 

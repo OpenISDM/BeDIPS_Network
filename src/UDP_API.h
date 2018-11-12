@@ -50,7 +50,7 @@
 
 #define UDP_LISTEN_PORT 8888    //The port on which to listen for incoming data
 
-#define UDP_SELECT_TIMEOUT 1    //second
+#define UDP_SELECT_TIMEOUT 5    //second
 
 typedef struct udp_config{
 
