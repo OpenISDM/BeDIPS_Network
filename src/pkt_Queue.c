@@ -105,7 +105,7 @@ int addpkt(pkt_ptr pkt_queue, unsigned int type, unsigned char *identification
     printf("\n");
     printf("--------- content ---------\n");
 
-    print_content(content, MAX_DATA_LENGTH);
+    print_content(content, content_size);
 
     printf("\n");
     printf("---------------------------\n");
@@ -262,7 +262,9 @@ void display_pkt(char *content, pkt_ptr pkt_queue, int pkt_num){
     char *address_char = hex_to_char(pkt_queue -> Queue[pkt_num].address
                                    , Address_length_Hex);
 
-    printf("%s\n", address_char);
+    print_content(address_char, Address_length);
+
+    printf("\n");
 
     printf("==== content =====\n");
 

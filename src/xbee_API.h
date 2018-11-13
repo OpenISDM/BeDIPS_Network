@@ -39,6 +39,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <pthread.h>
 #include <string.h>
 #include <unistd.h>
 #include <xbee.h>
@@ -59,11 +60,13 @@ typedef struct xbee_config {
     char   *config_location;
 
     //API
-    char *xbee_mode;
-    struct xbee *xbee;
+    char   *xbee_mode;
+    struct xbee     *xbee;
     struct xbee_con *con;
 
     spkt_ptr pkt_Queue, Received_Queue;
+
+    pthread_t xbee_send;
 
     bool shutdown;
 
