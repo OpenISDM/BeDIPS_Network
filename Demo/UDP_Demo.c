@@ -47,7 +47,7 @@ int main(){
 
     printf("init success\n");
 
-    udp_addpkt(&udp_config.pkt_Queue, "127.0.0.1", "CC", 2);
+    udp_addpkt(&udp_config.pkt_Queue, "127.0.0.1", "TESTING...", 10);
 
     printf("Addpkt successs\n");
 
