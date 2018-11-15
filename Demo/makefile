@@ -10,7 +10,7 @@ UDP_Demo.out: $(srcPath)UDP_API.o $(srcPath)pkt_Queue.o UDP_Demo.c
 pkt_Queue_Demo.out: $(srcPath)pkt_Queue.o pkt_Queue_Demo.c
 	$(CC) $(srcPath)pkt_Queue.o ./pkt_Queue_Demo.c -o pkt_Queue_Demo.out
 xbee_Serial_Demo.out: $(srcPath)xbee_Serial.o $(srcPath)xbee_API.o $(srcPath)pkt_Queue.o xbee_Serial_Demo.c
-	$(CC) -lxbee $(srcPath)xbee_Serial.o $(srcPath)xbee_API.o $(srcPath)pkt_Queue.o ./xbee_Serial_Demo.c -o xbee_Serial_Demo.out
+	$(CC) -lxbee -lwiringPi -pthread $(srcPath)xbee_Serial.o $(srcPath)xbee_API.o $(srcPath)pkt_Queue.o ./xbee_Serial_Demo.c -o xbee_Serial_Demo.out
 pkt_Queue.o:
 	cd $(srcPath) && make pkt_Queue.o
 xbee_Serial.o:

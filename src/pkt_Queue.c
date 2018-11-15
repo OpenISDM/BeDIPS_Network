@@ -61,7 +61,7 @@ int Free_Packet_Queue(pkt_ptr pkt_queue){
 
     int ret;
 
-    while ( !(is_null(pkt_queue)))
+    while (is_null(pkt_queue) == false)
         delpkt(pkt_queue);
 
     pthread_mutex_destroy( &pkt_queue -> mutex);
@@ -102,26 +102,25 @@ int addpkt(pkt_ptr pkt_queue, unsigned int type, unsigned char *identification
     printf("\n");
     printf("---------------------------\n");
 
-    if(is_null(pkt_queue)){
+    if(is_full(pkt_queue) == true)
+        return pkt_Queue_FULL;
+
+    else if (is_null(pkt_queue) == true){
 
         pthread_mutex_lock( &pkt_queue -> mutex);
 
         pkt_queue -> front = 0;
-
         pkt_queue -> rear  = 0;
 
-        pthread_mutex_unlock( &pkt_queue -> mutex);
-
     }
-    else if(is_full(pkt_queue))
-        return pkt_Queue_FULL;
+    else{
+        pthread_mutex_lock( &pkt_queue -> mutex);
 
-    pthread_mutex_lock( &pkt_queue -> mutex);
-
-    if( pkt_queue -> rear == MAX_QUEUE_LENGTH - 1)
-        pkt_queue -> rear = 0;
-    else
-        pkt_queue -> rear ++ ;
+        if( pkt_queue -> rear == MAX_QUEUE_LENGTH - 1)
+            pkt_queue -> rear = 0;
+        else
+            pkt_queue -> rear ++ ;
+    }
 
     pkt_queue -> Queue[pkt_queue -> rear].type = type;
 
@@ -133,7 +132,7 @@ int addpkt(pkt_ptr pkt_queue, unsigned int type, unsigned char *identification
 
     pkt_queue -> Queue[pkt_queue -> rear].Data_offset = Data_offset;
 
-    memset(pkt_queue -> Queue[pkt_queue -> rear].content, 0
+    memset( &pkt_queue -> Queue[pkt_queue -> rear].content, 0
          , MAX_DATA_LENGTH * sizeof(char));
 
     strncpy(pkt_queue -> Queue[pkt_queue -> rear].content, content
@@ -157,7 +156,7 @@ int addpkt(pkt_ptr pkt_queue, unsigned int type, unsigned char *identification
 
 int delpkt(pkt_ptr pkt_queue) {
 
-    if(is_null(pkt_queue))
+    if(is_null(pkt_queue) == true)
 
         return pkt_Queue_SUCCESS;
 
@@ -165,7 +164,7 @@ int delpkt(pkt_ptr pkt_queue) {
 
     pthread_mutex_lock( &pkt_queue -> mutex);
 
-    memset(pkt_queue -> Queue[pkt_queue -> front].content, 0
+    memset( &pkt_queue -> Queue[pkt_queue -> front].content, 0
          , MAX_DATA_LENGTH * sizeof(char));
 
     pkt_queue -> Queue[pkt_queue -> front].type = NONE;

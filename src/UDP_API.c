@@ -176,9 +176,11 @@ void *udp_send_pkt(void *udpconfig){
     // Stored a recovered address.
     char dest_address[17];
 
-    while(!(udp_config -> shutdown)){
+    while(udp_config -> shutdown == false){
 
-        if(!(is_null( &udp_config -> pkt_Queue))){
+        if(is_null( &udp_config -> pkt_Queue) == false){
+
+            pthread_mutex_lock( &udp_config -> pkt_Queue.mutex);
 
             memset(&dest_address, 0, sizeof(char) * 17);
 
@@ -227,6 +229,8 @@ void *udp_send_pkt(void *udpconfig){
                   -> pkt_Queue.front].content, MAX_DATA_LENGTH,0 , (struct sockaddr *) &si_send, socketaddr_len) == -1)
                 perror("recvfrom error.\n");
 
+            pthread_mutex_unlock( &udp_config -> pkt_Queue.mutex);
+
             delpkt( &udp_config -> pkt_Queue);
 
         }
@@ -252,7 +256,7 @@ void *udp_recv_pkt(void *udpconfig){
     int socketaddr_len = sizeof(si_recv);
 
     //keep listening for data
-    while(!(udp_config -> shutdown)){
+    while(udp_config -> shutdown == false){
 
         memset(&si_recv, 0, sizeof(si_recv));
 
