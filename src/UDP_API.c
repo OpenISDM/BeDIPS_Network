@@ -54,36 +54,30 @@ int udp_initial(pudp_config udp_config){
         return ret;
 
     //create a send UDP socket
-    if ((udp_config -> send_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1){
+    if ((udp_config -> send_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
         perror("socket errror.\n");
-    }
 
     //create a recv UDP socket
-    if ((udp_config -> recv_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1){
+    if ((udp_config -> recv_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
         perror("socket errror.\n");
-    }
 
     struct timeval timeout;
     timeout.tv_sec = UDP_SELECT_TIMEOUT; //秒
 
-    if (setsockopt(udp_config -> recv_socket, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) == -1) {
-
+    if (setsockopt(udp_config -> recv_socket, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) == -1)
         perror("setsockopt failed:");
-
-    }
 
     udp_config -> si_server.sin_family = AF_INET;
     udp_config -> si_server.sin_port = htons(UDP_LISTEN_PORT);
     udp_config -> si_server.sin_addr.s_addr = htonl(INADDR_ANY);
 
+    udp_config -> shutdown = false;
+
     //bind recv socket to port
     if( bind(udp_config -> recv_socket , (struct sockaddr *)&udp_config -> si_server, sizeof(udp_config -> si_server) ) == -1)
-    {
         perror("bind error.\n");
-    }
 
     pthread_create(&udp_config -> udp_receive, NULL, udp_recv_pkt, (void*) udp_config);
-
 
     pthread_create(&udp_config -> udp_send, NULL, udp_send_pkt, (void*) udp_config);
 
@@ -102,11 +96,8 @@ int udp_addpkt(pkt_ptr pkt_queue, char *raw_addr, char *content, int size){
     generate_identification(identification, identification_length);
 
     unsigned int offset = 0;
-
     unsigned int  Data_fragmentation = 0;
-
     char tmp_content[MAX_DATA_LENGTH];
-
     char address[Address_length];
 
     memset(&address, 0, Address_length);
@@ -119,7 +110,6 @@ int udp_addpkt(pkt_ptr pkt_queue, char *raw_addr, char *content, int size){
 
         //in each part, at most 3 number.
         int count = 0;
-
         unsigned char tmp[3];
 
         memset(&tmp, 0, sizeof(char) * 3);
@@ -130,7 +120,6 @@ int udp_addpkt(pkt_ptr pkt_queue, char *raw_addr, char *content, int size){
             if (raw_addr[address_loc] == '.'){
 
                 address_loc ++;
-
                 break;
 
             }
@@ -138,11 +127,9 @@ int udp_addpkt(pkt_ptr pkt_queue, char *raw_addr, char *content, int size){
                 tmp[count] = raw_addr[address_loc];
 
                 count ++;
-
                 address_loc ++;
 
                 if(address_loc >= strlen(raw_addr))
-
                     break;
 
             }
@@ -150,15 +137,13 @@ int udp_addpkt(pkt_ptr pkt_queue, char *raw_addr, char *content, int size){
         }
 
         //
-        for(int lo = 0; lo < 3;lo ++){
+        for(int lo = 0; lo < 3;lo ++)
 
             if ((3 - count) > lo )
                 address[n * 3 + lo] = '0';
-            else{
+            else
                 address[n * 3 + lo] = tmp[lo - (3 - count)];
-            }
 
-        }
         if (count == 3)
             address_loc ++;
     }
@@ -170,7 +155,6 @@ int udp_addpkt(pkt_ptr pkt_queue, char *raw_addr, char *content, int size){
         tmp_content[loc] = content[loc];
 
         if((loc  + 1) == size)
-
             break;
 
     }
@@ -209,11 +193,8 @@ void *udp_send_pkt(void *udpconfig){
 
                 for(int loc=0;loc < 3;loc ++){
 
-                    if(tmp_address[n * 3 + loc]== '0' && no_zero == false && loc != 2){
-
+                    if(tmp_address[n * 3 + loc]== '0' && no_zero == false && loc != 2)
                         continue;
-
-                    }
 
                     no_zero = true;
 
@@ -238,18 +219,13 @@ void *udp_send_pkt(void *udpconfig){
             si_send.sin_family = AF_INET;
             si_send.sin_port   = htons(UDP_LISTEN_PORT);
 
-            if (inet_aton(dest_address, &si_send.sin_addr) == 0){
+            if (inet_aton(dest_address, &si_send.sin_addr) == 0)
 
                 perror("inet_aton error.\n");
 
-            }
-
             if (sendto(udp_config -> send_socket, udp_config -> pkt_Queue.Queue[udp_config
-                  -> pkt_Queue.front].content, MAX_DATA_LENGTH,0 , (struct sockaddr *) &si_send, socketaddr_len) == -1){
-
+                  -> pkt_Queue.front].content, MAX_DATA_LENGTH,0 , (struct sockaddr *) &si_send, socketaddr_len) == -1)
                 perror("recvfrom error.\n");
-
-            }
 
             delpkt( &udp_config -> pkt_Queue);
 
@@ -301,9 +277,9 @@ void *udp_recv_pkt(void *udpconfig){
             printf("Data: %s\n" , recv_buf);
 
         }
-        else{
+        else
             perror("else recvfrom error.\n");
-        }
+
     }
     printf("Exit Receive.\n");
 }

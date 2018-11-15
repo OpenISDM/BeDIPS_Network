@@ -50,11 +50,8 @@ int init_Packet_Queue(pkt_ptr pkt_queue){
 
     pkt_queue -> rear  = -1;
 
-    for(int num = 0 ; num < MAX_QUEUE_LENGTH ; num ++){
-
+    for(int num = 0 ; num < MAX_QUEUE_LENGTH ; num ++)
         pkt_queue -> Queue[num].type = NONE;
-
-    }
 
     return pkt_Queue_SUCCESS;
 
@@ -64,11 +61,8 @@ int Free_Packet_Queue(pkt_ptr pkt_queue){
 
     int ret;
 
-    while ( !(is_null(pkt_queue))){
-
+    while ( !(is_null(pkt_queue)))
         delpkt(pkt_queue);
-
-    }
 
     pthread_mutex_destroy( &pkt_queue -> mutex);
 
@@ -83,8 +77,6 @@ int addpkt(pkt_ptr pkt_queue, unsigned int type, unsigned char *identification
          , char *raw_addr, char *content, int content_size) {
 
     int ret;
-
-    pthread_mutex_lock( &pkt_queue -> mutex);
 
     printf("--------- Content ---------\n");
     printf("type               : %s\n", type_to_str(type));
@@ -112,39 +104,24 @@ int addpkt(pkt_ptr pkt_queue, unsigned int type, unsigned char *identification
 
     if(is_null(pkt_queue)){
 
+        pthread_mutex_lock( &pkt_queue -> mutex);
+
         pkt_queue -> front = 0;
 
         pkt_queue -> rear  = 0;
 
-    }
-
-    else{
-
-        if(is_full(pkt_queue)){
-
-            pthread_mutex_unlock( &pkt_queue -> mutex);
-
-            return pkt_Queue_FULL;
-
-        }
-
-        else{
-
-            if( pkt_queue -> rear == MAX_QUEUE_LENGTH - 1){
-
-                pkt_queue -> rear = 0;
-
-            }
-
-            else{
-
-                pkt_queue -> rear ++ ;
-
-            }
-
-        }
+        pthread_mutex_unlock( &pkt_queue -> mutex);
 
     }
+    else if(is_full(pkt_queue))
+        return pkt_Queue_FULL;
+
+    pthread_mutex_lock( &pkt_queue -> mutex);
+
+    if( pkt_queue -> rear == MAX_QUEUE_LENGTH - 1)
+        pkt_queue -> rear = 0;
+    else
+        pkt_queue -> rear ++ ;
 
     pkt_queue -> Queue[pkt_queue -> rear].type = type;
 
@@ -162,6 +139,8 @@ int addpkt(pkt_ptr pkt_queue, unsigned int type, unsigned char *identification
     strncpy(pkt_queue -> Queue[pkt_queue -> rear].content, content
           , content_size);
 
+    pthread_mutex_unlock( &pkt_queue -> mutex);
+
     display_pkt("addedpkt", pkt_queue, pkt_queue -> rear);
 
     printf("= pkt_queue len  =\n");
@@ -169,8 +148,6 @@ int addpkt(pkt_ptr pkt_queue, unsigned int type, unsigned char *identification
     printf("%d\n", queue_len(pkt_queue));
 
     printf("==================\n");
-
-    pthread_mutex_unlock( &pkt_queue -> mutex);
 
     return pkt_Queue_SUCCESS;
 
@@ -180,17 +157,13 @@ int addpkt(pkt_ptr pkt_queue, unsigned int type, unsigned char *identification
 
 int delpkt(pkt_ptr pkt_queue) {
 
-    pthread_mutex_lock( &pkt_queue -> mutex);
-
-    if(is_null(pkt_queue)) {
-
-        pthread_mutex_unlock( &pkt_queue -> mutex);
+    if(is_null(pkt_queue))
 
         return pkt_Queue_SUCCESS;
 
-    }
-
     display_pkt("deledpkt", pkt_queue, pkt_queue -> front);
+
+    pthread_mutex_lock( &pkt_queue -> mutex);
 
     memset(pkt_queue -> Queue[pkt_queue -> front].content, 0
          , MAX_DATA_LENGTH * sizeof(char));
@@ -204,17 +177,10 @@ int delpkt(pkt_ptr pkt_queue) {
         pkt_queue -> rear  = -1;
 
     }
-    else if(pkt_queue -> front == MAX_QUEUE_LENGTH - 1){
-
+    else if(pkt_queue -> front == MAX_QUEUE_LENGTH - 1)
         pkt_queue -> front = 0;
-
-    }
-
-    else{
-
+    else
         pkt_queue -> front += 1;
-
-    }
 
     printf("= pkt_queue len  =\n");
 
@@ -230,9 +196,12 @@ int delpkt(pkt_ptr pkt_queue) {
 
 void display_pkt(char *content, pkt_ptr pkt_queue, int pkt_num){
 
-    if(pkt_num < 0 && pkt_num >= MAX_QUEUE_LENGTH)
+    pthread_mutex_lock( &pkt_queue -> mutex);
 
+    if(pkt_num < 0 && pkt_num >= MAX_QUEUE_LENGTH){
+        pthread_mutex_unlock( &pkt_queue -> mutex);
         return;
+    }
 
     char *char_addr = hex_to_char(pkt_queue -> Queue[pkt_num].address
                                 , Address_length_Hex);
@@ -274,6 +243,8 @@ void display_pkt(char *content, pkt_ptr pkt_queue, int pkt_num){
 
     printf("==================\n");
 
+    pthread_mutex_unlock( &pkt_queue -> mutex);
+
     free(Identification_char);
     free(address_char);
     free(char_addr);
@@ -289,25 +260,18 @@ char *type_to_str(int type){
     switch(type){
 
         case Data:
-
             return "Data";
-
             break;
 
         case Local_AT:
-
             return "Local AT";
-
             break;
 
         case UDP:
-
             return "UDP";
-
             break;
 
         default:
-
             return "UNKNOWN";
     }
 }
@@ -315,23 +279,14 @@ char *type_to_str(int type){
 int str_to_type(const char *conType){
 
     if(memcmp(conType, "Transmit Status"
-     , strlen("Transmit Status") * sizeof(char)) == 0){
-
+     , strlen("Transmit Status") * sizeof(char)) == 0)
         return Data;
 
-    }
-
-    else if(memcmp(conType, "Data", strlen("Data") * sizeof(char)) == 0){
-
+    else if(memcmp(conType, "Data", strlen("Data") * sizeof(char)) == 0)
         return Data;
 
-    }
-
-    else{
-
+    else
         return UNKNOWN;
-
-    }
 
 }
 
@@ -342,9 +297,7 @@ void char_to_hex(char *raw, unsigned char *raw_hex, int size){
         char tmp[2];
 
         tmp[0] = raw[i * 2];
-
         tmp[1] = raw[i * 2 + 1];
-
         raw_hex[i] = strtol(tmp,(void *) NULL, 16);
 
     }
@@ -354,16 +307,12 @@ void char_to_hex(char *raw, unsigned char *raw_hex, int size){
 char *hex_to_char(unsigned char *hex, int size){
 
     int char_size = size * 2;
-
     char *char_addr = malloc(sizeof(char) * ((char_size * 2) + 1));
 
     memset(char_addr, 0, sizeof(char) * (char_size + 1));
 
-    for(int len = 0;len < size;len ++){
-
+    for(int len = 0;len < size;len ++)
         sprintf( &char_addr[len * 2], "%02x", hex[len]);
-
-    }
 
     return char_addr;
 }
@@ -378,11 +327,8 @@ void array_copy(unsigned char *src, unsigned char *dest, int size){
 
 bool address_compare(unsigned char *addr1,unsigned char *addr2){
 
-    if (memcmp(addr1, addr2, 8) == 0){
-
+    if (memcmp(addr1, addr2, 8) == 0)
         return true;
-
-    }
 
     return false;
 
@@ -390,100 +336,108 @@ bool address_compare(unsigned char *addr1,unsigned char *addr2){
 
 pPkt get_pkt(pkt_ptr pkt_queue){
 
-    if(is_null(pkt_queue)){
-
+    if(is_null(pkt_queue))
         return NULL;
-
-    }
 
     display_pkt("Get_pkt", pkt_queue, pkt_queue -> front);
 
-    return &(pkt_queue -> Queue[pkt_queue -> front]);
+    pthread_mutex_lock( &pkt_queue -> mutex);
 
+    pPkt tmp = &(pkt_queue -> Queue[pkt_queue -> front]);
+
+    pthread_mutex_unlock( &pkt_queue -> mutex);
+
+    return tmp;
 }
 
 bool is_null(pkt_ptr pkt_queue){
 
+    pthread_mutex_lock( &pkt_queue -> mutex);
+
     if (pkt_queue->front == -1 && pkt_queue->rear == -1){
 
+        pthread_mutex_unlock( &pkt_queue -> mutex);
         return true;
 
     }
 
+    pthread_mutex_unlock( &pkt_queue -> mutex);
     return false;
 
 }
 
-bool is_full(pkt_ptr pkt_Queue){
+bool is_full(pkt_ptr pkt_queue){
 
-    if(pkt_Queue -> front == pkt_Queue -> rear + 1){
+    pthread_mutex_lock( &pkt_queue -> mutex);
 
+    if(pkt_queue -> front == pkt_queue -> rear + 1){
+        pthread_mutex_unlock( &pkt_queue -> mutex);
         return true;
-
     }
 
-    else if(pkt_Queue -> front == 0 && pkt_Queue -> rear == MAX_QUEUE_LENGTH - 1){
-
+    else if(pkt_queue -> front == 0 && pkt_queue -> rear == MAX_QUEUE_LENGTH - 1){
+        pthread_mutex_unlock( &pkt_queue -> mutex);
         return true;
-
     }
 
     else{
-
+        pthread_mutex_unlock( &pkt_queue -> mutex);
         return false;
-
     }
+
+    pthread_mutex_lock( &pkt_queue -> mutex);
+    return true;
+
 }
 
 int queue_len(pkt_ptr pkt_queue){
 
-    if (pkt_queue -> front == 0 && pkt_queue -> rear == 0){
+    pthread_mutex_unlock( &pkt_queue -> mutex);
 
+    if (pkt_queue -> front == 0 && pkt_queue -> rear == 0){
+        pthread_mutex_unlock( &pkt_queue -> mutex);
         return 1;
 
     }
-
     else if(pkt_queue -> front == -1 && pkt_queue -> rear == -1){
-
+        pthread_mutex_unlock( &pkt_queue -> mutex);
         return 0;
 
     }
-
     else if (pkt_queue -> front == pkt_queue -> rear){
-
+        pthread_mutex_unlock( &pkt_queue -> mutex);
         return 1;
-
     }
-
     else if (pkt_queue -> rear > pkt_queue -> front){
 
-        return (pkt_queue -> rear - pkt_queue -> front + 1);
+        int len = (pkt_queue -> rear - pkt_queue -> front + 1);
+        pthread_mutex_unlock( &pkt_queue -> mutex);
+
+        return len;
 
     }
-
     else if (pkt_queue -> front > pkt_queue -> rear){
 
-        return ((MAX_QUEUE_LENGTH - pkt_queue -> front) + pkt_queue -> rear + 1);
+        int len = ((MAX_QUEUE_LENGTH - pkt_queue -> front) + pkt_queue -> rear + 1);
+        pthread_mutex_unlock( &pkt_queue -> mutex);
+
+        return len;
 
     }
-
     else{
-
+        pthread_mutex_unlock( &pkt_queue -> mutex);
         return queue_len_error;
-
     }
 
+    pthread_mutex_unlock( &pkt_queue -> mutex);
     return queue_len_error;
 
 }
 
 void print_content(char *content, int size){
 
-    for(int loc = 0; loc < size; loc ++){
-
+    for(int loc = 0; loc < size; loc ++)
         printf("%c", content[loc]);
-
-    }
 
 }
 

@@ -340,7 +340,7 @@ bool address_compare(unsigned char *addr1,unsigned char *addr2);
       bool : true if null.
 
  */
-bool is_null(pkt_ptr pkt_Queue);
+bool is_null(pkt_ptr pkt_queue);
 
 /*
   is_null
@@ -356,7 +356,7 @@ bool is_null(pkt_ptr pkt_Queue);
       bool : true if full.
 
  */
-bool is_full(pkt_ptr pkt_Queue);
+bool is_full(pkt_ptr pkt_queue);
 
 /*
   queue-len
