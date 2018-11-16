@@ -72,34 +72,23 @@ int Free_Packet_Queue(pkt_ptr pkt_queue){
 
 /* New : add pkts */
 
-int addpkt(pkt_ptr pkt_queue, unsigned int type, unsigned char *identification
-         , unsigned int Data_fragmentation, unsigned int Data_offset
-         , char *raw_addr, char *content, int content_size) {
+int addpkt(pkt_ptr pkt_queue, unsigned int type, char *raw_addr, char *content, int content_size) {
 
     int ret;
 
     printf("--------- Content ---------\n");
     printf("type               : %s\n", type_to_str(type));
 
-    printf("identification     : ");
-
-    print_content(identification, identification_length);
-
-    printf("\n");
-    printf("Data Fragmentation : %d\n", Data_fragmentation);
-
-    printf("Data_offset        : %d\n", Data_offset);
-
     printf("address            : ");
-
     print_content(raw_addr, Address_length);
 
     printf("\n");
     printf("--------- content ---------\n");
-
     print_content(content, content_size);
 
-    printf("\n");
+    printf("----- content size --------\n");
+    printf("%d\n", content_size);
+
     printf("---------------------------\n");
 
     if(is_full(pkt_queue) == true)
@@ -122,21 +111,17 @@ int addpkt(pkt_ptr pkt_queue, unsigned int type, unsigned char *identification
             pkt_queue -> rear ++ ;
     }
 
-    pkt_queue -> Queue[pkt_queue -> rear].type = type;
+    pPkt tmp = &pkt_queue -> Queue[pkt_queue -> rear];
 
-    char_to_hex(identification, pkt_queue
-             -> Queue[pkt_queue -> rear].identification, identification_length);
+    tmp -> type = type;
 
-    char_to_hex(raw_addr, pkt_queue -> Queue[pkt_queue -> rear].address,
-                Address_length);
+    char_to_hex(raw_addr, tmp -> address, Address_length);
 
-    pkt_queue -> Queue[pkt_queue -> rear].Data_offset = Data_offset;
+    memset( &tmp -> content, 0, MAX_DATA_LENGTH * sizeof(char));
 
-    memset( &pkt_queue -> Queue[pkt_queue -> rear].content, 0
-         , MAX_DATA_LENGTH * sizeof(char));
+    strncpy(tmp -> content, content, content_size);
 
-    strncpy(pkt_queue -> Queue[pkt_queue -> rear].content, content
-          , content_size);
+    tmp -> content_size = content_size;
 
     pthread_mutex_unlock( &pkt_queue -> mutex);
 
@@ -164,10 +149,11 @@ int delpkt(pkt_ptr pkt_queue) {
 
     pthread_mutex_lock( &pkt_queue -> mutex);
 
-    memset( &pkt_queue -> Queue[pkt_queue -> front].content, 0
-         , MAX_DATA_LENGTH * sizeof(char));
+    pPkt tmp = &pkt_queue -> Queue[pkt_queue -> front];
 
-    pkt_queue -> Queue[pkt_queue -> front].type = NONE;
+    memset( &tmp -> content, 0, MAX_DATA_LENGTH * sizeof(char));
+
+    tmp -> type = NONE;
 
     if(pkt_queue -> front == pkt_queue -> rear){
 
@@ -205,9 +191,6 @@ void display_pkt(char *content, pkt_ptr pkt_queue, int pkt_num){
     char *char_addr = hex_to_char(pkt_queue -> Queue[pkt_num].address
                                 , Address_length_Hex);
 
-    char *identification =hex_to_char(pkt_queue -> Queue[pkt_num].identification
-                                   , identification_length_Hex);
-
     printf("==================\n");
 
     printf("%s\n", content);
@@ -217,13 +200,6 @@ void display_pkt(char *content, pkt_ptr pkt_queue, int pkt_num){
     printf("====== type ======\n");
 
     printf("%s\n", type_to_str(pkt_queue -> Queue[pkt_num].type));
-
-    printf("==Identification==\n");
-
-    char *Identification_char = hex_to_char(identification
-                                          , identification_length_Hex);
-
-    printf("%s\n", Identification_char);
 
     printf("===== address ====\n");
 
@@ -236,15 +212,14 @@ void display_pkt(char *content, pkt_ptr pkt_queue, int pkt_num){
 
     printf("==== content =====\n");
 
-    print_content(pkt_queue -> Queue[pkt_num].content, MAX_DATA_LENGTH);
+    print_content(pkt_queue -> Queue[pkt_num].content, pkt_queue
+               -> Queue[pkt_num].content_size);
 
     printf("\n");
-
     printf("==================\n");
 
     pthread_mutex_unlock( &pkt_queue -> mutex);
 
-    free(Identification_char);
     free(address_char);
     free(char_addr);
 

@@ -70,6 +70,8 @@ typedef struct udp_config{
 
 typedef sudp_config *pudp_config;
 
+enum{File_OPEN_ERROR = -1, E_ADDPKT_OVERSIZE = -2};
+
 /*
 
   udp_initial

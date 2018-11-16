@@ -53,12 +53,7 @@
 #define MAX_DATA_LENGTH 1024
 
 //define the maximum pkt length per pkt.
-#define MAX_XBEE_PKT_LENGTH 100
-
-//define the maximum data length per pkt.
-#define MAX_XBEE_DATA_LENGTH 90
-
-#define XBEE_RESERVE_BYTE 3
+#define MAX_XBEE_PKT_LENGTH 104
 
 //define the maximum length of pkt Queue.
 #define MAX_QUEUE_LENGTH 1024
@@ -66,12 +61,6 @@
 #define Address_length 16
 
 #define Address_length_Hex 8
-
-#define identification_length 6
-
-#define identification_length_Hex 3
-
-#define XBEE_PKT_OFFSET_TIMES 10
 
 enum {UNKNOWN, Data, Local_AT, UDP, NONE};
 
@@ -87,16 +76,10 @@ typedef struct pkt {
     //"Data" type
     unsigned int type;
 
-    unsigned char identification[identification_length_Hex];
-
-    unsigned int Data_fragmentation;
-
-    unsigned int Data_offset;
-
-    char Reserved[XBEE_RESERVE_BYTE];
-
     // Data
     char content[MAX_DATA_LENGTH];
+
+    int  content_size;
 
 } sPkt;
 
@@ -142,8 +125,11 @@ int init_Packet_Queue(pkt_ptr pkt_queue);
       the tail of the packet queue and release the struct stored the pointer of
       the packet queue.
   Parameter:
+
       pkt_queue : A struct stored the first and the last of the packet queue.
+
   Return Value:
+
       int: If return 0, everything work successful.
            If not 0, Something wrong during delpkt or destroy mutex.
  */
@@ -159,9 +145,6 @@ int Free_Packet_Queue(pkt_ptr pkt_queue);
 
       pkt_Queue: The Queue we store pkt.
       type      : Record the type of packets working environment.
-      identification      : The unique number to identidy pkts.
-      Data_fragmentation  : To identify last packet.
-      Data_offset         : To identify which part of the original pkt.
       raw_addr  : The destnation address of the packet.
       content   : The content we decided to send.
 
@@ -172,8 +155,7 @@ int Free_Packet_Queue(pkt_ptr pkt_queue);
            If not 0, Somthing Wrong.
 
  */
-int addpkt(pkt_ptr pkt_queue, unsigned int type, unsigned char *identification
-         , unsigned int Data_fragmentation, unsigned int Data_offset
+int addpkt(pkt_ptr pkt_queue, unsigned int type
          , char *raw_addr, char *content, int content_size);
 
 /*

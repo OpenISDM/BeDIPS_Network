@@ -87,17 +87,11 @@ int udp_initial(pudp_config udp_config){
 
 int udp_addpkt(pkt_ptr pkt_queue, char *raw_addr, char *content, int size){
 
+    if(size > MAX_DATA_LENGTH)
+        return E_ADDPKT_OVERSIZE;
+
     const int UDP = 3;
 
-    char identification[identification_length];
-
-    memset(&identification, 0, sizeof(char) * identification_length);
-
-    generate_identification(identification, identification_length);
-
-    unsigned int offset = 0;
-    unsigned int  Data_fragmentation = 0;
-    char tmp_content[MAX_DATA_LENGTH];
     char address[Address_length];
 
     memset(&address, 0, Address_length);
@@ -136,7 +130,6 @@ int udp_addpkt(pkt_ptr pkt_queue, char *raw_addr, char *content, int size){
 
         }
 
-        //
         for(int lo = 0; lo < 3;lo ++)
 
             if ((3 - count) > lo )
@@ -148,19 +141,7 @@ int udp_addpkt(pkt_ptr pkt_queue, char *raw_addr, char *content, int size){
             address_loc ++;
     }
 
-    memset(&tmp_content, 0, sizeof(char) * MAX_DATA_LENGTH);
-
-    for(int loc = 0;loc < MAX_DATA_LENGTH;loc ++){
-
-        tmp_content[loc] = content[loc];
-
-        if((loc  + 1) == size)
-            break;
-
-    }
-
-    addpkt(pkt_queue, UDP, identification
-         , Data_fragmentation, offset, address, tmp_content, MAX_DATA_LENGTH);
+    addpkt(pkt_queue, UDP, address, content, size);
 
     return 0;
 }

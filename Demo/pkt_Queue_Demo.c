@@ -43,32 +43,12 @@ int main(){
 
     printf("%d\n", queue_len(&pkt_queue));
 
-    char *id = malloc(sizeof(char) * (identification_length));
-
-    memset(id, 0, sizeof(char) * (identification_length));
-
-    generate_identification(id, identification_length);
-
-    printf("%s\n", id);
-
-    generate_identification(id, identification_length);
-
-    printf("%s\n", id);
-
-    generate_identification(id, identification_length);
-
-    printf("%s\n", id);
-
-    generate_identification(id, identification_length);
-
-    printf("%s\n", id);
-
     /* Initialize Queue for packets                                          */
     init_Packet_Queue(&pkt_queue);
 
     for(int i = 0; i < MAX_QUEUE_LENGTH;i++){
 
-        addpkt(&pkt_queue, Data, id, 0, 0, Broadcast, "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC", 90);
+        addpkt(&pkt_queue, Data, Broadcast, "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC", 90);
 
         sleep(1);
 
@@ -78,7 +58,7 @@ int main(){
 
     sleep(1);
 
-    addpkt(&pkt_queue, Data, id, 0, 0, Broadcast, "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC", 90);
+    addpkt(&pkt_queue, Data, Broadcast, "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC", 90);
 
     sleep(1);
 
@@ -90,15 +70,13 @@ int main(){
 
     sleep(1);
 
-    addpkt(&pkt_queue, Data, id, 0, 0, Broadcast, "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC", 90);
+    addpkt(&pkt_queue, Data, Broadcast, "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC", 90);
 
     sleep(1);
 
     Free_Packet_Queue(&pkt_queue);
 
     sleep(1);
-
-    free(id);
 
     return 0;
 
