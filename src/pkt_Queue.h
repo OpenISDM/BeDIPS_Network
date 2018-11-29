@@ -3,37 +3,34 @@
 
   License:
 
-      GPL 3.0 : The content of this file is subject to the terms and
-      cnditions defined in file 'COPYING.txt', which is part of this
-      source code package.
+     GPL 3.0 : The content of this file is subject to the terms and conditions
+     defined in file 'COPYING.txt', which is part of this source code package.
 
   Project Name:
 
-      BeDIPS
+     BeDIPS
 
   File Description:
 
-      This file contains the header of function declarations
-      used in pkt_Queue.c
+     This file contains the header of function declarations used in pkt_Queue.c
 
   File Name:
 
-      pkt_Queue.h
+     pkt_Queue.h
 
   Abstract:
 
-      BeDIPS uses LBeacons to deliver 3D coordinates and textual
-      descriptions of their locations to users' devices. Basically, a
-      LBeacon is an inexpensive, Bluetooth Smart Ready device. The 3D
-      coordinates and location description of every LBeacon are retrieved
-      from BeDIS (Building/environment Data and Information System) and
-      stored locally during deployment and maintenance times. Once
-      initialized, each LBeacon broadcasts its coordinates and location
-      description to Bluetooth enabled user devices within its coverage
-      area.
+     BeDIPS uses LBeacons to deliver 3D coordinates and textual descriptions of
+     their locations to users' devices. Basically, a LBeacon is an inexpensive,
+     Bluetooth Smart Ready device. The 3D coordinates and location description
+     of every LBeacon are retrieved from BeDIS (Building/environment Data and
+     Information System) and stored locally during deployment and maintenance
+     times. Once initialized, each LBeacon broadcasts its coordinates and
+     location description to Bluetooth enabled user devices within its coverage
+     area.
 
   Authors:
-      Gary Xiao		, garyh0205@hotmail.com
+     Gary Xiao		, garyh0205@hotmail.com
  */
 
 #include <stdio.h>
@@ -44,8 +41,10 @@
 #include <pthread.h>
 #include <sys/time.h>
 
+
 #ifndef pkt_Queue_H
 #define pkt_Queue_H
+
 
 #define Gateway   "0000000000000000"
 #define Broadcast "000000000000FFFF"
@@ -66,6 +65,7 @@ enum {UNKNOWN, Data, Local_AT, UDP, NONE};
 
 enum{ pkt_Queue_SUCCESS = 0, pkt_Queue_FULL = -1, queue_len_error = -2};
 
+
 /* packet format */
 typedef struct pkt {
 
@@ -85,6 +85,7 @@ typedef struct pkt {
 
 typedef sPkt *pPkt;
 
+
 typedef struct pkt_header {
 
     // front store the location of the first of thr Pkt Queue
@@ -103,6 +104,7 @@ typedef struct pkt_header {
 
 typedef spkt_ptr *pkt_ptr;
 
+
 /* init_Packet_Queue
 
       Initialize Queue for packets
@@ -119,6 +121,7 @@ typedef spkt_ptr *pkt_ptr;
  */
 int init_Packet_Queue(pkt_ptr pkt_queue);
 
+
 /*
   Free_Packet_Queue
       Release all the packets in the packet queue, the header and
@@ -134,6 +137,7 @@ int init_Packet_Queue(pkt_ptr pkt_queue);
            If not 0, Something wrong during delpkt or destroy mutex.
  */
 int Free_Packet_Queue(pkt_ptr pkt_queue);
+
 
 /*
   addpkt
@@ -158,6 +162,7 @@ int Free_Packet_Queue(pkt_ptr pkt_queue);
 int addpkt(pkt_ptr pkt_queue, unsigned int type
          , char *raw_addr, char *content, int content_size);
 
+
 /*
   delpkt
 
@@ -173,6 +178,7 @@ int addpkt(pkt_ptr pkt_queue, unsigned int type
 
  */
 int delpkt(pkt_ptr pkt_queue);
+
 
 /*
   type_to_str
@@ -190,6 +196,7 @@ int delpkt(pkt_ptr pkt_queue);
  */
 char *type_to_str(int type);
 
+
 /*
   str_to_type
 
@@ -205,6 +212,7 @@ char *type_to_str(int type);
 
  */
 int str_to_type(const char *conType);
+
 
 /*
   char_to_hex
@@ -224,6 +232,7 @@ int str_to_type(const char *conType);
  */
 void char_to_hex(char *raw, unsigned char *raw_hex, int size);
 
+
 /*
   hex_to_char
 
@@ -240,6 +249,7 @@ void char_to_hex(char *raw, unsigned char *raw_hex, int size);
 
  */
 char *hex_to_char(unsigned char *hex, int size);
+
 
 /* display_pkt
 
@@ -258,6 +268,7 @@ char *hex_to_char(unsigned char *hex, int size);
  */
 void display_pkt(char *content, pkt_ptr pkt_queue, int pkt_num);
 
+
 /* get_pkt
 
       get the first of the pkt_queue.
@@ -272,6 +283,7 @@ void display_pkt(char *content, pkt_ptr pkt_queue, int pkt_num);
 
  */
 pPkt get_pkt(pkt_ptr pkt_queue);
+
 
 /*
   array_copy
@@ -291,6 +303,7 @@ pPkt get_pkt(pkt_ptr pkt_queue);
  */
 void array_copy(unsigned char *src, unsigned char *dest, int size);
 
+
 /*
   address_compare
 
@@ -308,6 +321,7 @@ void array_copy(unsigned char *src, unsigned char *dest, int size);
  */
 bool address_compare(unsigned char *addr1,unsigned char *addr2);
 
+
 /*
   is_null
 
@@ -323,6 +337,7 @@ bool address_compare(unsigned char *addr1,unsigned char *addr2);
 
  */
 bool is_null(pkt_ptr pkt_queue);
+
 
 /*
   is_null
@@ -340,6 +355,7 @@ bool is_null(pkt_ptr pkt_queue);
  */
 bool is_full(pkt_ptr pkt_queue);
 
+
 /*
   queue-len
 
@@ -355,6 +371,7 @@ bool is_full(pkt_ptr pkt_queue);
 
  */
 int queue_len(pkt_ptr pkt_queue);
+
 
 /*
 
@@ -374,6 +391,7 @@ int queue_len(pkt_ptr pkt_queue);
  */
 void print_content(char *content, int size);
 
+
 /*
   generate_identification
 
@@ -390,5 +408,6 @@ void print_content(char *content, int size);
 
  */
 void generate_identification(char *identification, int size);
+
 
 #endif
