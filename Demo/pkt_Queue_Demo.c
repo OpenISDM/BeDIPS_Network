@@ -3,37 +3,37 @@
 
   License:
 
-       GPL 3.0 : The content of this file is subject to the terms and
-       cnditions defined in file 'COPYING.txt', which is part of this
-       source code package.
+     GPL 3.0 : The content of this file is subject to the terms and conditions
+     defined in file 'COPYING.txt', which is part of this source code package.
 
   Project Name:
 
-       BeDIPS
+     BeDIS
 
   File Description:
 
-       This file demonstrate how the pkt_queue work and how to use it.
+     This file demonstrate how the pkt_queue work and how to use it.
 
   File Name:
 
-       pkt_queue_Demo.c
+     pkt_queue_Demo.c
 
   Abstract:
 
-       BeDIPS uses LBeacons to deliver 3D coordinates and textual
-       descriptions of their locations to users' devices. Basically, a
-       LBeacon is an inexpensive, Bluetooth Smart Ready device. The 3D
-       coordinates and location description of every LBeacon are retrieved
-       from BeDIS (Building/environment Data and Information System) and
-       stored locally during deployment and maintenance times. Once
-       initialized, each LBeacon broadcasts its coordinates and location
-       description to Bluetooth enabled user devices within its coverage
-       area.
+  Abstract:
 
-  Authors:
-       Gary Xiao		, garyh0205@hotmail.com
- */
+     BeDIS uses LBeacons to deliver 3D coordinates and textual descriptions of
+     their locations to users' devices. Basically, a LBeacon is an inexpensive,
+     Bluetooth Smart Ready device. The 3D coordinates and location description
+     of every LBeacon are retrieved from BeDIS (Building/environment Data and
+     Information System) and stored locally during deployment and maintenance
+     times. Once initialized, each LBeacon broadcasts its coordinates and
+     location description to Bluetooth enabled user devices within its coverage
+     area.
+
+Authors:
+   Gary Xiao		, garyh0205@hotmail.com
+*/
 
 #include "../src/pkt_Queue.h"
 

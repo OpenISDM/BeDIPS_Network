@@ -12,12 +12,12 @@
 
   File Description:
 
-      This file contains the program to connect to xbee by API mode and in
-      the project, we use it for data transmission most.
+     This file contains the program to connect to xbee by API mode and in
+     the project, we use it for data transmission most.
 
   File Name:
 
-      xbee_API.c
+     xbee_API.c
 
   Abstract:
 

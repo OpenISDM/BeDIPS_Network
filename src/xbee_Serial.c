@@ -12,12 +12,12 @@
 
   File Description:
 
-      This file contains the program to connect to xbee and send AT command
-      to xbee.
+     This file contains the program to connect to xbee and send AT command to
+     xbee.
 
   File Name:
 
-      xbee_Serial.c
+     xbee_Serial.c
 
   Abstract:
 

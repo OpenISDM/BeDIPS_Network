@@ -17,7 +17,7 @@
 
   File Name:
 
-       xbee_API.h
+     xbee_API.h
 
   Abstract:
 
@@ -30,9 +30,9 @@
      location description to Bluetooth enabled user devices within its coverage
      area.
 
-Authors:
-  Gary Xiao		, garyh0205@hotmail.com
- */ 
+  Authors:
+     Gary Xiao		, garyh0205@hotmail.com
+ */
 #ifndef xbee_API_H
 #define xbee_API_H
 

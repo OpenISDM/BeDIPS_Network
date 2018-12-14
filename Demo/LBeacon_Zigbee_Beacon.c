@@ -3,36 +3,34 @@
 
   License:
 
-      GPL 3.0 : The content of this file is subject to the terms and
-      cnditions defined in file 'COPYING.txt', which is part of this
-      source code package.
+     GPL 3.0 : The content of this file is subject to the terms and conditions
+     defined in file 'COPYING.txt', which is part of this source code package.
 
   Project Name:
 
-      BeDIPS
+     BeDIS
 
   File Description:
 
-      This file contains the program to set up a star network by XBEE S2C
-      module in order to deal with NSI(Network Setup and Initialization)
-      and Data transmission between Gateway and LBeacon. And This file is
-      for LBeacon.
+     This file contains the program to set up a star network by XBEE S2C
+     module in order to deal with NSI(Network Setup and Initialization)
+     and Data transmission between Gateway and LBeacon. And This file is
+     for LBeacon.
 
   File Name:
 
-      LBeacon_Zigbee_LBeacon.c
+     LBeacon_Zigbee_LBeacon.c
 
   Abstract:
 
-      BeDIPS uses LBeacons to deliver 3D coordinates and textual
-      descriptions of their locations to users' devices. Basically, a
-      LBeacon is an inexpensive, Bluetooth Smart Ready device. The 3D
-      coordinates and location description of every LBeacon are retrieved
-      from BeDIS (Building/environment Data and Information System) and
-      stored locally during deployment and maintenance times. Once
-      initialized, each LBeacon broadcasts its coordinates and location
-      description to Bluetooth enabled user devices within its coverage
-      area.
+     BeDIPS uses LBeacons to deliver 3D coordinates and textual descriptions of
+     their locations to users' devices. Basically, a LBeacon is an inexpensive,
+     Bluetooth Smart Ready device. The 3D coordinates and location description
+     of every LBeacon are retrieved from BeDIS (Building/environment Data and
+     Information System) and stored locally during deployment and maintenance
+     times. Once initialized, each LBeacon broadcasts its coordinates and
+     location description to Bluetooth enabled user devices within its coverage
+     area.
 
   Authors:
       Gary Xiao		, garyh0205@hotmail.com

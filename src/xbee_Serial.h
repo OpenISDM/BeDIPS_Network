@@ -12,8 +12,8 @@
 
   File Description:
 
-      This file contains the header of  function declarations and variable
-      used in Serial.c
+     This file contains the header of  function declarations and variable used
+     in Serial.c
 
   File Name:
 
