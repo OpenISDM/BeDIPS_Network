@@ -8,7 +8,7 @@
 
   Project Name:
 
-     BeDIPS
+     BeDIS
 
   File Description:
 
@@ -20,7 +20,7 @@
 
   Abstract:
 
-     BeDIPS uses LBeacons to deliver 3D coordinates and textual descriptions of
+     BeDIS uses LBeacons to deliver 3D coordinates and textual descriptions of
      their locations to users' devices. Basically, a LBeacon is an inexpensive,
      Bluetooth Smart Ready device. The 3D coordinates and location description
      of every LBeacon are retrieved from BeDIS (Building/environment Data and
@@ -33,6 +33,9 @@
      Gary Xiao		, garyh0205@hotmail.com
  */
 
+#ifndef pkt_Queue_H
+#define pkt_Queue_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -42,24 +45,22 @@
 #include <sys/time.h>
 
 
-#ifndef pkt_Queue_H
-#define pkt_Queue_H
-
-
 #define Gateway   "0000000000000000"
 #define Broadcast "000000000000FFFF"
 
-#define MAX_DATA_LENGTH 1024
 
-//define the maximum pkt length per pkt.
-#define MAX_XBEE_PKT_LENGTH 104
+/* Length of address of the network */
+#define NETWORK_ADDR_LENGTH 16
+
+/* Length of address of the network in Hex */
+#define NETWORK_ADDR_LENGTH_HEX 8
+
+/* Maximum length of message to be sent over WiFi in bytes */
+#define WIFI_MESSAGE_LENGTH 4096
+
 
 //define the maximum length of pkt Queue.
 #define MAX_QUEUE_LENGTH 1024
-
-#define Address_length 16
-
-#define Address_length_Hex 8
 
 enum {UNKNOWN, Data, Local_AT, UDP, NONE};
 
@@ -71,13 +72,13 @@ typedef struct pkt {
 
     // Brocast:     000000000000FFFF;
     // Coordinator: 0000000000000000
-    unsigned char address[Address_length_Hex];
+    unsigned char address[NETWORK_ADDR_LENGTH_HEX];
 
     //"Data" type
     unsigned int type;
 
     // Data
-    char content[MAX_DATA_LENGTH];
+    char content[WIFI_MESSAGE_LENGTH];
 
     int  content_size;
 
@@ -96,7 +97,7 @@ typedef struct pkt_header {
 
     sPkt Queue[MAX_QUEUE_LENGTH];
 
-    unsigned char address[Address_length_Hex];
+    unsigned char address[NETWORK_ADDR_LENGTH_HEX];
 
     pthread_mutex_t mutex;
 

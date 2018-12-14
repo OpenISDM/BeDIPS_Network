@@ -3,18 +3,17 @@
 
   License:
 
-       GPL 3.0 : The content of this file is subject to the terms and
-       cnditions defined in file 'COPYING.txt', which is part of this
-       source code package.
+     GPL 3.0 : The content of this file is subject to the terms and conditions
+     defined in file 'COPYING.txt', which is part of this source code package.
 
   Project Name:
 
-       BeDIPS
+     BeDIS
 
   File Description:
 
-    	This file contains the header of  function declarations and variable
-        used in xbee_API.c
+     This file contains the header of  function declarations and variable used
+     in xbee_API.c
 
   File Name:
 
