@@ -19,6 +19,7 @@
 
      UDP_API.c
 
+
   Abstract:
 
      BeDIS uses LBeacons to deliver 3D coordinates and textual descriptions of
@@ -44,13 +45,14 @@ int udp_initial(pudp_config udp_config){
     memset((char *) &udp_config -> si_server, 0, sizeof(udp_config
             -> si_server));
 
-    if(ret = init_Packet_Queue( &udp_config -> pkt_Queue) != pkt_Queue_SUCCESS)
+    ret = init_Packet_Queue( &udp_config -> pkt_Queue);
 
+    if(ret != pkt_Queue_SUCCESS)
         return ret;
 
-    if(ret = init_Packet_Queue( &udp_config -> Received_Queue)
-       != pkt_Queue_SUCCESS)
+    ret = init_Packet_Queue( &udp_config -> Received_Queue);
 
+    if(ret != pkt_Queue_SUCCESS)
         return ret;
 
     //create a send UDP socket
@@ -88,10 +90,9 @@ int udp_initial(pudp_config udp_config){
                    udp_config);
 
     return 0;
-
 }
 
-int udp_addpkt(pkt_ptr pkt_queue, char *raw_addr, char *content, int size){
+int udp_addpkt(pudp_config udp_config, char *raw_addr, char *content, int size){
 
     if(size > WIFI_MESSAGE_LENGTH)
         return E_ADDPKT_OVERSIZE;
@@ -131,9 +132,7 @@ int udp_addpkt(pkt_ptr pkt_queue, char *raw_addr, char *content, int size){
 
                 if(address_loc >= strlen(raw_addr))
                     break;
-
             }
-
         }
 
         for(int lo = 0; lo < 3;lo ++)
@@ -147,7 +146,7 @@ int udp_addpkt(pkt_ptr pkt_queue, char *raw_addr, char *content, int size){
             address_loc ++;
     }
 
-    addpkt(pkt_queue, UDP, address, content, size);
+    addpkt(&udp_config -> pkt_Queue, UDP, address, content, size);
 
     return 0;
 }
@@ -214,8 +213,8 @@ void *udp_send_pkt(void *udpconfig){
                 perror("inet_aton error.\n");
 
             if (sendto(udp_config -> send_socket, udp_config -> pkt_Queue.Queue[
-                       udp_config -> pkt_Queue.front].content, WIFI_MESSAGE_LENGTH,0
-                       , (struct sockaddr *) &si_send, socketaddr_len) == -1)
+                udp_config -> pkt_Queue.front].content, WIFI_MESSAGE_LENGTH,0,
+                (struct sockaddr *) &si_send, socketaddr_len) == -1)
                 perror("recvfrom error.\n");
 
             pthread_mutex_unlock( &udp_config -> pkt_Queue.mutex);
@@ -223,18 +222,16 @@ void *udp_send_pkt(void *udpconfig){
             delpkt( &udp_config -> pkt_Queue);
 
         }
-
     }
 
     printf("Exit Send.\n");
 
+    return (void *)NULL;
 }
 
 void *udp_recv_pkt(void *udpconfig){
 
     pudp_config udp_config = (pudp_config) udpconfig;
-
-    int ret;
 
     int recv_len;
 
@@ -257,13 +254,12 @@ void *udp_recv_pkt(void *udpconfig){
 
         //try to receive some data, this is a non-blocking call
         if ((recv_len = recvfrom(udp_config -> recv_socket, recv_buf,
-             WIFI_MESSAGE_LENGTH, 0, (struct sockaddr *) &si_recv, &socketaddr_len))
-                                                                         == -1){
+             WIFI_MESSAGE_LENGTH, 0, (struct sockaddr *) &si_recv
+                                    , (socklen_t *)&socketaddr_len)) == -1){
 
             printf("error recv_len %d\n", recv_len);
 
             perror("recvfrom error.\n");
-
         }
         else if(recv_len > 0){
 
@@ -272,15 +268,16 @@ void *udp_recv_pkt(void *udpconfig){
                                                    ntohs(si_recv.sin_port));
             printf("Data: %s\n" , recv_buf);
 
-            addpkt(pkt_ptr pkt_queue, unsigned int type
-                     , char *raw_addr, char *content, int content_size);
-
+            addpkt(&udp_config -> Received_Queue, UDP
+                 , inet_ntoa(si_recv.sin_addr), recv_buf, strlen(recv_buf));
         }
         else
             perror("else recvfrom error.\n");
 
     }
     printf("Exit Receive.\n");
+
+    return (void *)NULL;
 }
 
 int udp_release(pudp_config udp_config){

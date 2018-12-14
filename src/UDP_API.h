@@ -33,7 +33,6 @@
   Authors:
      Gary Xiao		, garyh0205@hotmail.com
  */
-
 #ifndef UDP_API_H
 #define UDP_API_H
 
@@ -62,7 +61,7 @@
 
 #define UDP_SELECT_TIMEOUT 5    //second
 
-typedef struct udp_config{
+typedef struct udp_config_{
 
     struct sockaddr_in si_server;
 
@@ -70,11 +69,11 @@ typedef struct udp_config{
 
     char Local_Address[NETWORK_ADDR_LENGTH];
 
-    spkt_ptr pkt_Queue, Received_Queue;
+    pthread_t udp_send, udp_receive;
 
     bool shutdown;
 
-    pthread_t udp_send, udp_receive;
+    spkt_ptr pkt_Queue, Received_Queue;
 
 } sudp_config;
 
@@ -115,7 +114,7 @@ int udp_initial(pudp_config udp_config);
      int : If return 0, everything work successfully.
            If not 0   , something wrong.
  */
-int udp_addpkt(pkt_ptr pkt_queue, char *raw_addr, char *content, int size);
+int udp_addpkt(pudp_config udp_config, char *raw_addr, char *content, int size);
 
 /*
   udp_send_pkt

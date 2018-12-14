@@ -34,11 +34,11 @@
   Authors:
        Gary Xiao		, garyh0205@hotmail.com
  */
-
+#include "../src/pkt_Queue.h"
 #include "../src/UDP_API.h"
 
-int main(){
 
+int main(){
     sudp_config udp_config;
 
     printf("Success\n");
@@ -47,11 +47,15 @@ int main(){
 
     printf("init success\n");
 
-    udp_addpkt(&udp_config.pkt_Queue, "127.0.0.1", "TESTING...", 10);
+    udp_addpkt(&udp_config, "127.0.0.1", "TESTING...", 10);
 
     printf("Addpkt successs\n");
 
     sleep(1);
+
+    while(1){
+        udp_addpkt(&udp_config, "127.0.0.1", "TESTING...", 10);
+    }
 
     udp_config.shutdown = true;
 

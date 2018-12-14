@@ -21,19 +21,20 @@
 
   Abstract:
 
-       BeDIPS uses LBeacons to deliver 3D coordinates and textual
-       descriptions of their locations to users' devices. Basically, a
-       LBeacon is an inexpensive, Bluetooth Smart Ready device. The 3D
-       coordinates and location description of every LBeacon are retrieved
-       from BeDIS (Building/environment Data and Information System) and
-       stored locally during deployment and maintenance times. Once
-       initialized, each LBeacon broadcasts its coordinates and location
-       description to Bluetooth enabled user devices within its coverage
-       area.
+     BeDIS uses LBeacons to deliver 3D coordinates and textual descriptions of
+     their locations to users' devices. Basically, a LBeacon is an inexpensive,
+     Bluetooth Smart Ready device. The 3D coordinates and location description
+     of every LBeacon are retrieved from BeDIS (Building/environment Data and
+     Information System) and stored locally during deployment and maintenance
+     times. Once initialized, each LBeacon broadcasts its coordinates and
+     location description to Bluetooth enabled user devices within its coverage
+     area.
 
-  Authors:
-       Gary Xiao		, garyh0205@hotmail.com
- */
+Authors:
+  Gary Xiao		, garyh0205@hotmail.com
+ */ 
+#ifndef xbee_API_H
+#define xbee_API_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -45,8 +46,6 @@
 #include "pkt_Queue.h"
 #include "xbee_Serial.h"
 
-#ifndef xbee_API_H
-#define xbee_API_H
 
 typedef struct xbee_config {
 

@@ -58,7 +58,6 @@
 /* Maximum length of message to be sent over WiFi in bytes */
 #define WIFI_MESSAGE_LENGTH 4096
 
-
 //define the maximum length of pkt Queue.
 #define MAX_QUEUE_LENGTH 1024
 

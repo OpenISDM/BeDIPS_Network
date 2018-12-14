@@ -40,8 +40,6 @@
 
 int init_Packet_Queue(pkt_ptr pkt_queue){
 
-    int ret;
-
     pthread_mutex_init( &pkt_queue -> mutex, 0);
 
     pkt_queue -> front = -1;
@@ -57,8 +55,6 @@ int init_Packet_Queue(pkt_ptr pkt_queue){
 
 int Free_Packet_Queue(pkt_ptr pkt_queue){
 
-    int ret;
-
     while (is_null(pkt_queue) == false)
         delpkt(pkt_queue);
 
@@ -71,8 +67,6 @@ int Free_Packet_Queue(pkt_ptr pkt_queue){
 /* New : add pkts */
 
 int addpkt(pkt_ptr pkt_queue, unsigned int type, char *raw_addr, char *content, int content_size) {
-
-    int ret;
 
     printf("--------- Content ---------\n");
     printf("type               : %s\n", type_to_str(type));
