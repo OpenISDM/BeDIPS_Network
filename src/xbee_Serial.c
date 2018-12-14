@@ -1,39 +1,40 @@
 /*
- * Copyright (c) 2016 Academia Sinica, Institute of Information Science
- *
- * License:
- *
- *      GPL 3.0 : The content of this file is subject to the terms and
- *      cnditions defined in file 'COPYING.txt', which is part of this
- *      source code package.
- *
- * Project Name:
- *
- *      BeDIPS
- *
- * File Description:
- *
- *   	This file contains the program to connect to xbee and send AT command
- *      to xbee.
- *
- * File Name:
- *
- *      xbee_Serial.c
- *
- * Abstract:
- *
- *      BeDIPS uses LBeacons to deliver 3D coordinates and textual
- *      descriptions of their locations to users' devices. Basically, a
- *      LBeacon is an inexpensive, Bluetooth Smart Ready device. The 3D
- *      coordinates and location description of every LBeacon are retrieved
- *      from BeDIS (Building/environment Data and Information System) and
- *      stored locally during deployment and maintenance times. Once
- *      initialized, each LBeacon broadcasts its coordinates and location
- *      description to Bluetooth enabled user devices within its coverage
- *      area.
- *
- * Authors:
- *      Gary Xiao		, garyh0205@hotmail.com
+  Copyright (c) 2016 Academia Sinica, Institute of Information Science
+
+  License:
+
+      GPL 3.0 : The content of this file is subject to the terms and
+      cnditions defined in file 'COPYING.txt', which is part of this
+      source code package.
+
+  Project Name:
+
+      BeDIPS
+
+  File Description:
+
+      This file contains the program to connect to xbee and send AT command
+      to xbee.
+
+  File Name:
+
+      xbee_Serial.c
+
+  Abstract:
+
+      BeDIPS uses LBeacons to deliver 3D coordinates and textual
+      descriptions of their locations to users' devices. Basically, a
+      LBeacon is an inexpensive, Bluetooth Smart Ready device. The 3D
+      coordinates and location description of every LBeacon are retrieved
+      from BeDIS (Building/environment Data and Information System) and
+      stored locally during deployment and maintenance times. Once
+      initialized, each LBeacon broadcasts its coordinates and location
+      description to Bluetooth enabled user devices within its coverage
+      area.
+
+  Authors:
+
+      Gary Xiao		, garyh0205@hotmail.com
  */
 
 #include "xbee_Serial.h"
@@ -41,11 +42,8 @@
 int xbee_Serial_Power_Reset(int Wiring_Pi_Pin){
 
     //Check we have wiringPi
-    if (wiringPiSetup () == -1 ){
-
+    if (wiringPiSetup () == -1 )
         return Wiring_Pi_Setup_Fail;
-
-    }
 
     pinMode(Wiring_Pi_Pin, OUTPUT);
 
@@ -105,7 +103,6 @@ int xbee_Serial_init(int *xbee_datastream, char *xbee_device){
 
     // set the new defined settings
     if (tcsetattr( *xbee_datastream, TCSANOW, &newtio))
-
         return Serial_Setting_Fail;
 
     return 0;
@@ -133,13 +130,11 @@ int xbee_Serial_Tx(int *xbee_datastream, char *Data){
 
         //Datastream, bytes to write, number of bytes to write
         if (count < 0)
-
             return Serial_Tx_Error;
 
     }
 
     else
-
         return xbee_datastream_Error;
 
     return 0;
@@ -149,17 +144,10 @@ int xbee_Serial_Rx(int *xbee_datastream, char *Data){
 
     int Waiting;
 
-    if(strlen(Data) > 0){
-
+    if(strlen(Data) > 0)
         Waiting = Remain;
-
-    }
-
-    else{
-
+    else
         Waiting = Ended;
-
-    }
 
     int Received = 0;
 
@@ -168,12 +156,10 @@ int xbee_Serial_Rx(int *xbee_datastream, char *Data){
 
         // Read up to xbee_Serial_buffer characters from the port
         unsigned char rx_buffer[xbee_Serial_buffer + 1];
+        int rx_length = 0;
+        int count = 0;
 
         memset(rx_buffer, 0, sizeof(char) * (xbee_Serial_buffer + 1));
-
-        int rx_length = 0;
-
-        int count = 0;
 
         do{
 
@@ -182,36 +168,22 @@ int xbee_Serial_Rx(int *xbee_datastream, char *Data){
             rx_length = read( *xbee_datastream, (void *)rx_buffer
                            , xbee_Serial_buffer);
 
-            if(rx_length == 0){
-
+            if(rx_length == 0)
                 if(count == 5)
-
                     return Serial_Rx_Error;
-
                 else
-
                     count ++;
 
-            }
  	        else{
 
                 count = 0;
 
-                if((strlen(Data) - Received) > rx_length - 1){
-
+                if((strlen(Data) - Received) > rx_length - 1)
                     return Data_Receive_OverFlow;
 
-                }
-
-                for(int i = 0 ; i < rx_length - 1; i++){
-
-                    if(rx_buffer[i] != Data[i + Received]){
-
+                for(int i = 0 ; i < rx_length - 1; i++)
+                    if(rx_buffer[i] != Data[i + Received])
                         return Data_Receive_MisMatch;
-
-                    }
-
-                }
 
                 Received += rx_length - 1;
 
@@ -226,7 +198,6 @@ int xbee_Serial_Rx(int *xbee_datastream, char *Data){
     }
 
     else
-
         return xbee_datastream_Error;
 
     return 0;
@@ -236,7 +207,6 @@ int xbee_Serial_Rx(int *xbee_datastream, char *Data){
 char* xbee_Serial_Return(int *xbee_datastream){
 
     unsigned char rx_buffer[xbee_Serial_buffer + 1];
-
     int rx_length;
 
     memset(rx_buffer, 0, sizeof(char) * (xbee_Serial_buffer + 1));
@@ -267,7 +237,6 @@ char* xbee_Serial_Return(int *xbee_datastream){
     char* return_received = malloc(sizeof(char) * rx_length);
 
     for(int n = 0; n < rx_length; n++ )
-
         return_received[n] = rx_buffer[n];
 
     return return_received;
@@ -284,7 +253,6 @@ int  xbee_Send_Command(int *xbee_datastream, char *Command
         count ++;
 
         if(count == 5)
-
             return ret;
 
     }
@@ -298,7 +266,6 @@ int  xbee_Send_Command(int *xbee_datastream, char *Command
         count ++;
 
         if(count == 5)
-
             return ret;
 
     }
@@ -312,7 +279,6 @@ int  xbee_Send_Command(int *xbee_datastream, char *Command
         count ++;
 
         if(count == 5)
-
             return ret;
 
     }
@@ -326,7 +292,6 @@ int  xbee_Send_Command(int *xbee_datastream, char *Command
         count ++;
 
         if(count == 5)
-
             return ret;
 
     }
@@ -344,7 +309,6 @@ char* xbee_Send_Command_result(int *xbee_datastream, char *Command){
         count ++;
 
         if(count == 5)
-
             return "NULL";
 
     }
@@ -358,7 +322,6 @@ char* xbee_Send_Command_result(int *xbee_datastream, char *Command){
         count ++;
 
         if(count == 5)
-
             return "NULL";
 
     }

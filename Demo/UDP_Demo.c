@@ -13,11 +13,11 @@
 
   File Description:
 
-       This file demonstrate how the pkt_queue work and how to use it.
+       This file demonstrate how the UDP_Demo work and how to use it.
 
   File Name:
 
-       pkt_queue_Demo.c
+       UDP_Demo.c
 
   Abstract:
 
@@ -35,48 +35,27 @@
        Gary Xiao		, garyh0205@hotmail.com
  */
 
-#include "../src/pkt_Queue.h"
+#include "../src/UDP_API.h"
 
 int main(){
 
-    spkt_ptr pkt_queue;
+    sudp_config udp_config;
 
-    printf("%d\n", queue_len(&pkt_queue));
+    printf("Success\n");
 
-    /* Initialize Queue for packets                                          */
-    init_Packet_Queue(&pkt_queue);
+    udp_initial( &udp_config);
 
-    for(int i = 0; i < MAX_QUEUE_LENGTH;i++){
+    printf("init success\n");
 
-        addpkt(&pkt_queue, Data, Broadcast, "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC", 90);
+    udp_addpkt(&udp_config.pkt_Queue, "127.0.0.1", "TESTING...", 10);
 
-        sleep(1);
-
-    }
-
-    delpkt(&pkt_queue);
+    printf("Addpkt successs\n");
 
     sleep(1);
 
-    addpkt(&pkt_queue, Data, Broadcast, "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC", 90);
+    udp_config.shutdown = true;
 
-    sleep(1);
-
-    delpkt(&pkt_queue);
-
-    sleep(1);
-
-    delpkt(&pkt_queue);
-
-    sleep(1);
-
-    addpkt(&pkt_queue, Data, Broadcast, "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC", 90);
-
-    sleep(1);
-
-    Free_Packet_Queue(&pkt_queue);
-
-    sleep(1);
+    udp_release( &udp_config);
 
     return 0;
 
