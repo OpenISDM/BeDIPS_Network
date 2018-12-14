@@ -8,7 +8,7 @@
 
   Project Name:
 
-     BeDIPS
+     BeDIS
 
   File Description:
 
@@ -21,7 +21,7 @@
 
   Abstract:
 
-     BeDIPS uses LBeacons to deliver 3D coordinates and textual descriptions of
+     BeDIS uses LBeacons to deliver 3D coordinates and textual descriptions of
      their locations to users' devices. Basically, a LBeacon is an inexpensive,
      Bluetooth Smart Ready device. The 3D coordinates and location description
      of every LBeacon are retrieved from BeDIS (Building/environment Data and
@@ -93,14 +93,14 @@ int udp_initial(pudp_config udp_config){
 
 int udp_addpkt(pkt_ptr pkt_queue, char *raw_addr, char *content, int size){
 
-    if(size > MAX_DATA_LENGTH)
+    if(size > WIFI_MESSAGE_LENGTH)
         return E_ADDPKT_OVERSIZE;
 
     const int UDP = 3;
 
-    char address[Address_length];
+    char address[NETWORK_ADDR_LENGTH];
 
-    memset(&address, 0, Address_length);
+    memset(&address, 0, NETWORK_ADDR_LENGTH);
 
     //Record current filled Address Location.
     int address_loc = 0;
@@ -214,7 +214,7 @@ void *udp_send_pkt(void *udpconfig){
                 perror("inet_aton error.\n");
 
             if (sendto(udp_config -> send_socket, udp_config -> pkt_Queue.Queue[
-                       udp_config -> pkt_Queue.front].content, MAX_DATA_LENGTH,0
+                       udp_config -> pkt_Queue.front].content, WIFI_MESSAGE_LENGTH,0
                        , (struct sockaddr *) &si_send, socketaddr_len) == -1)
                 perror("recvfrom error.\n");
 
@@ -238,7 +238,7 @@ void *udp_recv_pkt(void *udpconfig){
 
     int recv_len;
 
-    char recv_buf[MAX_DATA_LENGTH];
+    char recv_buf[WIFI_MESSAGE_LENGTH];
 
     struct sockaddr_in si_recv;
 
@@ -249,7 +249,7 @@ void *udp_recv_pkt(void *udpconfig){
 
         memset(&si_recv, 0, sizeof(si_recv));
 
-        memset(&recv_buf, 0, sizeof(char) * MAX_DATA_LENGTH);
+        memset(&recv_buf, 0, sizeof(char) * WIFI_MESSAGE_LENGTH);
 
         recv_len = 0;
 
@@ -257,7 +257,7 @@ void *udp_recv_pkt(void *udpconfig){
 
         //try to receive some data, this is a non-blocking call
         if ((recv_len = recvfrom(udp_config -> recv_socket, recv_buf,
-             MAX_DATA_LENGTH, 0, (struct sockaddr *) &si_recv, &socketaddr_len))
+             WIFI_MESSAGE_LENGTH, 0, (struct sockaddr *) &si_recv, &socketaddr_len))
                                                                          == -1){
 
             printf("error recv_len %d\n", recv_len);
@@ -271,6 +271,9 @@ void *udp_recv_pkt(void *udpconfig){
             printf("Received packet from %s:%d\n", inet_ntoa(si_recv.sin_addr),
                                                    ntohs(si_recv.sin_port));
             printf("Data: %s\n" , recv_buf);
+
+            addpkt(pkt_ptr pkt_queue, unsigned int type
+                     , char *raw_addr, char *content, int content_size);
 
         }
         else
@@ -300,7 +303,8 @@ int udp_release(pudp_config udp_config){
 char *udp_hex_to_address(unsigned char *hex_addr){
 
     // Stored a recovered address.
-    char dest_address[17];
+    char *dest_address;
+    dest_address = malloc(sizeof(char) * 17);
     memset(&dest_address, 0, sizeof(char) * 17);
     char *tmp_address = hex_to_char(hex_addr, 12);
     int address_loc = 0;

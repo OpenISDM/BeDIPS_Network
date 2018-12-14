@@ -8,7 +8,7 @@
 
   Project Name:
 
-     BeDIPS
+     BeDIS
 
   File Description:
 
@@ -21,7 +21,7 @@
 
   Abstract:
 
-     BeDIPS uses LBeacons to deliver 3D coordinates and textual descriptions of
+     BeDIS uses LBeacons to deliver 3D coordinates and textual descriptions of
      their locations to users' devices. Basically, a LBeacon is an inexpensive,
      Bluetooth Smart Ready device. The 3D coordinates and location description
      of every LBeacon are retrieved from BeDIS (Building/environment Data and
@@ -34,6 +34,9 @@
      Gary Xiao		, garyh0205@hotmail.com
  */
 
+#ifndef UDP_API_H
+#define UDP_API_H
+
 #include <stdio.h> //printf
 #include <string.h> //memset
 #include <stdlib.h> //exit(0)
@@ -43,8 +46,17 @@
 #include <sys/socket.h>
 #include "pkt_Queue.h"
 
-#ifndef UDP_API_H
-#define UDP_API_H
+/* Length of address of the network */
+#define NETWORK_ADDR_LENGTH 16
+
+/* Length of address of the network in Hex */
+#define NETWORK_ADDR_LENGTH_HEX 8
+
+/* The maxinum length in bytes of the message to be sent over zigbee link */
+#define ZIG_MESSAGE_LENGTH 104
+
+/* Maximum length of message to be sent over WiFi in bytes */
+#define WIFI_MESSAGE_LENGTH 4096
 
 #define UDP_LISTEN_PORT 8888    //The port on which to listen for incoming data
 
@@ -56,7 +68,7 @@ typedef struct udp_config{
 
     int  send_socket, recv_socket;
 
-    char Local_Address[Address_length];
+    char Local_Address[NETWORK_ADDR_LENGTH];
 
     spkt_ptr pkt_Queue, Received_Queue;
 
