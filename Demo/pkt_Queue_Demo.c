@@ -50,11 +50,14 @@ int main(){
 
         addpkt(&pkt_queue, Data, Broadcast, "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC", 90);
 
+        sPkt tmp = get_pkt(&pkt_queue);
+
         sleep(1);
 
     }
 
-    delpkt(&pkt_queue);
+    sPkt tmp = get_pkt(&pkt_queue);
+    print_content( tmp.content, tmp.content_size);
 
     sleep(1);
 
@@ -62,11 +65,14 @@ int main(){
 
     sleep(1);
 
-    delpkt(&pkt_queue);
+    tmp = get_pkt(&pkt_queue);
+    print_content( tmp.content, tmp.content_size);
+
 
     sleep(1);
 
-    delpkt(&pkt_queue);
+    tmp = get_pkt(&pkt_queue);
+    print_content( tmp.content, tmp.content_size);
 
     sleep(1);
 
