@@ -36,6 +36,9 @@
 #ifndef UDP_API_H
 #define UDP_API_H
 
+#ifndef UDP_API_H
+#define UDP_API_H
+
 #include <stdio.h> //printf
 #include <string.h> //memset
 #include <stdlib.h> //exit(0)
