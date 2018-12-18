@@ -58,19 +58,19 @@ int udp_initial(pudp_config udp_config){
     //create a send UDP socket
     if ((udp_config -> send_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP))
          == -1)
-        perror("socket errror.\n");
+        return send_socket_error;
 
     //create a recv UDP socket
     if ((udp_config -> recv_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP))
          == -1)
-        perror("socket errror.\n");
+        return recv_socket_error;
 
     struct timeval timeout;
     timeout.tv_sec = UDP_SELECT_TIMEOUT; //秒
 
     if (setsockopt(udp_config -> recv_socket, SOL_SOCKET, SO_RCVTIMEO, &timeout
                  , sizeof(timeout)) == -1)
-        perror("setsockopt failed:");
+        return set_socketopt_error;
 
     udp_config -> si_server.sin_family = AF_INET;
     udp_config -> si_server.sin_port = htons(UDP_LISTEN_PORT);
@@ -81,7 +81,7 @@ int udp_initial(pudp_config udp_config){
     //bind recv socket to port
     if( bind(udp_config -> recv_socket , (struct sockaddr *)&udp_config ->
              si_server, sizeof(udp_config -> si_server) ) == -1)
-        perror("bind error.\n");
+        return recv_socket_bind_error;
 
     pthread_create(&udp_config -> udp_receive, NULL, udp_recv_pkt, (void*)
                    udp_config);
@@ -94,8 +94,8 @@ int udp_initial(pudp_config udp_config){
 
 int udp_addpkt(pudp_config udp_config, char *raw_addr, char *content, int size){
 
-    if(size > WIFI_MESSAGE_LENGTH)
-        return E_ADDPKT_OVERSIZE;
+    if(size > MESSAGE_LENGTH)
+        return addpkt_msg_oversize;
 
     const int UDP = 3;
 
@@ -162,16 +162,15 @@ void *udp_send_pkt(void *udpconfig){
     // Stored a recovered address.
     char dest_address[17];
 
-    while(udp_config -> shutdown == false){
+    while(!(udp_config -> shutdown)){
 
-        if(is_null( &udp_config -> pkt_Queue) == false){
+        if(!(is_null( &udp_config -> pkt_Queue))){
 
-            pthread_mutex_lock( &udp_config -> pkt_Queue.mutex);
+            sPkt current_send_pkt = get_pkt(&udp_config -> pkt_Queue);
 
             memset(&dest_address, 0, sizeof(char) * 17);
 
-            char *tmp_address = hex_to_char(udp_config -> pkt_Queue.Queue[
-                                udp_config -> pkt_Queue.front].address, 12);
+            char *tmp_address = hex_to_char(current_send_pkt.address, 12);
 
             int address_loc = 0;
 
@@ -212,12 +211,10 @@ void *udp_send_pkt(void *udpconfig){
 
                 perror("inet_aton error.\n");
 
-            if (sendto(udp_config -> send_socket, udp_config -> pkt_Queue.Queue[
-                udp_config -> pkt_Queue.front].content, WIFI_MESSAGE_LENGTH,0,
-                (struct sockaddr *) &si_send, socketaddr_len) == -1)
+            if (sendto(udp_config -> send_socket, current_send_pkt.content
+              , current_send_pkt.content_size, 0, (struct sockaddr *) &si_send
+              , socketaddr_len) == -1)
                 perror("recvfrom error.\n");
-
-            pthread_mutex_unlock( &udp_config -> pkt_Queue.mutex);
 
             delpkt( &udp_config -> pkt_Queue);
 
@@ -235,18 +232,18 @@ void *udp_recv_pkt(void *udpconfig){
 
     int recv_len;
 
-    char recv_buf[WIFI_MESSAGE_LENGTH];
+    char recv_buf[MESSAGE_LENGTH];
 
     struct sockaddr_in si_recv;
 
     int socketaddr_len = sizeof(si_recv);
 
     //keep listening for data
-    while(udp_config -> shutdown == false){
+    while(!(udp_config -> shutdown)){
 
         memset(&si_recv, 0, sizeof(si_recv));
 
-        memset(&recv_buf, 0, sizeof(char) * WIFI_MESSAGE_LENGTH);
+        memset(&recv_buf, 0, sizeof(char) * MESSAGE_LENGTH);
 
         recv_len = 0;
 
@@ -254,7 +251,7 @@ void *udp_recv_pkt(void *udpconfig){
 
         //try to receive some data, this is a non-blocking call
         if ((recv_len = recvfrom(udp_config -> recv_socket, recv_buf,
-             WIFI_MESSAGE_LENGTH, 0, (struct sockaddr *) &si_recv
+             MESSAGE_LENGTH, 0, (struct sockaddr *) &si_recv
                                     , (socklen_t *)&socketaddr_len)) == -1){
 
             printf("error recv_len %d\n", recv_len);
