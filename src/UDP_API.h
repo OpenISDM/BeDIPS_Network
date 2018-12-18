@@ -122,10 +122,9 @@ int udp_addpkt(pudp_config udp_config, char *raw_addr, char *content, int size);
 
   Return Value:
 
-     int : If return 0, everything work successfully.
-           If not 0   , something wrong.
+     sPkt : return the first pkt content in Received_Queue.
  */
-int udp_getrecv(pudp_config udp_config);
+sPkt udp_getrecv(pudp_config udp_config);
 
 
 /*

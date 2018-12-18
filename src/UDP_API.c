@@ -151,6 +151,15 @@ int udp_addpkt(pudp_config udp_config, char *raw_addr, char *content, int size){
     return 0;
 }
 
+
+sPkt udp_getrecv(pudp_config udp_config){
+
+    sPkt tmp = get_pkt(&udp_config -> Received_Queue);
+
+    return tmp;
+}
+
+
 void *udp_send_pkt(void *udpconfig){
 
     pudp_config udp_config = (pudp_config) udpconfig;
