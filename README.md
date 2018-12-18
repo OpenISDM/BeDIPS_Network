@@ -1,4 +1,4 @@
-# LBeacon-Zigbee
+# BeDIS_Network
 ## Zigbee on Respberry Pi
 
 ## Library
@@ -24,7 +24,7 @@ The download link of RASPBIAN STRETCH LITE(2017-11-29 version) is <br />http://v
 If you are building libxbee, then there are a number of options avaliable to you.<br />
 Initially you should run the following command:
 <pre><code>$ make configure</code></pre>
-	
+
 This will retrieve a default `config.mk` that is suitable for your Respberry Pi.<br />
 In our project you need to<br />
 un-comment `OPTIONS+=       XBEE_LOG_LEVEL=100`<br />
@@ -63,13 +63,13 @@ In this project, we use `ZIGBEE TH Reg` as our main Function. The following conf
 1. Open XCTU (Download Link: https://www.digi.com/products/xbee-rf-solutions/xctu-software/xctu)<br />
 2. Add the radio you decide to setup<br />
 3. click the radio you decide to setup<br />
-4. Depends on different identity/role of the zigbee(Coornidator/Endpoint), there are different parameters setting. For Coornidator (Gateway), 
+4. Depends on different identity/role of the zigbee(Coornidator/Endpoint), there are different parameters setting. For Coornidator (Gateway),
 	* JV (Channel Verification) = `Disable[0]`
 	* CE (Coordinator Enable) = `Enable[1]`
 	* DH (Destination Address High) = `0`
 	* DL (Destination Address Low) = `0xFFFF`
 	* AP (API Output Mode) = `API enabled[1]`
-	* D6 (DIO7 Configuration) = `Disable[0]` 
+	* D6 (DIO7 Configuration) = `Disable[0]`
 	* D7 (DIO7 Configuration) = `Disable[0]`
 5. For EndPoint (LBeacon),
 	* JV (Channel Verification) = `Enable[1]`
@@ -77,13 +77,13 @@ In this project, we use `ZIGBEE TH Reg` as our main Function. The following conf
 	* DH (Destination Address High) = `0`
 	* DL (Destination Address Low) = `0`
 	* AP (API Output Mode) = `API enabled[1]`
-	* D6 (DIO7 Configuration) = `Disable[0]` 
+	* D6 (DIO7 Configuration) = `Disable[0]`
 	* D7 (DIO7 Configuration) = `Disable[0]`
 
 * Edit /boot/cmdline.txt , delete any parameter involve erial port "ttyAMA0" or "serial0". <br />
 * Disabale the on-board Bluetooth for Raspberry Pi Zero W
 * Edit /boot/config.txt    , add enable_uart=1 and dtoverlay=pi3-disable-bt
 
-   
+
 Manual For XCTU: https://www.digi.com/resources/documentation/digidocs/PDFs/90001458-13.pdf </br>
 For the serial setting for Raspberry pi, follow the instructions in the blog of: http://www.raspberry-projects.com/pi/pi-operating-systems/raspbian/io-pins-raspbian/uart-pins
