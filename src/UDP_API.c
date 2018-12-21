@@ -99,54 +99,9 @@ int udp_addpkt(pudp_config udp_config, char *raw_addr, char *content, int size){
 
     const int UDP = 3;
 
-    char address[NETWORK_ADDR_LENGTH];
+    char *removed_address = udp_address_reduce_point(raw_addr);
 
-    memset(&address, 0, NETWORK_ADDR_LENGTH);
-
-    //Record current filled Address Location.
-    int address_loc = 0;
-
-    // Four part in a address.(devided by '.')
-    for(int n = 0; n < 4; n++){
-
-        //in each part, at most 3 number.
-        int count = 0;
-        unsigned char tmp[3];
-
-        memset(&tmp, 0, sizeof(char) * 3);
-
-        while(count != 3){
-
-            //When read '.' from address_loc means the end of this part.
-            if (raw_addr[address_loc] == '.'){
-
-                address_loc ++;
-                break;
-
-            }
-            else{
-                tmp[count] = raw_addr[address_loc];
-
-                count ++;
-                address_loc ++;
-
-                if(address_loc >= strlen(raw_addr))
-                    break;
-            }
-        }
-
-        for(int lo = 0; lo < 3;lo ++)
-
-            if ((3 - count) > lo )
-                address[n * 3 + lo] = '0';
-            else
-                address[n * 3 + lo] = tmp[lo - (3 - count)];
-
-        if (count == 3)
-            address_loc ++;
-    }
-
-    addpkt(&udp_config -> pkt_Queue, UDP, address, content, size);
+    addpkt(&udp_config -> pkt_Queue, UDP, removed_address, content, size);
 
     return 0;
 }
@@ -243,7 +198,8 @@ void *udp_recv_pkt(void *udpconfig){
             printf("Data: %s\n" , recv_buf);
 
             addpkt(&udp_config -> Received_Queue, UDP
-                 , inet_ntoa(si_recv.sin_addr), recv_buf, strlen(recv_buf));
+                 , udp_address_reduce_point(inet_ntoa(si_recv.sin_addr))
+                 , recv_buf, strlen(recv_buf));
         }
         else
             perror("else recvfrom error.\n");
@@ -270,6 +226,60 @@ int udp_release(pudp_config udp_config){
 
     return 0;
 }
+
+
+char *udp_address_reduce_point(char *raw_addr){
+
+    char *address = malloc(sizeof(char) * NETWORK_ADDR_LENGTH);
+
+    memset(address, 0, NETWORK_ADDR_LENGTH);
+
+    //Record current filled Address Location.
+    int address_loc = 0;
+
+    // Four part in a address.(devided by '.')
+    for(int n = 0; n < 4; n++){
+
+        //in each part, at most 3 number.
+        int count = 0;
+        unsigned char tmp[3];
+
+        memset(&tmp, 0, sizeof(char) * 3);
+
+        while(count != 3){
+
+            //When read '.' from address_loc means the end of this part.
+            if (raw_addr[address_loc] == '.'){
+
+                address_loc ++;
+                break;
+
+            }
+            else{
+                tmp[count] = raw_addr[address_loc];
+
+                count ++;
+                address_loc ++;
+
+                if(address_loc >= strlen(raw_addr))
+                    break;
+            }
+        }
+
+        for(int lo = 0; lo < 3;lo ++)
+
+            if ((3 - count) > lo )
+                address[n * 3 + lo] = '0';
+            else
+                address[n * 3 + lo] = tmp[lo - (3 - count)];
+
+        if (count == 3)
+            address_loc ++;
+    }
+
+    return address;
+}
+
 
 char *udp_hex_to_address(unsigned char *hex_addr){
 
