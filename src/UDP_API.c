@@ -168,65 +168,33 @@ void *udp_send_pkt(void *udpconfig){
 
     const int socketaddr_len = sizeof(si_send);
 
-    // Stored a recovered address.
-    char dest_address[17];
-
     while(!(udp_config -> shutdown)){
 
         if(!(is_null( &udp_config -> pkt_Queue))){
 
             sPkt current_send_pkt = get_pkt(&udp_config -> pkt_Queue);
 
-            memset(&dest_address, 0, sizeof(char) * 17);
-
-            char *tmp_address = hex_to_char(current_send_pkt.address, 12);
-
-            int address_loc = 0;
-
-            for(int n=0;n < 4;n ++){
-
-                bool no_zero = false;
-
-                for(int loc=0;loc < 3;loc ++){
-
-                    if(tmp_address[n * 3 + loc]== '0' && no_zero == false &&
-                       loc != 2)
-                        continue;
-
-                    no_zero = true;
-
-                    dest_address[address_loc] = tmp_address[n * 3 + loc];
-
-                    address_loc ++;
-
-                }
-
-                if(n < 3){
-
-                    dest_address[address_loc] = '.';
-
-                    address_loc ++;
-                }
+            if (current_send_pkt.type != UDP){
 
             }
+            else{
+                char *dest_address = udp_hex_to_address(current_send_pkt.address);
 
-            printf("Dest Address : %s\n", dest_address );
+                printf("Dest Address : %s\n", dest_address );
 
-            memset(&si_send, 0, sizeof(si_send));
-            si_send.sin_family = AF_INET;
-            si_send.sin_port   = htons(UDP_LISTEN_PORT);
+                memset(&si_send, 0, sizeof(si_send));
+                si_send.sin_family = AF_INET;
+                si_send.sin_port   = htons(UDP_LISTEN_PORT);
 
-            if (inet_aton(dest_address, &si_send.sin_addr) == 0)
+                if (inet_aton(dest_address, &si_send.sin_addr) == 0)
 
-                perror("inet_aton error.\n");
+                    perror("inet_aton error.\n");
 
-            if (sendto(udp_config -> send_socket, current_send_pkt.content
-              , current_send_pkt.content_size, 0, (struct sockaddr *) &si_send
-              , socketaddr_len) == -1)
-                perror("recvfrom error.\n");
-
-            delpkt( &udp_config -> pkt_Queue);
-
+                if (sendto(udp_config -> send_socket, current_send_pkt.content
+                  , current_send_pkt.content_size, 0, (struct sockaddr *) &si_send
+                  , socketaddr_len) == -1)
+                    perror("recvfrom error.\n");
+            }
         }
     }
 
@@ -308,8 +276,8 @@ char *udp_hex_to_address(unsigned char *hex_addr){
     // Stored a recovered address.
     char *dest_address;
     dest_address = malloc(sizeof(char) * 17);
-    memset(&dest_address, 0, sizeof(char) * 17);
-    char *tmp_address = hex_to_char(hex_addr, 12);
+    memset(dest_address, 0, sizeof(char) * 17);
+    char *tmp_address = hex_to_char(hex_addr, 6);
     int address_loc = 0;
     for(int n=0;n < 4;n ++){
 
