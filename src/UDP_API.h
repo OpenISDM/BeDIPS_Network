@@ -31,6 +31,7 @@
      area.
 
   Authors:
+
      Gary Xiao		, garyh0205@hotmail.com
  */
 #ifndef UDP_API_H
@@ -43,18 +44,35 @@
 #include <pthread.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <errno.h>
 #include "pkt_Queue.h"
 
 
-#define UDP_LISTEN_PORT 8888    //The port on which to listen for incoming data
+#define UDP_SELECT_TIMEOUT 30    //second
+#define SEND_NULL_SLEEP 30
 
-#define UDP_SELECT_TIMEOUT 5    //second
+typedef struct udp_config_beacon{
+
+    char send_ipv4_addr[NETWORK_ADDR_LENGTH];
+    int send_portno;
+    spkt_ptr send_pkt_queue;
+
+    struct sockaddr_in si_recv;
+    int recv_portno;
+    int  recv_socket;
+    spkt_ptr recv_pkt_queue;
+
+} sudp_config_beacon;
 
 typedef struct udp_config_{
 
     struct sockaddr_in si_server;
 
     int  send_socket, recv_socket;
+
+    int send_port;
+
+    int recv_port;
 
     char Local_Address[NETWORK_ADDR_LENGTH];
 
@@ -71,7 +89,7 @@ typedef sudp_config *pudp_config;
 enum{File_OPEN_ERROR = -1, E_ADDPKT_OVERSIZE = -2};
 
 enum{socket_error = -1, send_socket_error = -2, recv_socket_error = -3,
-set_socketopt_error = -4, recv_socket_bind_error = -5, addpkt_msg_oversize = -6};
+set_socketopt_error = -4,recv_socket_bind_error = -5,addpkt_msg_oversize = -6};
 
 /*
   udp_initial
@@ -87,7 +105,7 @@ set_socketopt_error = -4, recv_socket_bind_error = -5, addpkt_msg_oversize = -6}
      int : If return 0, everything work successfully.
            If not 0   , somthing wrong.
  */
-int udp_initial(pudp_config udp_config);
+int udp_initial(pudp_config udp_config, int send_port, int recv_port);
 
 /*
   udp_addpkt

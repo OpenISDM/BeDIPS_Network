@@ -42,7 +42,7 @@ int main(){
 
     printf("Success\n");
 
-    udp_initial( &udp_config);
+    udp_initial( &udp_config, 9999, 8888);
 
     printf("init success\n");
 

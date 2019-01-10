@@ -37,7 +37,7 @@
 #include "UDP_API.h"
 
 
-int udp_initial(pudp_config udp_config){
+int udp_initial(pudp_config udp_config, int send_port, int recv_port){
 
     int ret;
 
@@ -73,10 +73,13 @@ int udp_initial(pudp_config udp_config){
         return set_socketopt_error;
 
     udp_config -> si_server.sin_family = AF_INET;
-    udp_config -> si_server.sin_port = htons(UDP_LISTEN_PORT);
+    udp_config -> si_server.sin_port = htons(recv_port);
     udp_config -> si_server.sin_addr.s_addr = htonl(INADDR_ANY);
 
     udp_config -> shutdown = false;
+
+    udp_config -> send_port = send_port;
+    udp_config -> recv_port = recv_port;
 
     //bind recv socket to port
     if( bind(udp_config -> recv_socket , (struct sockaddr *)&udp_config ->
@@ -96,8 +99,6 @@ int udp_addpkt(pudp_config udp_config, char *raw_addr, char *content, int size){
 
     if(size > MESSAGE_LENGTH)
         return addpkt_msg_oversize;
-
-    const int UDP = 3;
 
     char *removed_address = udp_address_reduce_point(raw_addr);
 
@@ -129,31 +130,28 @@ void *udp_send_pkt(void *udpconfig){
 
             sPkt current_send_pkt = get_pkt(&udp_config -> pkt_Queue);
 
-            if (current_send_pkt.type != UDP){
+            if (current_send_pkt.type == UDP){
+                char *dest_address = udp_hex_to_address(
+                                                      current_send_pkt.address);
 
-            }
-            else{
-                char *dest_address = udp_hex_to_address(current_send_pkt.address);
-
-                printf("Dest Address : %s\n", dest_address );
-
-                memset(&si_send, 0, sizeof(si_send));
+                bzero(&si_send, sizeof(si_send));
                 si_send.sin_family = AF_INET;
-                si_send.sin_port   = htons(UDP_LISTEN_PORT);
+                si_send.sin_port   = htons(udp_config -> send_port);
 
                 if (inet_aton(dest_address, &si_send.sin_addr) == 0)
-
                     perror("inet_aton error.\n");
 
                 if (sendto(udp_config -> send_socket, current_send_pkt.content
-                  , current_send_pkt.content_size, 0, (struct sockaddr *) &si_send
-                  , socketaddr_len) == -1)
-                    perror("recvfrom error.\n");
+                  , current_send_pkt.content_size, 0,(struct sockaddr *)&si_send
+                  , sizeof(struct sockaddr)) == -1)
+                    printf("sendto error.[%s]\n", strerror(errno));
             }
         }
-    }
+        else{
+            sleep(SEND_NULL_SLEEP);
+        }
 
-    printf("Exit Send.\n");
+    }
 
     return (void *)NULL;
 }
@@ -196,10 +194,11 @@ void *udp_recv_pkt(void *udpconfig){
             printf("Received packet from %s:%d\n", inet_ntoa(si_recv.sin_addr),
                                                    ntohs(si_recv.sin_port));
             printf("Data: %s\n" , recv_buf);
+            printf("Data Length %d\n", recv_len);
 
             addpkt(&udp_config -> Received_Queue, UDP
                  , udp_address_reduce_point(inet_ntoa(si_recv.sin_addr))
-                 , recv_buf, strlen(recv_buf));
+                 , recv_buf, recv_len);
         }
         else
             perror("else recvfrom error.\n");
