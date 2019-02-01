@@ -10,15 +10,14 @@
 
      BeDIS
 
-  File Description:
-
-     This file contains the program to connect to Wi-Fi and in the project, we
-     use it for data transmission most.
-
   File Name:
 
      UDP_API.c
 
+  File Description:
+
+     This file contains the program to connect to Wi-Fi and in the project, we
+     use it for data transmission most.
 
   Abstract:
 
@@ -122,8 +121,6 @@ void *udp_send_pkt(void *udpconfig){
 
     struct sockaddr_in si_send;
 
-    const int socketaddr_len = sizeof(si_send);
-
     while(!(udp_config -> shutdown)){
 
         if(!(is_null( &udp_config -> pkt_Queue))){
@@ -138,13 +135,19 @@ void *udp_send_pkt(void *udpconfig){
                 si_send.sin_family = AF_INET;
                 si_send.sin_port   = htons(udp_config -> send_port);
 
-                if (inet_aton(dest_address, &si_send.sin_addr) == 0)
-                    perror("inet_aton error.\n");
+                if (inet_aton(dest_address, &si_send.sin_addr) == 0){
+#ifdef debugging
+                    printf("inet_aton error.\n");
+#endif
+                }
 
                 if (sendto(udp_config -> send_socket, current_send_pkt.content
                   , current_send_pkt.content_size, 0,(struct sockaddr *)&si_send
-                  , sizeof(struct sockaddr)) == -1)
-                    printf("sendto error.[%s]\n", strerror(errno));
+                  , sizeof(struct sockaddr)) == -1){
+#ifdef debugging
+                      printf("sendto error.[%s]\n", strerror(errno));
+#endif
+                  }
             }
         }
         else{
@@ -176,36 +179,39 @@ void *udp_recv_pkt(void *udpconfig){
         memset(&recv_buf, 0, sizeof(char) * MESSAGE_LENGTH);
 
         recv_len = 0;
-
+#ifdef debugging
         printf("recv pkt.\n");
-
+#endif
         //try to receive some data, this is a non-blocking call
         if ((recv_len = recvfrom(udp_config -> recv_socket, recv_buf,
              MESSAGE_LENGTH, 0, (struct sockaddr *) &si_recv
                                     , (socklen_t *)&socketaddr_len)) == -1){
-
+#ifdef debugging
             printf("error recv_len %d\n", recv_len);
 
-            perror("recvfrom error.\n");
+            printf("recvfrom error.\n");
+#endif
         }
         else if(recv_len > 0){
-
+#ifdef debugging
             //print details of the client/peer and the data received
             printf("Received packet from %s:%d\n", inet_ntoa(si_recv.sin_addr),
                                                    ntohs(si_recv.sin_port));
             printf("Data: %s\n" , recv_buf);
             printf("Data Length %d\n", recv_len);
-
+#endif
             addpkt(&udp_config -> Received_Queue, UDP
                  , udp_address_reduce_point(inet_ntoa(si_recv.sin_addr))
                  , recv_buf, recv_len);
         }
+#ifdef debugging
         else
-            perror("else recvfrom error.\n");
-
+            printf("else recvfrom error.\n");
+#endif
     }
+#ifdef debugging
     printf("Exit Receive.\n");
-
+#endif
     return (void *)NULL;
 }
 

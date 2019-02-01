@@ -10,13 +10,17 @@
 
      BeDIS
 
+  File Name:
+
+     pkt_Queue.h
+
   File Description:
 
      This file contains the header of function declarations used in pkt_Queue.c
 
-  File Name:
+  Version:
 
-     pkt_Queue.h
+     2.0, 20190119
 
   Abstract:
 
@@ -44,7 +48,8 @@
 #include <pthread.h>
 #include <sys/time.h>
 
-// If need to debug.
+
+/* If need to debug. */
 //#define debugging
 
 /* Length of address of the network */
@@ -149,7 +154,7 @@ int Free_Packet_Queue(pkt_ptr pkt_queue);
 
   Parameter:
 
-      pkt_Queue: The Queue we store pkt.
+      pkt_Queue : The Queue we store pkt.
       type      : Record the type of packets working environment.
       raw_addr  : The destnation address of the packet.
       content   : The content we decided to send.
